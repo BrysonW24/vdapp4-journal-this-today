@@ -278,6 +278,7 @@ export default function NewEntryPage() {
 
       toast.success('Entry saved successfully!');
       router.push('/journal');
+      router.refresh();
     } catch (_error) {
       toast.error('Failed to save entry');
       setIsSaving(false);
