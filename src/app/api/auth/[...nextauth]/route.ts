@@ -1,8 +1,7 @@
 import NextAuth from 'next-auth';
-import type { NextAuthConfig } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 
-const authConfig: NextAuthConfig = {
+const handler = NextAuth({
   providers: [
     Credentials({
       credentials: {
@@ -61,8 +60,6 @@ const authConfig: NextAuthConfig = {
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   secret: process.env.NEXTAUTH_SECRET,
-};
-
-const handler = NextAuth(authConfig);
+});
 
 export { handler as GET, handler as POST };
