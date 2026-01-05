@@ -92,7 +92,7 @@ export default function PremiumPage() {
         {/* Testimonial */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 mb-8 shadow-sm">
           <p className="text-gray-800 dark:text-gray-200 mb-4 leading-relaxed italic">
-            "The best app in my phone, hands down. Use it everyday! Worth every penny!"
+            &ldquo;The best app in my phone, hands down. Use it everyday! Worth every penny!&rdquo;
           </p>
           <div className="flex items-center justify-between">
             <div className="flex gap-1">

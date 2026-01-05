@@ -82,7 +82,7 @@ async function generateQuote(): Promise<Quote> {
  */
 function parseGeneratedQuote(text: string, originalPrompt: string): { text: string; author: string } | null {
   // Remove the prompt from the response
-  let cleaned = text.replace(originalPrompt, '').trim();
+  const cleaned = text.replace(originalPrompt, '').trim();
 
   // Try to extract quote and author
   const quoteMatch = cleaned.match(/"([^"]+)"\s*-\s*(.+)/);

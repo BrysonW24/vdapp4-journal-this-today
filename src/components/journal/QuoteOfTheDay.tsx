@@ -60,7 +60,7 @@ export function QuoteOfTheDay() {
 
         <blockquote className="mb-3">
           <p className="text-lg font-medium text-gray-800 dark:text-gray-200 leading-relaxed italic">
-            "{quote.text}"
+            &ldquo;{quote.text}&rdquo;
           </p>
         </blockquote>
 

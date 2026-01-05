@@ -247,7 +247,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                     </div>
                   ) : (
                     <div className="p-4 text-center text-gray-600 dark:text-gray-400">
-                      <p className="text-sm">No entries found for "{searchQuery}"</p>
+                      <p className="text-sm">No entries found for &ldquo;{searchQuery}&rdquo;</p>
                     </div>
                   )}
                 </div>

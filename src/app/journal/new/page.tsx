@@ -196,14 +196,14 @@ export default function NewEntryPage() {
     }
   };
 
-  const useTemplate = (template: typeof templates[0]) => {
+  const handleUseTemplate = (template: typeof templates[0]) => {
     setContent(template.content);
     setTitle(template.name);
     setShowTemplates(false);
     toast.success(`Template "${template.name}" applied`);
   };
 
-  const useSuggestion = (suggestion: string) => {
+  const handleUseSuggestion = (suggestion: string) => {
     setTitle(suggestion);
     setShowSuggestions(false);
     toast.success('Suggestion applied to title');
@@ -488,7 +488,7 @@ export default function NewEntryPage() {
                   {templates.map((template) => (
                     <button
                       key={template.id}
-                      onClick={() => useTemplate(template)}
+                      onClick={() => handleUseTemplate(template)}
                       className="text-left p-4 bg-white rounded-lg border-2 border-gray-200 hover:border-blue-400 hover:bg-blue-50 transition-all"
                     >
                       <h4 className="font-semibold text-gray-900 mb-2">{template.name}</h4>
@@ -507,7 +507,7 @@ export default function NewEntryPage() {
                   {suggestions.map((suggestion, index) => (
                     <button
                       key={index}
-                      onClick={() => useSuggestion(suggestion)}
+                      onClick={() => handleUseSuggestion(suggestion)}
                       className="w-full text-left p-3 bg-white rounded-lg border-2 border-gray-200 hover:border-purple-400 hover:bg-purple-50 transition-all"
                     >
                       <p className="text-gray-900">{suggestion}</p>

@@ -238,7 +238,7 @@ export default function JournalsPage() {
 
   const handleExportJournalCSV = (journal: Journal) => {
     // In production, fetch entries for this specific journal
-    let csvContent = 'Date,Title,Content,Mood,Tags,Location\n';
+    const csvContent = 'Date,Title,Content,Mood,Tags,Location\n';
     // Would add CSV rows here
 
     const blob = new Blob([csvContent], { type: 'text/csv' });
