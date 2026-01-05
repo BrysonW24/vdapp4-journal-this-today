@@ -481,7 +481,6 @@ export default function JournalsPage() {
                             }`}
                             style={{
                               backgroundColor: color.value,
-                              ringColor: color.value,
                             }}
                           >
                             {formData.color === color.value && (
