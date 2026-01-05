@@ -5,8 +5,6 @@ import { Layout } from '@/components/Layout';
 import { useJournalStore } from '@/stores/journal-store';
 import { db } from '@/lib/db';
 import {
-  Download,
-  Upload,
   Trash2,
   Database,
   Star,
@@ -64,7 +62,7 @@ export default function SettingsPage() {
       a.click();
       URL.revokeObjectURL(url);
       toast.success('Journal exported to JSON successfully!');
-    } catch (error) {
+    } catch (_error) {
       toast.error('Failed to export journal');
     }
   };
@@ -80,7 +78,7 @@ export default function SettingsPage() {
       a.click();
       URL.revokeObjectURL(url);
       toast.success('Journal exported to plain text successfully!');
-    } catch (error) {
+    } catch (_error) {
       toast.error('Failed to export journal');
     }
   };
@@ -96,7 +94,7 @@ export default function SettingsPage() {
       a.click();
       URL.revokeObjectURL(url);
       toast.success('Journal exported to Markdown successfully!');
-    } catch (error) {
+    } catch (_error) {
       toast.error('Failed to export journal');
     }
   };
@@ -122,7 +120,7 @@ export default function SettingsPage() {
       a.click();
       URL.revokeObjectURL(url);
       toast.success('Journal exported to CSV successfully!');
-    } catch (error) {
+    } catch (_error) {
       toast.error('Failed to export journal');
     }
   };
@@ -219,7 +217,7 @@ export default function SettingsPage() {
       doc.save(`journal-export-${new Date().toISOString().split('T')[0]}.pdf`);
       toast.success('Journal exported to PDF successfully!');
       setShowPDFSettings(false);
-    } catch (error) {
+    } catch (_error) {
       console.error('PDF export error:', error);
       toast.error('Failed to export PDF');
     }
@@ -234,7 +232,7 @@ export default function SettingsPage() {
       await importFromJSON(text);
       await loadDatabaseSize();
       toast.success('Journal imported from JSON successfully!');
-    } catch (error) {
+    } catch (_error) {
       toast.error('Failed to import journal. Please check the file format.');
     }
   };
@@ -249,7 +247,7 @@ export default function SettingsPage() {
       const entries = text.split('\n\n\n').filter(e => e.trim());
 
       toast.success(`Found ${entries.length} entries. Import functionality for text files coming soon!`);
-    } catch (error) {
+    } catch (_error) {
       toast.error('Failed to import text file.');
     }
   };
@@ -264,7 +262,7 @@ export default function SettingsPage() {
       const entries = text.split(/^# /m).filter(e => e.trim());
 
       toast.success(`Found ${entries.length} entries. Import functionality for markdown files coming soon!`);
-    } catch (error) {
+    } catch (_error) {
       toast.error('Failed to import markdown file.');
     }
   };
@@ -278,7 +276,7 @@ export default function SettingsPage() {
       const lines = text.split('\n').filter(l => l.trim());
 
       toast.success(`Found ${lines.length - 1} entries. Import functionality for CSV files coming soon!`);
-    } catch (error) {
+    } catch (_error) {
       toast.error('Failed to import CSV file.');
     }
   };
@@ -305,7 +303,7 @@ export default function SettingsPage() {
       await loadEntries();
       await loadDatabaseSize();
       toast.success('All journal data has been cleared');
-    } catch (error) {
+    } catch (_error) {
       toast.error('Failed to clear database');
     }
   };

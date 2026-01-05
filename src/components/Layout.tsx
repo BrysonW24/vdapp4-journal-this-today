@@ -3,8 +3,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useSession, signOut } from 'next-auth/react';
-import { Menu, X, Search, User, Moon, Sun, FileText } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import { Menu, X, Search, Moon, Sun, FileText } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useJournalStore } from '@/stores/journal-store';
 import { format } from 'date-fns';
@@ -23,7 +23,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [userName, setUserName] = useState('U');
   const searchRef = useRef<HTMLDivElement>(null);
 
-  const { searchEntries, entries } = useJournalStore();
+  const { searchEntries } = useJournalStore();
   const searchResults = searchQuery.trim() ? searchEntries(searchQuery) : [];
 
   // Load user name from localStorage or session
@@ -35,7 +35,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
           try {
             const profile = JSON.parse(storedProfile);
             setUserName(profile.name?.charAt(0).toUpperCase() || 'U');
-          } catch (e) {
+          } catch (_e) {
             setUserName(session?.user?.name?.charAt(0).toUpperCase() || 'U');
           }
         } else {

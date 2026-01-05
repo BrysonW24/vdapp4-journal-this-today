@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 export default function PromptsPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'gallery' | 'my-prompts'>('gallery');
-  const [myPrompts, setMyPrompts] = useState<Prompt[]>([]);
+  // const [myPrompts, setMyPrompts] = useState<Prompt[]>([]);
 
   const handlePromptClick = (question: string) => {
     // Navigate to new entry with prompt pre-filled

@@ -72,7 +72,7 @@ export default function NewEntryPage() {
 
           setLocation(`${locationName} (${latitude.toFixed(4)}, ${longitude.toFixed(4)})`);
           toast.success('Location added!');
-        } catch (error) {
+        } catch (_error) {
           console.error('Error getting location name:', error);
           setLocation(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
           toast.success('Coordinates added!');
@@ -189,7 +189,7 @@ export default function NewEntryPage() {
       setIsRecording(true);
       toast.success('Recording started - speak now!');
 
-    } catch (error) {
+    } catch (_error) {
       console.error('Error accessing microphone:', error);
       toast.error('Microphone access denied');
       setIsRecording(false);
@@ -277,7 +277,7 @@ export default function NewEntryPage() {
 
       toast.success('Entry saved successfully!');
       router.push('/journal');
-    } catch (error) {
+    } catch (_error) {
       toast.error('Failed to save entry');
       setIsSaving(false);
     }

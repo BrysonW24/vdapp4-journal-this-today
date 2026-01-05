@@ -14,7 +14,6 @@ import {
   Copy,
   Download,
   Info,
-  AlertCircle,
   AlertTriangle,
   XCircle,
   CheckCircle,

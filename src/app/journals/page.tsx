@@ -268,7 +268,7 @@ export default function JournalsPage() {
 
       doc.save(`${journal.name.toLowerCase().replace(/\s+/g, '-')}-${new Date().toISOString().split('T')[0]}.pdf`);
       toast.success(`Exported "${journal.name}" as PDF`);
-    } catch (error) {
+    } catch (_error) {
       toast.error('Failed to generate PDF');
     }
   };
@@ -284,7 +284,7 @@ export default function JournalsPage() {
       // In production, merge imported entries with existing ones
       toast.success(`Imported data into "${journal.name}"`);
       setJournalWithSettingsOpen(null);
-    } catch (error) {
+    } catch (_error) {
       toast.error('Failed to import JSON file');
     }
 

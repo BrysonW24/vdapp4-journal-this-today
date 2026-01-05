@@ -55,7 +55,7 @@ export default function EntryDetailPage({ params }: { params: { id: string } }) 
         await deleteEntry(entry.id);
         toast.success('Entry deleted successfully');
         router.push('/journal');
-      } catch (error) {
+      } catch (_error) {
         toast.error('Failed to delete entry');
       }
     }

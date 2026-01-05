@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Sparkles, Calendar, Star, Check } from 'lucide-react';
+import { Sparkles, Calendar, Star } from 'lucide-react';
 
 export default function PremiumPage() {
   const router = useRouter();

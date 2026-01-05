@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { db } from '@/lib/db';
 import type { JournalEntry, Category } from '@/types/journal';
 import { DEFAULT_CATEGORIES } from '@/types/journal';
-import { startOfDay, isSameDay, differenceInDays } from 'date-fns';
+import { startOfDay, differenceInDays } from 'date-fns';
 
 interface JournalState {
   entries: JournalEntry[];
@@ -54,7 +54,7 @@ export const useJournalStore = create<JournalState & JournalActions>()(
           const entries = await db.entries.toArray();
           set({ entries, isLoading: false });
           get().initializeSearch();
-        } catch (error) {
+        } catch (_error) {
           set({ error: 'Failed to load entries', isLoading: false });
         }
       },
@@ -74,7 +74,7 @@ export const useJournalStore = create<JournalState & JournalActions>()(
           }));
           get().initializeSearch();
           return newEntry.id;
-        } catch (error) {
+        } catch (_error) {
           throw new Error('Failed to add entry');
         }
       },
@@ -92,7 +92,7 @@ export const useJournalStore = create<JournalState & JournalActions>()(
             ),
           }));
           get().initializeSearch();
-        } catch (error) {
+        } catch (_error) {
           throw new Error('Failed to update entry');
         }
       },
@@ -104,7 +104,7 @@ export const useJournalStore = create<JournalState & JournalActions>()(
             entries: state.entries.filter((entry) => entry.id !== id),
           }));
           get().initializeSearch();
-        } catch (error) {
+        } catch (_error) {
           throw new Error('Failed to delete entry');
         }
       },
@@ -230,7 +230,7 @@ export const useJournalStore = create<JournalState & JournalActions>()(
           const parsed = JSON.parse(data);
           await db.importDatabase(parsed);
           await get().loadEntries();
-        } catch (error) {
+        } catch (_error) {
           throw new Error('Failed to import data');
         }
       },

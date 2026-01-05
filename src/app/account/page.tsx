@@ -20,7 +20,7 @@ import {
 import { toast } from 'sonner';
 
 export default function AccountPage() {
-  const router = useRouter();
+  // const router = useRouter();
   const { data: session } = useSession();
 
   const [profile, setProfile] = useState(() => {
@@ -30,7 +30,7 @@ export default function AccountPage() {
       if (storedProfile) {
         try {
           return JSON.parse(storedProfile);
-        } catch (e) {
+        } catch (_e) {
           // Fall through to default
         }
       }
