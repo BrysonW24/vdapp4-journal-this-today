@@ -211,9 +211,9 @@ export const deepMerge = <T>(target: T, source: Partial<T>): T => {
         targetValue &&
         typeof targetValue === 'object'
       ) {
-        result[key] = deepMerge(targetValue, sourceValue as any);
+        result[key] = deepMerge(targetValue, sourceValue as any) as any;
       } else {
-        result[key] = sourceValue;
+        result[key] = sourceValue as any;
       }
     }
   }
