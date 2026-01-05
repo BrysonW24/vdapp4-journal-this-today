@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Layout } from '@/components/Layout';
 import { useJournalStore } from '@/stores/journal-store';
-import { MOOD_METADATA } from '@/types/journal';
+import { MOOD_METADATA, type JournalEntry } from '@/types/journal';
 import { format } from 'date-fns';
 import { ArrowLeft, Star, Edit, Trash2, MapPin, Tag, FolderOpen, Clock } from 'lucide-react';
 import Link from 'next/link';
@@ -14,7 +14,7 @@ export default function EntryDetailPage({ params }: { params: Promise<{ id: stri
   const router = useRouter();
   const { getEntryById, toggleFavorite, deleteEntry } = useJournalStore();
   const [entryId, setEntryId] = useState<string | null>(null);
-  const [entry, setEntry] = useState<any>(null);
+  const [entry, setEntry] = useState<JournalEntry | null>(null);
 
   useEffect(() => {
     params.then((resolvedParams) => {
