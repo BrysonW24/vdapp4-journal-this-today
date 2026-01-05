@@ -55,7 +55,7 @@ export default function EntryDetailPage({ params }: { params: Promise<{ id: stri
 
   const handleToggleFavorite = () => {
     toggleFavorite(entry.id);
-    setEntry(getEntryById(entry.id));
+    setEntry(getEntryById(entry.id) || null);
     toast.success(entry.isFavorite ? 'Removed from favorites' : 'Added to favorites');
   };
 
