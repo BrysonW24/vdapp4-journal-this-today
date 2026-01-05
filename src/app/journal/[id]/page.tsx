@@ -10,14 +10,24 @@ import { ArrowLeft, Star, Edit, Trash2, MapPin, Tag, FolderOpen, Clock } from 'l
 import Link from 'next/link';
 import { toast } from 'sonner';
 
-export default function EntryDetailPage({ params }: { params: { id: string } }) {
+export default function EntryDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const { getEntryById, toggleFavorite, deleteEntry } = useJournalStore();
-  const [entry, setEntry] = useState(getEntryById(params.id));
+  const [entryId, setEntryId] = useState<string | null>(null);
+  const [entry, setEntry] = useState<any>(null);
 
   useEffect(() => {
-    setEntry(getEntryById(params.id));
-  }, [params.id, getEntryById]);
+    params.then((resolvedParams) => {
+      setEntryId(resolvedParams.id);
+      setEntry(getEntryById(resolvedParams.id));
+    });
+  }, [params, getEntryById]);
+
+  useEffect(() => {
+    if (entryId) {
+      setEntry(getEntryById(entryId));
+    }
+  }, [entryId, getEntryById]);
 
   if (!entry) {
     return (
