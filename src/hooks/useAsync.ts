@@ -10,7 +10,7 @@ interface UseAsyncState<T> {
  * Hook for handling async operations
  * Manages loading, success, and error states
  */
-export function useAsync<T, E = string>(
+export function useAsync<T>(
   asyncFunction: () => Promise<T>,
   immediate: boolean = true
 ) {

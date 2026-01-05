@@ -279,7 +279,7 @@ export default function JournalsPage() {
 
     try {
       const text = await file.text();
-      const data = JSON.parse(text);
+      JSON.parse(text); // Validate JSON
 
       // In production, merge imported entries with existing ones
       toast.success(`Imported data into "${journal.name}"`);

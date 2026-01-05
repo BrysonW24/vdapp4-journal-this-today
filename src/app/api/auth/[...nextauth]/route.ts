@@ -1,11 +1,10 @@
 import NextAuth from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
-import type { NextAuthOptions } from 'next-auth';
+import type { NextAuthConfig } from 'next-auth';
+import Credentials from 'next-auth/providers/credentials';
 
-const authOptions: NextAuthOptions = {
+export const authConfig: NextAuthConfig = {
   providers: [
-    CredentialsProvider({
-      name: 'Credentials',
+    Credentials({
       credentials: {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
@@ -14,7 +13,7 @@ const authOptions: NextAuthOptions = {
         // TODO: Implement credential validation against your backend
         // This is a placeholder implementation
         if (!credentials?.email || !credentials?.password) {
-          throw new Error('Invalid credentials');
+          return null;
         }
 
         // Replace with actual API call
@@ -25,7 +24,7 @@ const authOptions: NextAuthOptions = {
         // });
 
         // if (!res.ok) {
-        //   throw new Error('Failed to authenticate');
+        //   return null;
         // }
 
         // const user = await res.json();
@@ -34,7 +33,7 @@ const authOptions: NextAuthOptions = {
         // Placeholder: return user object
         return {
           id: '1',
-          email: credentials.email,
+          email: credentials.email as string,
           name: 'Test User',
         };
       },
@@ -42,15 +41,11 @@ const authOptions: NextAuthOptions = {
   ],
   pages: {
     signIn: '/login',
-    error: '/auth/error',
   },
   callbacks: {
-    async jwt({ token, user, account }) {
+    async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-      }
-      if (account) {
-        token.accessToken = account.access_token;
       }
       return token;
     },
@@ -58,7 +53,6 @@ const authOptions: NextAuthOptions = {
       if (session.user) {
         session.user.id = token.id as string;
       }
-      session.accessToken = token.accessToken as string;
       return session;
     },
   },
@@ -69,6 +63,6 @@ const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
 };
 
-const handler = NextAuth(authOptions);
+const handler = NextAuth(authConfig);
 
 export { handler as GET, handler as POST };

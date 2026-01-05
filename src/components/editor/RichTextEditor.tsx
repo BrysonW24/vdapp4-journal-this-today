@@ -9,7 +9,6 @@ import Image from '@tiptap/extension-image';
 import {
   Bold,
   Italic,
-  Underline as UnderlineIcon,
   Strikethrough,
   Heading1,
   Heading2,
@@ -31,7 +30,7 @@ interface RichTextEditorProps {
   placeholder?: string;
 }
 
-export function RichTextEditor({ content, onChange, placeholder = 'Start writing...' }: RichTextEditorProps) {
+export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
   const editor = useEditor({
     extensions: [
       StarterKit,
