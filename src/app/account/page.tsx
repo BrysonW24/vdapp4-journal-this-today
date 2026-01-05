@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { Layout } from '@/components/Layout';
-// import { useRouter } from 'next/navigation';
-import { useSession, signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/stores/authStore';
 import {
   User,
   Mail,
@@ -20,8 +20,9 @@ import {
 import { toast } from 'sonner';
 
 export default function AccountPage() {
-  // const router = useRouter();
+  const router = useRouter();
   const user = useAuthStore((state) => state.user);
+  const logout = useAuthStore((state) => state.logout);
 
   const [profile, setProfile] = useState(() => {
     // Load from localStorage if available
@@ -76,8 +77,9 @@ export default function AccountPage() {
   };
 
   const handleSignOut = async () => {
-    await signOut({ callbackUrl: '/login' });
+    await logout();
     toast.success('Signed out successfully');
+    router.push('/login');
   };
 
   return (

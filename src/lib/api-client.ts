@@ -1,12 +1,11 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { getSession } from 'next-auth/react';
 import type { ApiResponse } from '@/types';
 
 /**
  * Configured Axios instance for API calls
  * Handles:
  * - Request/response interceptors
- * - Authentication token injection
+ * - Authentication token injection (from cookies)
  * - Error standardization
  * - Retry logic
  */
@@ -22,19 +21,17 @@ class ApiClient {
       headers: {
         'Content-Type': 'application/json',
       },
+      withCredentials: true, // Include cookies
     });
 
     this.setupInterceptors();
   }
 
   private setupInterceptors(): void {
-    // Request interceptor - add auth token
+    // Request interceptor - auth is handled via cookies
     this.axiosInstance.interceptors.request.use(
       async (config) => {
-        const session = await getSession();
-        if (session?.accessToken) {
-          config.headers.Authorization = `Bearer ${session.accessToken}`;
-        }
+        // Auth token is sent via httpOnly cookie automatically
         return config;
       },
       (error) => Promise.reject(error)
@@ -49,7 +46,6 @@ class ApiClient {
         // Handle 401 - token expired
         if (error.response?.status === 401 && !config._retry) {
           config._retry = true;
-          // TODO: Implement token refresh logic with next-auth
         }
 
         // Retry logic for 5xx and network errors

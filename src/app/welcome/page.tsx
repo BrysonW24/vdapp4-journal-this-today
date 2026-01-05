@@ -1,14 +1,13 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { signIn } from 'next-auth/react';
 
 export default function WelcomePage() {
   const router = useRouter();
 
-  const handleContinueWithApple = async () => {
+  const handleContinueWithApple = () => {
     // In production, implement Apple Sign In
-    await signIn('apple', { callbackUrl: '/premium' });
+    router.push('/login');
   };
 
   const handleHaveAccount = () => {
