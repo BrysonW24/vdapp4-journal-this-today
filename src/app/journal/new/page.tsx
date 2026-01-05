@@ -264,6 +264,7 @@ export default function NewEntryPage() {
       }
 
       await addEntry({
+        journalId: 'default',
         title: title.trim(),
         content,
         contentType: ContentType.HTML,
