@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Layout } from '@/components/Layout';
-import { DEFAULT_PROMPT_PACKS, type Prompt } from '@/types/journal';
+import { DEFAULT_PROMPT_PACKS } from '@/types/journal';
 import { Star, ChevronRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 

@@ -6,7 +6,6 @@ import MiniSearch from 'minisearch';
 import { v4 as uuidv4 } from 'uuid';
 import { db } from '@/lib/db';
 import type { JournalEntry } from '@/types/journal';
-import { DEFAULT_CATEGORIES } from '@/types/journal';
 import { startOfDay, differenceInDays } from 'date-fns';
 
 interface JournalState {
