@@ -190,7 +190,7 @@ export default function NewEntryPage() {
       toast.success('Recording started - speak now!');
 
     } catch (_error) {
-      console.error('Error accessing microphone:', error);
+      console.error('Error accessing microphone:', _error);
       toast.error('Microphone access denied');
       setIsRecording(false);
     }
