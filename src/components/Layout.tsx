@@ -61,6 +61,8 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   // Close search on click outside
   useEffect(() => {
+    if (!searchOpen) return;
+
     function handleClickOutside(event: MouseEvent) {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
         setSearchOpen(false);
@@ -68,10 +70,8 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       }
     }
 
-    if (searchOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
-    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [searchOpen]);
 
   const handleSearchResultClick = (entryId: string) => {
