@@ -161,7 +161,7 @@ export default function SettingsPage() {
 
         // Entry date and title
         doc.setFontSize(pdfSettings.fontSize + 2);
-        doc.setFont(undefined, 'bold');
+        doc.setFont('helvetica', 'bold');
         const dateStr = new Date(entry.createdAt).toLocaleDateString();
         doc.text(`${dateStr} - ${entry.title}`, margin, yPosition);
         yPosition += 8;
@@ -169,7 +169,7 @@ export default function SettingsPage() {
         // Mood if enabled
         if (pdfSettings.includeMood && entry.mood) {
           doc.setFontSize(pdfSettings.fontSize - 2);
-          doc.setFont(undefined, 'normal');
+          doc.setFont('helvetica', 'normal');
           doc.text(`Mood: ${entry.mood}`, margin, yPosition);
           yPosition += 6;
         }
@@ -177,7 +177,7 @@ export default function SettingsPage() {
         // Location if enabled
         if (pdfSettings.includeLocation && entry.location) {
           doc.setFontSize(pdfSettings.fontSize - 2);
-          doc.setFont(undefined, 'normal');
+          doc.setFont('helvetica', 'normal');
           doc.text(`Location: ${entry.location.placeName || entry.location.address || 'Unknown'}`, margin, yPosition);
           yPosition += 6;
         }
@@ -191,7 +191,7 @@ export default function SettingsPage() {
 
         // Content
         doc.setFontSize(pdfSettings.fontSize);
-        doc.setFont(undefined, 'normal');
+        doc.setFont('helvetica', 'normal');
         const content = entry.content.replace(/<[^>]*>/g, '').trim();
         const lines = doc.splitTextToSize(content, maxWidth);
 
