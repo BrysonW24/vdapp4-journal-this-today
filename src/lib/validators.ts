@@ -7,13 +7,13 @@ import { z } from 'zod';
 
 // Email validation
 export const emailSchema = z
-  .string('Email is required')
+  .string({ required_error: 'Email is required' })
   .email('Invalid email address')
   .toLowerCase();
 
 // Password validation - at least 8 chars, 1 uppercase, 1 number, 1 special char
 export const passwordSchema = z
-  .string('Password is required')
+  .string({ required_error: 'Password is required' })
   .min(8, 'Password must be at least 8 characters')
   .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
   .regex(/[0-9]/, 'Password must contain at least one number')
@@ -27,12 +27,12 @@ export const strongPasswordSchema = passwordSchema;
 
 // Weak password (for password field)
 export const weakPasswordSchema = z
-  .string('Password is required')
+  .string({ required_error: 'Password is required' })
   .min(6, 'Password must be at least 6 characters');
 
 // Name validation
 export const nameSchema = z
-  .string('Name is required')
+  .string({ required_error: 'Name is required' })
   .min(2, 'Name must be at least 2 characters')
   .max(50, 'Name must not exceed 50 characters')
   .regex(
@@ -42,7 +42,7 @@ export const nameSchema = z
 
 // Phone validation
 export const phoneSchema = z
-  .string('Phone is required')
+  .string({ required_error: 'Phone is required' })
   .regex(/^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/, 'Invalid phone number');
 
 // URL validation
@@ -66,7 +66,7 @@ export const paginationSchema = z.object({
 
 export const loginSchema = z.object({
   email: emailSchema,
-  password: z.string('Password is required').min(1, 'Password is required'),
+  password: z.string({ required_error: 'Password is required' }).min(1, 'Password is required'),
   rememberMe: z.boolean().optional(),
 });
 
@@ -76,7 +76,7 @@ export const signupSchema = z.object({
   name: nameSchema,
   email: emailSchema,
   password: strongPasswordSchema,
-  confirmPassword: z.string('Confirm password is required'),
+  confirmPassword: z.string({ required_error: 'Confirm password is required' }),
   acceptTerms: z.boolean().refine((val) => val === true, {
     message: 'You must accept the terms and conditions',
   }),
@@ -92,8 +92,8 @@ export type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 
 export const resetPasswordSchema = z.object({
   password: strongPasswordSchema,
-  confirmPassword: z.string('Confirm password is required'),
-  token: z.string('Reset token is required'),
+  confirmPassword: z.string({ required_error: 'Confirm password is required' }),
+  token: z.string({ required_error: 'Reset token is required' }),
 });
 
 export type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
