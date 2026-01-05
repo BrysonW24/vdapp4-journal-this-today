@@ -73,7 +73,7 @@ export default function NewEntryPage() {
           setLocation(`${locationName} (${latitude.toFixed(4)}, ${longitude.toFixed(4)})`);
           toast.success('Location added!');
         } catch (_error) {
-          console.error('Error getting location name:', error);
+          console.error('Error getting location name:', _error);
           setLocation(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
           toast.success('Coordinates added!');
         } finally {
