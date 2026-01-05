@@ -21,7 +21,7 @@ import { toast } from 'sonner';
 
 export default function AccountPage() {
   // const router = useRouter();
-  const { data: session } = useSession();
+  const user = useAuthStore((state) => state.user);
 
   const [profile, setProfile] = useState(() => {
     // Load from localStorage if available
@@ -36,8 +36,8 @@ export default function AccountPage() {
       }
     }
     return {
-      name: session?.user?.name || 'Journal User',
-      email: session?.user?.email || 'user@example.com',
+      name: user?.name || 'Journal User',
+      email: user?.email || 'user@example.com',
       bio: '',
       timezone: 'America/New_York',
       dateFormat: 'MM/DD/YYYY',

@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useAuthStore } from '@/stores/authStore';
 import { Menu, X, Search, Moon, Sun, FileText } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useJournalStore } from '@/stores/journal-store';
@@ -15,7 +15,7 @@ interface LayoutProps {
 
 export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const router = useRouter();
-  const { data: session } = useSession();
+  const user = useAuthStore((state) => state.user);
   const { theme, setTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -36,10 +36,10 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
             const profile = JSON.parse(storedProfile);
             setUserName(profile.name?.charAt(0).toUpperCase() || 'U');
           } catch (_e) {
-            setUserName(session?.user?.name?.charAt(0).toUpperCase() || 'U');
+            setUserName(user?.name?.charAt(0).toUpperCase() || 'U');
           }
         } else {
-          setUserName(session?.user?.name?.charAt(0).toUpperCase() || 'U');
+          setUserName(user?.name?.charAt(0).toUpperCase() || 'U');
         }
       }
     };
