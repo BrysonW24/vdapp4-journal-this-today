@@ -218,7 +218,7 @@ export default function SettingsPage() {
       toast.success('Journal exported to PDF successfully!');
       setShowPDFSettings(false);
     } catch (_error) {
-      console.error('PDF export error:', error);
+      console.error('PDF export error:', _error);
       toast.error('Failed to export PDF');
     }
   };
