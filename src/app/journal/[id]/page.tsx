@@ -19,13 +19,13 @@ export default function EntryDetailPage({ params }: { params: Promise<{ id: stri
   useEffect(() => {
     params.then((resolvedParams) => {
       setEntryId(resolvedParams.id);
-      setEntry(getEntryById(resolvedParams.id));
+      setEntry(getEntryById(resolvedParams.id) || null);
     });
   }, [params, getEntryById]);
 
   useEffect(() => {
     if (entryId) {
-      setEntry(getEntryById(entryId));
+      setEntry(getEntryById(entryId) || null);
     }
   }, [entryId, getEntryById]);
 
