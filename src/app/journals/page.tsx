@@ -737,7 +737,7 @@ export default function JournalsPage() {
                     Transfer Entries
                   </h2>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
-                    Move all entries from "{transferFrom.name}" to another journal
+                    Move all entries from &quot;{transferFrom.name}&quot; to another journal
                   </p>
                 </div>
 

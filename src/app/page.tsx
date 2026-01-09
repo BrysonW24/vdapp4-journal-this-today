@@ -5,7 +5,7 @@ import { useJournalStore } from '@/stores/journal-store';
 import { EntryCard } from '@/components/journal/EntryCard';
 import { QuoteOfTheDay } from '@/components/journal/QuoteOfTheDay';
 import { Layout } from '@/components/Layout';
-import { BookOpen, Calendar, Star, Image, Search, Grid, List, Plus, TrendingUp, ChevronDown, Settings } from 'lucide-react';
+import { BookOpen, Calendar, Star, Image as ImageIcon, Search, Grid, List, Plus, TrendingUp, ChevronDown, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { Journal } from '@/types/journal';
@@ -367,7 +367,7 @@ export default function Home() {
                   <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">{stats.mediaCount}</p>
                 </div>
                 <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
-                  <Image className="w-6 h-6 text-green-600 dark:text-green-400" />
+                  <ImageIcon className="w-6 h-6 text-green-600 dark:text-green-400" />
                 </div>
               </div>
             </div>

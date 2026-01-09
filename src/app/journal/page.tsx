@@ -6,7 +6,7 @@ import { useJournalsStore } from '@/stores/journals-store';
 import { EntryCard } from '@/components/journal/EntryCard';
 import { QuoteOfTheDay } from '@/components/journal/QuoteOfTheDay';
 import { Layout } from '@/components/Layout';
-import { BookOpen, Calendar, Star, Image, Search, Grid, List, Plus, Lightbulb, CalendarDays, FileText, Mic, MapPin, ChevronDown, Settings } from 'lucide-react';
+import { BookOpen, Calendar, Star, Image as ImageIcon, Search, Grid, List, Plus, Lightbulb, CalendarDays, FileText, Mic, MapPin, ChevronDown, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { DEFAULT_PROMPT_PACKS } from '@/types/journal';
 import type { Journal } from '@/lib/db';
@@ -204,7 +204,7 @@ export default function JournalPage() {
                   : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
               }`}
             >
-              <Image size={18} />
+              <ImageIcon size={18} />
               Media
             </button>
             <button
@@ -265,7 +265,7 @@ export default function JournalPage() {
                   <p className="text-3xl font-bold text-gray-900">{stats.mediaCount}</p>
                 </div>
                 <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                  <Image className="text-purple-600" size={24} />
+                  <ImageIcon className="text-purple-600" size={24} />
                 </div>
               </div>
             </div>
@@ -549,7 +549,7 @@ export default function JournalPage() {
               </div>
               <div className="text-center py-16 bg-white rounded-xl border-2 border-gray-100">
                 <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-2xl flex items-center justify-center">
-                  <Image className="text-gray-400" size={40} />
+                  <ImageIcon className="text-gray-400" size={40} />
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">Media Timeline</h3>
                 <p className="text-gray-600 max-w-md mx-auto">
