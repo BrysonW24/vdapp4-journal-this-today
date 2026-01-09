@@ -213,9 +213,10 @@ export default function JournalsPage() {
 
   const handleExportJournalText = (journal: Journal) => {
     // In production, fetch entries for this specific journal
+    const entryCount = entries.filter(e => e.journalId === journal.id).length;
     let textContent = `${journal.name}\n${'='.repeat(journal.name.length)}\n\n`;
     textContent += `Exported: ${new Date().toLocaleString()}\n`;
-    textContent += `Total Entries: ${journal.entryCount}\n\n`;
+    textContent += `Total Entries: ${entryCount}\n\n`;
     // Would add formatted entries here
 
     const blob = new Blob([textContent], { type: 'text/plain' });
@@ -230,9 +231,10 @@ export default function JournalsPage() {
 
   const handleExportJournalMarkdown = (journal: Journal) => {
     // In production, fetch entries for this specific journal
+    const entryCount = entries.filter(e => e.journalId === journal.id).length;
     let mdContent = `# ${journal.name}\n\n`;
     mdContent += `**Exported:** ${new Date().toLocaleString()}\n\n`;
-    mdContent += `**Total Entries:** ${journal.entryCount}\n\n`;
+    mdContent += `**Total Entries:** ${entryCount}\n\n`;
     mdContent += `---\n\n`;
     // Would add formatted entries here
 
@@ -270,9 +272,10 @@ export default function JournalsPage() {
       doc.setFontSize(20);
       doc.text(journal.name, 20, 20);
 
+      const entryCount = entries.filter(e => e.journalId === journal.id).length;
       doc.setFontSize(10);
       doc.text(`Exported: ${new Date().toLocaleString()}`, 20, 30);
-      doc.text(`Total Entries: ${journal.entryCount}`, 20, 36);
+      doc.text(`Total Entries: ${entryCount}`, 20, 36);
 
       // In production, would add entries here
 
