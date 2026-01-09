@@ -16,8 +16,6 @@ export default function JournalPage() {
     entries,
     loadEntries,
     isLoading,
-    searchEntries,
-    getFavorites,
     getOnThisDay,
     getCurrentStreak,
     getDaysJournaled,
