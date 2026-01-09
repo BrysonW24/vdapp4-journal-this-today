@@ -682,78 +682,71 @@ export default function NewEntryPage() {
                 </button>
               </div>
 
-              <div className="relative">
+              <div>
                 <input
                   type="text"
                   placeholder="Search for a city, state, or country..."
                   value={location}
                   onChange={(e) => handleLocationChange(e.target.value)}
                   onFocus={() => setShowLocationSuggestions(true)}
-                  onBlur={() => setTimeout(() => setShowLocationSuggestions(false), 200)}
                   className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
                 />
 
-                {/* Search Results Dropdown */}
-                {showLocationSuggestions && (locationSuggestions.length > 0 || location.length === 0) && (
-                  <div className="absolute z-10 w-full mt-2 bg-white border-2 border-gray-200 rounded-xl shadow-lg max-h-64 overflow-y-auto">
-                    {/* Search Results */}
-                    {locationSuggestions.length > 0 && (
-                      <div className="p-2">
-                        <p className="text-xs font-semibold text-gray-500 px-3 py-2">Search Results</p>
-                        {locationSuggestions.map((suggestion, index) => (
-                          <button
-                            key={index}
-                            type="button"
-                            onClick={() => selectLocation(suggestion.display)}
-                            className="w-full text-left px-3 py-2 hover:bg-blue-50 rounded-lg transition-colors flex items-center gap-2"
-                          >
-                            <MapPin size={14} className="text-gray-400" />
-                            <span className="text-sm text-gray-900">{suggestion.display}</span>
-                          </button>
-                        ))}
-                      </div>
-                    )}
+                {/* Nearby Location Bubbles - Always visible when available */}
+                {nearbySuggestions.length > 0 && location.length === 0 && (
+                  <div className="mt-3">
+                    <p className="text-xs font-medium text-gray-500 mb-2">Nearby Locations</p>
+                    <div className="flex flex-wrap gap-2">
+                      {nearbySuggestions.map((suggestion, index) => (
+                        <button
+                          key={index}
+                          type="button"
+                          onClick={() => selectLocation(suggestion.display)}
+                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                            suggestion.isCurrent
+                              ? 'bg-blue-100 text-blue-700 border-2 border-blue-300 hover:bg-blue-200'
+                              : 'bg-gray-100 text-gray-700 border-2 border-gray-200 hover:bg-gray-200 hover:border-gray-300'
+                          }`}
+                        >
+                          {suggestion.isCurrent ? (
+                            <Navigation size={12} className="text-blue-600" />
+                          ) : (
+                            <MapPin size={12} className="text-gray-500" />
+                          )}
+                          <span>{suggestion.display}</span>
+                          {suggestion.isCurrent && (
+                            <span className="ml-1 text-xs">(Current)</span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
-                    {/* Nearby Suggested Locations */}
-                    {location.length === 0 && nearbySuggestions.length > 0 && (
-                      <div className="p-2 border-t border-gray-200">
-                        <p className="text-xs font-semibold text-gray-500 px-3 py-2">Nearby Locations</p>
-                        {nearbySuggestions.map((suggestion, index) => (
-                          <button
-                            key={index}
-                            type="button"
-                            onClick={() => selectLocation(suggestion.display)}
-                            className="w-full text-left px-3 py-2 hover:bg-blue-50 rounded-lg transition-colors flex items-center gap-2"
-                          >
-                            {suggestion.isCurrent ? (
-                              <Navigation size={14} className="text-blue-500" />
-                            ) : (
-                              <MapPin size={14} className="text-gray-400" />
-                            )}
-                            <span className="text-sm text-gray-900">
-                              {suggestion.display}
-                              {suggestion.isCurrent && (
-                                <span className="ml-2 text-xs text-blue-600 font-medium">(Current)</span>
-                              )}
-                            </span>
-                          </button>
-                        ))}
-                      </div>
-                    )}
+                {/* Search Results Dropdown - Only when typing */}
+                {showLocationSuggestions && locationSuggestions.length > 0 && (
+                  <div className="mt-3">
+                    <p className="text-xs font-medium text-gray-500 mb-2">Search Results</p>
+                    <div className="flex flex-wrap gap-2">
+                      {locationSuggestions.map((suggestion, index) => (
+                        <button
+                          key={index}
+                          type="button"
+                          onClick={() => selectLocation(suggestion.display)}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white rounded-lg text-sm font-medium border-2 border-gray-200 text-gray-700 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 transition-all"
+                        >
+                          <MapPin size={12} className="text-gray-500" />
+                          <span>{suggestion.display}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
-                    {/* No suggestions available */}
-                    {location.length === 0 && nearbySuggestions.length === 0 && !isSearchingLocation && (
-                      <div className="p-4 text-center text-sm text-gray-500">
-                        Type to search for a location
-                      </div>
-                    )}
-
-                    {/* Loading State */}
-                    {isSearchingLocation && (
-                      <div className="p-4 text-center text-sm text-gray-500">
-                        Searching locations...
-                      </div>
-                    )}
+                {/* Loading State */}
+                {isSearchingLocation && (
+                  <div className="mt-3 text-center text-sm text-gray-500">
+                    Searching locations...
                   </div>
                 )}
               </div>
