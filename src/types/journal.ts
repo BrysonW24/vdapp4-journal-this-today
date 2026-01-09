@@ -153,6 +153,19 @@ export const DEFAULT_PROMPT_PACKS: PromptPack[] = [
     ],
   },
   {
+    id: 'stoicism',
+    name: 'Stoicism',
+    icon: '🏛️',
+    description: 'Practice Stoic wisdom',
+    prompts: [
+      { id: 's1', question: 'What is within my control today, and what is not?', isFavorite: false, createdAt: new Date() },
+      { id: 's2', question: 'How can I turn today\'s obstacle into an opportunity?', isFavorite: false, createdAt: new Date() },
+      { id: 's3', question: 'What virtue did I practice today (wisdom, courage, justice, temperance)?', isFavorite: false, createdAt: new Date() },
+      { id: 's4', question: 'If today were my last, would I be content with how I lived it?', isFavorite: false, createdAt: new Date() },
+      { id: 's5', question: 'What negative judgment can I reframe with a more rational perspective?', isFavorite: false, createdAt: new Date() },
+    ],
+  },
+  {
     id: 'look-back-2025',
     name: 'Look Back on 2025',
     icon: '⭐',
