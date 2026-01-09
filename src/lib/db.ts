@@ -13,22 +13,43 @@ export interface Settings {
   value: any;
 }
 
+export interface Journal {
+  id: string;
+  name: string;
+  icon: string;
+  color: string;
+  isDefault: boolean;
+  createdAt: Date;
+}
+
 export class JournalDatabase extends Dexie {
   entries!: Table<JournalEntry>;
   media!: Table<Attachment>;
   categories!: Table<Category>;
   tags!: Table<Tag>;
   settings!: Table<Settings>;
+  journals!: Table<Journal>;
 
   constructor() {
     super('JournalDatabase');
     this.version(1).stores({
       entries:
-        'id, title, createdAt, updatedAt, mood, category, isFavorite, isEncrypted, *tags',
+        'id, title, createdAt, updatedAt, mood, category, isFavorite, isEncrypted, *tags, journalId',
       media: 'id, type, createdAt, filename',
       categories: 'id, name, order',
       tags: 'id, name, count',
       settings: 'key',
+    });
+
+    // Version 2: Add journals table
+    this.version(2).stores({
+      entries:
+        'id, title, createdAt, updatedAt, mood, category, isFavorite, isEncrypted, *tags, journalId',
+      media: 'id, type, createdAt, filename',
+      categories: 'id, name, order',
+      tags: 'id, name, count',
+      settings: 'key',
+      journals: 'id, name, isDefault, createdAt',
     });
   }
 
@@ -38,6 +59,7 @@ export class JournalDatabase extends Dexie {
     await this.categories.clear();
     await this.tags.clear();
     await this.settings.clear();
+    await this.journals.clear();
   }
 
   async getDatabaseSize(): Promise<number> {
@@ -54,6 +76,7 @@ export class JournalDatabase extends Dexie {
     const categories = await this.categories.toArray();
     const tags = await this.tags.toArray();
     const settings = await this.settings.toArray();
+    const journals = await this.journals.toArray();
 
     return {
       entries,
@@ -61,6 +84,7 @@ export class JournalDatabase extends Dexie {
       categories,
       tags,
       settings,
+      journals,
       exportDate: new Date().toISOString(),
     };
   }
@@ -71,6 +95,7 @@ export class JournalDatabase extends Dexie {
     if (data.categories) await this.categories.bulkPut(data.categories);
     if (data.tags) await this.tags.bulkPut(data.tags);
     if (data.settings) await this.settings.bulkPut(data.settings);
+    if (data.journals) await this.journals.bulkPut(data.journals);
   }
 }
 

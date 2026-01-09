@@ -20,15 +20,24 @@ import {
   FileSpreadsheet,
   FileType,
   X,
+  ArrowRightLeft,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { Journal, ThemePattern } from '@/types/journal';
+import { ThemePattern } from '@/types/journal';
+import { useJournalsStore } from '@/stores/journals-store';
+import { useJournalStore } from '@/stores/journal-store';
+import type { Journal } from '@/lib/db';
 
 export default function JournalsPage() {
   const router = useRouter();
-  const [journals, setJournals] = useState<Journal[]>([]);
+  const { journals, loadJournals, addJournal, updateJournal, deleteJournal, transferEntries } = useJournalsStore();
+  const { entries } = useJournalStore();
+
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingJournal, setEditingJournal] = useState<Journal | null>(null);
+  const [showTransferModal, setShowTransferModal] = useState(false);
+  const [transferFrom, setTransferFrom] = useState<Journal | null>(null);
+  const [transferTo, setTransferTo] = useState<string>('');
   const [journalWithSettingsOpen, setJournalWithSettingsOpen] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: '',
@@ -62,108 +71,83 @@ export default function JournalsPage() {
 
   useEffect(() => {
     loadJournals();
-  }, []);
+  }, [loadJournals]);
 
-  const loadJournals = async () => {
-    // Load journals from IndexedDB or API
-    // For now, using mock data
-    const mockJournals: Journal[] = [
-      {
-        id: '1',
-        name: 'Personal',
-        color: '#3B82F6',
-        icon: '📔',
-        isDefault: true,
-        entryCount: 42,
-        createdAt: new Date('2024-01-01'),
-        lastUsedAt: new Date(),
-        theme: 'gradient',
-      },
-      {
-        id: '2',
-        name: 'Work',
-        color: '#8B5CF6',
-        icon: '💼',
-        isDefault: false,
-        entryCount: 18,
-        createdAt: new Date('2024-02-01'),
-        lastUsedAt: new Date('2024-12-20'),
-        theme: 'grid',
-      },
-      {
-        id: '3',
-        name: 'Travel',
-        color: '#10B981',
-        icon: '🌍',
-        isDefault: false,
-        entryCount: 7,
-        createdAt: new Date('2024-03-01'),
-        lastUsedAt: new Date('2024-11-15'),
-        theme: 'dots',
-      },
-    ];
-    setJournals(mockJournals);
-  };
-
-  const handleCreateJournal = () => {
+  const handleCreateJournal = async () => {
     if (!formData.name.trim()) {
       toast.error('Please enter a journal name');
       return;
     }
 
-    const newJournal: Journal = {
-      id: Date.now().toString(),
-      name: formData.name,
-      color: formData.color,
-      icon: formData.icon,
-      isDefault: journals.length === 0,
-      entryCount: 0,
-      createdAt: new Date(),
-      theme: formData.theme,
-    };
+    try {
+      await addJournal({
+        name: formData.name,
+        color: formData.color,
+        icon: formData.icon,
+        isDefault: journals.length === 0,
+      });
 
-    setJournals([...journals, newJournal]);
-    setShowCreateModal(false);
-    setFormData({ name: '', color: '#3B82F6', icon: '📔', theme: 'gradient' });
-    toast.success(`Journal "${formData.name}" created!`);
+      setShowCreateModal(false);
+      setFormData({ name: '', color: '#3B82F6', icon: '📔', theme: 'gradient' });
+      toast.success(`Journal "${formData.name}" created!`);
+    } catch (error) {
+      console.error('Failed to create journal:', error);
+      toast.error('Failed to create journal');
+    }
   };
 
-  const handleUpdateJournal = () => {
+  const handleUpdateJournal = async () => {
     if (!editingJournal || !formData.name.trim()) {
       toast.error('Please enter a journal name');
       return;
     }
 
-    setJournals(journals.map(j =>
-      j.id === editingJournal.id
-        ? { ...j, name: formData.name, color: formData.color, icon: formData.icon, theme: formData.theme }
-        : j
-    ));
-    setEditingJournal(null);
-    setFormData({ name: '', color: '#3B82F6', icon: '📔', theme: 'gradient' });
-    toast.success('Journal updated!');
+    try {
+      await updateJournal(editingJournal.id, {
+        name: formData.name,
+        color: formData.color,
+        icon: formData.icon,
+      });
+
+      setEditingJournal(null);
+      setFormData({ name: '', color: '#3B82F6', icon: '📔', theme: 'gradient' });
+      toast.success('Journal updated!');
+    } catch (error) {
+      console.error('Failed to update journal:', error);
+      toast.error('Failed to update journal');
+    }
   };
 
-  const handleDeleteJournal = (journal: Journal) => {
+  const handleDeleteJournal = async (journal: Journal) => {
     if (journal.isDefault) {
       toast.error('Cannot delete the default journal');
       return;
     }
 
-    if (!window.confirm(`Delete "${journal.name}"? This will not delete your entries.`)) {
+    if (!window.confirm(`Delete "${journal.name}"? This will also delete all entries in this journal.`)) {
       return;
     }
 
-    setJournals(journals.filter(j => j.id !== journal.id));
-    toast.success('Journal deleted');
+    try {
+      await deleteJournal(journal.id);
+      toast.success('Journal and all its entries deleted');
+    } catch (error) {
+      console.error('Failed to delete journal:', error);
+      toast.error(error instanceof Error ? error.message : 'Failed to delete journal');
+    }
   };
 
-  const handleSetDefault = (journal: Journal) => {
-    setJournals(journals.map(j => ({
-      ...j,
-      isDefault: j.id === journal.id,
-    })));
-    toast.success(`"${journal.name}" set as default journal`);
+  const handleSetDefault = async (journal: Journal) => {
+    try {
+      // Update all journals - set this one as default and others as not default
+      for (const j of journals) {
+        await updateJournal(j.id, { isDefault: j.id === journal.id });
+      }
+      toast.success(`"${journal.name}" set as default journal`);
+    } catch (error) {
+      console.error('Failed to set default journal:', error);
+      toast.error('Failed to set default journal');
+    }
   };
 
   const startEdit = (journal: Journal) => {
@@ -180,6 +164,46 @@ export default function JournalsPage() {
     setEditingJournal(null);
     setShowCreateModal(false);
     setFormData({ name: '', color: '#3B82F6', icon: '📔', theme: 'gradient' });
+  };
+
+  const handleTransferEntries = async () => {
+    if (!transferFrom || !transferTo) {
+      toast.error('Please select both source and destination journals');
+      return;
+    }
+
+    if (transferFrom.id === transferTo) {
+      toast.error('Cannot transfer to the same journal');
+      return;
+    }
+
+    const toJournal = journals.find(j => j.id === transferTo);
+    if (!toJournal) {
+      toast.error('Destination journal not found');
+      return;
+    }
+
+    const entryCount = entries.filter(e => e.journalId === transferFrom.id).length;
+
+    if (!window.confirm(`Transfer ${entryCount} entries from "${transferFrom.name}" to "${toJournal.name}"?`)) {
+      return;
+    }
+
+    try {
+      await transferEntries(transferFrom.id, transferTo);
+      toast.success(`Transferred ${entryCount} entries to "${toJournal.name}"`);
+      setShowTransferModal(false);
+      setTransferFrom(null);
+      setTransferTo('');
+    } catch (error) {
+      console.error('Failed to transfer entries:', error);
+      toast.error('Failed to transfer entries');
+    }
+  };
+
+  const startTransfer = (journal: Journal) => {
+    setTransferFrom(journal);
+    setShowTransferModal(true);
   };
 
   // Export/Import handlers for specific journal
@@ -346,14 +370,12 @@ export default function JournalsPage() {
                   <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
                     <span className="flex items-center gap-1">
                       <BookOpen size={14} />
-                      {journal.entryCount} entries
+                      {entries.filter(e => e.journalId === journal.id).length} entries
                     </span>
-                    {journal.lastUsedAt && (
-                      <span className="flex items-center gap-1">
-                        <Calendar size={14} />
-                        {new Date(journal.lastUsedAt).toLocaleDateString()}
-                      </span>
-                    )}
+                    <span className="flex items-center gap-1">
+                      <Calendar size={14} />
+                      {new Date(journal.createdAt).toLocaleDateString()}
+                    </span>
                   </div>
                 </div>
 
@@ -390,6 +412,18 @@ export default function JournalsPage() {
                   >
                     <Edit2 size={14} />
                   </button>
+                  {journals.length > 1 && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        startTransfer(journal);
+                      }}
+                      className="px-3 py-2 text-sm bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-lg hover:bg-green-200 dark:hover:bg-green-900/50 transition-colors"
+                      title="Transfer entries"
+                    >
+                      <ArrowRightLeft size={14} />
+                    </button>
+                  )}
                   {!journal.isDefault && (
                     <button
                       onClick={(e) => {
@@ -681,6 +715,98 @@ export default function JournalsPage() {
               </div>
             );
           })()}
+
+          {/* Transfer Entries Modal */}
+          {showTransferModal && transferFrom && (
+            <div
+              className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+              onClick={() => {
+                setShowTransferModal(false);
+                setTransferFrom(null);
+                setTransferTo('');
+              }}
+            >
+              <div
+                className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full overflow-hidden"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Header */}
+                <div className="px-6 pt-6 pb-4 border-b border-gray-200 dark:border-gray-700">
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <ArrowRightLeft size={20} />
+                    Transfer Entries
+                  </h2>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                    Move all entries from "{transferFrom.name}" to another journal
+                  </p>
+                </div>
+
+                {/* Content */}
+                <div className="px-6 py-4">
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Transfer from
+                    </label>
+                    <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                      <div
+                        className="w-10 h-10 rounded-lg flex items-center justify-center text-xl"
+                        style={{ backgroundColor: transferFrom.color + '20' }}
+                      >
+                        {transferFrom.icon}
+                      </div>
+                      <div>
+                        <p className="font-semibold text-gray-900 dark:text-white">{transferFrom.name}</p>
+                        <p className="text-xs text-gray-600 dark:text-gray-400">
+                          {entries.filter(e => e.journalId === transferFrom.id).length} entries
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Transfer to
+                    </label>
+                    <select
+                      value={transferTo}
+                      onChange={(e) => setTransferTo(e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    >
+                      <option value="">Select destination journal...</option>
+                      {journals
+                        .filter(j => j.id !== transferFrom.id)
+                        .map(j => (
+                          <option key={j.id} value={j.id}>
+                            {j.icon} {j.name}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => {
+                        setShowTransferModal(false);
+                        setTransferFrom(null);
+                        setTransferTo('');
+                      }}
+                      className="flex-1 px-4 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleTransferEntries}
+                      disabled={!transferTo}
+                      className="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Transfer
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </Layout>

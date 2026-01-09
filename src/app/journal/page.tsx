@@ -2,12 +2,14 @@
 
 import React, { useEffect, useState } from 'react';
 import { useJournalStore } from '@/stores/journal-store';
+import { useJournalsStore } from '@/stores/journals-store';
 import { EntryCard } from '@/components/journal/EntryCard';
 import { QuoteOfTheDay } from '@/components/journal/QuoteOfTheDay';
 import { Layout } from '@/components/Layout';
 import { BookOpen, Calendar, Star, Image, Search, Grid, List, Plus, Lightbulb, CalendarDays, FileText, Mic, MapPin, ChevronDown, Settings } from 'lucide-react';
 import Link from 'next/link';
-import { DEFAULT_PROMPT_PACKS, Journal } from '@/types/journal';
+import { DEFAULT_PROMPT_PACKS } from '@/types/journal';
+import type { Journal } from '@/lib/db';
 
 export default function JournalPage() {
   const {
@@ -21,70 +23,36 @@ export default function JournalPage() {
     getDaysJournaled,
   } = useJournalStore();
 
+  const { journals, loadJournals, selectedJournalId, selectJournal } = useJournalsStore();
+
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('grid');
   const [filter, setFilter] = useState<'all' | 'favorites'>('all');
   const [activeView, setActiveView] = useState<'list' | 'calendar' | 'media' | 'map'>('list');
   const [showJournalMenu, setShowJournalMenu] = useState(false);
-  const [selectedJournal, setSelectedJournal] = useState<Journal>({
-    id: '1',
-    name: 'Personal',
-    color: '#3B82F6',
-    icon: '📔',
-    isDefault: true,
-    entryCount: 42,
-    createdAt: new Date('2024-01-01'),
-    lastUsedAt: new Date(),
-    theme: 'gradient',
-  });
-
-  // Mock journals - in production, this would come from a store or API
-  const [journals] = useState<Journal[]>([
-    {
-      id: '1',
-      name: 'Personal',
-      color: '#3B82F6',
-      icon: '📔',
-      isDefault: true,
-      entryCount: 42,
-      createdAt: new Date('2024-01-01'),
-      lastUsedAt: new Date(),
-      theme: 'gradient',
-    },
-    {
-      id: '2',
-      name: 'Work',
-      color: '#8B5CF6',
-      icon: '💼',
-      isDefault: false,
-      entryCount: 18,
-      createdAt: new Date('2024-02-01'),
-      lastUsedAt: new Date('2024-12-20'),
-      theme: 'grid',
-    },
-    {
-      id: '3',
-      name: 'Travel',
-      color: '#10B981',
-      icon: '🌍',
-      isDefault: false,
-      entryCount: 7,
-      createdAt: new Date('2024-03-01'),
-      lastUsedAt: new Date('2024-11-15'),
-      theme: 'dots',
-    },
-  ]);
 
   useEffect(() => {
     loadEntries();
-  }, [loadEntries]);
+    loadJournals();
+  }, [loadEntries, loadJournals]);
+
+  // Get the currently selected journal or default to the first one
+  const selectedJournal = journals.find(j => j.id === selectedJournalId) || journals.find(j => j.isDefault) || journals[0];
+
+  // Filter entries by selected journal, then apply other filters
+  const journalFilteredEntries = selectedJournal
+    ? entries.filter(e => e.journalId === selectedJournal.id)
+    : entries;
 
   const displayedEntries =
     filter === 'favorites'
-      ? getFavorites()
+      ? journalFilteredEntries.filter(e => e.isFavorite)
       : searchQuery
-      ? searchEntries(searchQuery)
-      : entries;
+      ? journalFilteredEntries.filter(e =>
+          e.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          e.content.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      : journalFilteredEntries;
 
   const onThisDay = getOnThisDay();
 
@@ -133,12 +101,12 @@ export default function JournalPage() {
               >
                 <div
                   className="w-12 h-12 rounded-xl flex items-center justify-center text-3xl"
-                  style={{ backgroundColor: selectedJournal.color + '20' }}
+                  style={{ backgroundColor: (selectedJournal?.color || '#3B82F6') + '20' }}
                 >
-                  {selectedJournal.icon}
+                  {selectedJournal?.icon || '📔'}
                 </div>
                 <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  {selectedJournal.name}
+                  {selectedJournal?.name || 'Journal'}
                 </h1>
                 <ChevronDown
                   size={28}
@@ -154,11 +122,11 @@ export default function JournalPage() {
                       <button
                         key={journal.id}
                         onClick={() => {
-                          setSelectedJournal(journal);
+                          selectJournal(journal.id);
                           setShowJournalMenu(false);
                         }}
                         className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all ${
-                          journal.id === selectedJournal.id
+                          journal.id === selectedJournal?.id
                             ? 'bg-blue-50 border-2 border-blue-200'
                             : 'hover:bg-gray-50'
                         }`}
@@ -171,7 +139,7 @@ export default function JournalPage() {
                         </div>
                         <div className="flex-1 text-left">
                           <p className="font-semibold text-gray-900">{journal.name}</p>
-                          <p className="text-xs text-gray-500">{journal.entryCount} entries</p>
+                          <p className="text-xs text-gray-500">{entries.filter(e => e.journalId === journal.id).length} entries</p>
                         </div>
                         {journal.isDefault && (
                           <Star size={16} className="text-blue-600" fill="currentColor" />
