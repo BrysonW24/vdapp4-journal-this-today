@@ -28,6 +28,20 @@ export default function NewEntryPage() {
   const [transcript, setTranscript] = useState('');
   const [location, setLocation] = useState('');
   const [isGettingLocation, setIsGettingLocation] = useState(false);
+  const [locationSuggestions, setLocationSuggestions] = useState<any[]>([]);
+  const [isSearchingLocation, setIsSearchingLocation] = useState(false);
+  const [showLocationSuggestions, setShowLocationSuggestions] = useState(false);
+
+  const suggestedLocations = [
+    { name: 'New York, NY, USA', display: 'New York, New York, USA' },
+    { name: 'Los Angeles, CA, USA', display: 'Los Angeles, California, USA' },
+    { name: 'Chicago, IL, USA', display: 'Chicago, Illinois, USA' },
+    { name: 'London, UK', display: 'London, United Kingdom' },
+    { name: 'Paris, France', display: 'Paris, France' },
+    { name: 'Tokyo, Japan', display: 'Tokyo, Japan' },
+    { name: 'Sydney, NSW, Australia', display: 'Sydney, New South Wales, Australia' },
+    { name: 'Toronto, ON, Canada', display: 'Toronto, Ontario, Canada' },
+  ];
 
   const templates = [
     { id: 1, name: 'Daily Reflection', content: '<p>What went well today?</p><p><br></p><p>What could have gone better?</p><p><br></p><p>What am I grateful for?</p>' },
@@ -43,6 +57,61 @@ export default function NewEntryPage() {
     'What lesson did you learn today?',
     'Who inspired you this week?',
   ];
+
+  const searchLocation = async (query: string) => {
+    if (query.length < 3) {
+      setLocationSuggestions([]);
+      return;
+    }
+
+    setIsSearchingLocation(true);
+    try {
+      // Search using Nominatim API - focus on cities, states, and countries
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&addressdetails=1&limit=5&featuretype=settlement`
+      );
+      const data = await response.json();
+
+      // Filter and format results to show suburbs, states, countries
+      const formattedResults = data.map((result: any) => {
+        const parts = [];
+        if (result.address.suburb) parts.push(result.address.suburb);
+        if (result.address.city) parts.push(result.address.city);
+        if (result.address.state) parts.push(result.address.state);
+        if (result.address.country) parts.push(result.address.country);
+
+        return {
+          display: parts.join(', '),
+          name: result.display_name,
+          lat: result.lat,
+          lon: result.lon,
+        };
+      });
+
+      setLocationSuggestions(formattedResults);
+    } catch (error) {
+      console.error('Error searching location:', error);
+      toast.error('Failed to search locations');
+    } finally {
+      setIsSearchingLocation(false);
+    }
+  };
+
+  const handleLocationChange = (value: string) => {
+    setLocation(value);
+    setShowLocationSuggestions(true);
+    if (value.length >= 3) {
+      searchLocation(value);
+    } else {
+      setLocationSuggestions([]);
+    }
+  };
+
+  const selectLocation = (locationName: string) => {
+    setLocation(locationName);
+    setShowLocationSuggestions(false);
+    setLocationSuggestions([]);
+  };
 
   const getCurrentLocation = async () => {
     if (!navigator.geolocation) {
@@ -536,13 +605,67 @@ export default function NewEntryPage() {
                   {isGettingLocation ? 'Getting location...' : 'Use Current Location'}
                 </button>
               </div>
-              <input
-                type="text"
-                placeholder="Enter a location or use current location..."
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-              />
+
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search for a city, state, or country..."
+                  value={location}
+                  onChange={(e) => handleLocationChange(e.target.value)}
+                  onFocus={() => setShowLocationSuggestions(true)}
+                  onBlur={() => setTimeout(() => setShowLocationSuggestions(false), 200)}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                />
+
+                {/* Search Results Dropdown */}
+                {showLocationSuggestions && (locationSuggestions.length > 0 || location.length === 0) && (
+                  <div className="absolute z-10 w-full mt-2 bg-white border-2 border-gray-200 rounded-xl shadow-lg max-h-64 overflow-y-auto">
+                    {/* Search Results */}
+                    {locationSuggestions.length > 0 && (
+                      <div className="p-2">
+                        <p className="text-xs font-semibold text-gray-500 px-3 py-2">Search Results</p>
+                        {locationSuggestions.map((suggestion, index) => (
+                          <button
+                            key={index}
+                            type="button"
+                            onClick={() => selectLocation(suggestion.display)}
+                            className="w-full text-left px-3 py-2 hover:bg-blue-50 rounded-lg transition-colors flex items-center gap-2"
+                          >
+                            <MapPin size={14} className="text-gray-400" />
+                            <span className="text-sm text-gray-900">{suggestion.display}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Suggested Locations */}
+                    {location.length === 0 && (
+                      <div className="p-2 border-t border-gray-200">
+                        <p className="text-xs font-semibold text-gray-500 px-3 py-2">Popular Locations</p>
+                        {suggestedLocations.map((suggestion, index) => (
+                          <button
+                            key={index}
+                            type="button"
+                            onClick={() => selectLocation(suggestion.display)}
+                            className="w-full text-left px-3 py-2 hover:bg-blue-50 rounded-lg transition-colors flex items-center gap-2"
+                          >
+                            <MapPin size={14} className="text-gray-400" />
+                            <span className="text-sm text-gray-900">{suggestion.display}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Loading State */}
+                    {isSearchingLocation && (
+                      <div className="p-4 text-center text-sm text-gray-500">
+                        Searching locations...
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
               <p className="text-xs text-gray-500 mt-2">
                 Add a location to see your entries on the map view
               </p>
