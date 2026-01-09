@@ -37,7 +37,7 @@ export default function JournalPage() {
   }, [loadEntries, loadJournals]);
 
   // Get the currently selected journal or default to the first one
-  const selectedJournal = journals.find(j => j.id === selectedJournalId) || journals.find(j => j.isDefault) || journals[0];
+  const selectedJournal: Journal | undefined = journals.find(j => j.id === selectedJournalId) || journals.find(j => j.isDefault) || journals[0];
 
   // Filter entries by selected journal, then apply other filters
   const journalFilteredEntries = selectedJournal
