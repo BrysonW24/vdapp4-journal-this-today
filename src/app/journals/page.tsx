@@ -23,7 +23,6 @@ import {
   ArrowRightLeft,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { ThemePattern } from '@/types/journal';
 import { useJournalsStore } from '@/stores/journals-store';
 import { useJournalStore } from '@/stores/journal-store';
 import type { Journal } from '@/lib/db';
@@ -43,7 +42,6 @@ export default function JournalsPage() {
     name: '',
     color: '#3B82F6',
     icon: '📔',
-    theme: 'gradient' as ThemePattern,
   });
 
   const iconOptions = ['📔', '📕', '📗', '📘', '📙', '📓', '📒', '✏️', '🖊️', '✍️', '💼', '🎨', '🌍', '❤️', '🎯', '💭'];
@@ -56,17 +54,6 @@ export default function JournalsPage() {
     { name: 'Red', value: '#EF4444' },
     { name: 'Teal', value: '#14B8A6' },
     { name: 'Indigo', value: '#6366F1' },
-  ];
-
-  const themeOptions: { name: string; value: ThemePattern; description: string }[] = [
-    { name: 'Solid', value: 'solid', description: 'Clean single color' },
-    { name: 'Gradient', value: 'gradient', description: 'Smooth color blend' },
-    { name: 'Dots', value: 'dots', description: 'Subtle dot pattern' },
-    { name: 'Grid', value: 'grid', description: 'Minimal grid lines' },
-    { name: 'Waves', value: 'waves', description: 'Flowing wave pattern' },
-    { name: 'Stripes', value: 'stripes', description: 'Diagonal stripes' },
-    { name: 'Paper', value: 'paper', description: 'Classic paper texture' },
-    { name: 'Texture', value: 'texture', description: 'Subtle grain effect' },
   ];
 
   useEffect(() => {
@@ -88,7 +75,7 @@ export default function JournalsPage() {
       });
 
       setShowCreateModal(false);
-      setFormData({ name: '', color: '#3B82F6', icon: '📔', theme: 'gradient' });
+      setFormData({ name: '', color: '#3B82F6', icon: '📔' });
       toast.success(`Journal "${formData.name}" created!`);
     } catch (error) {
       console.error('Failed to create journal:', error);
@@ -110,7 +97,7 @@ export default function JournalsPage() {
       });
 
       setEditingJournal(null);
-      setFormData({ name: '', color: '#3B82F6', icon: '📔', theme: 'gradient' });
+      setFormData({ name: '', color: '#3B82F6', icon: '📔' });
       toast.success('Journal updated!');
     } catch (error) {
       console.error('Failed to update journal:', error);
@@ -156,14 +143,13 @@ export default function JournalsPage() {
       name: journal.name,
       color: journal.color,
       icon: journal.icon || '📔',
-      theme: journal.theme || 'gradient',
     });
   };
 
   const cancelEdit = () => {
     setEditingJournal(null);
     setShowCreateModal(false);
-    setFormData({ name: '', color: '#3B82F6', icon: '📔', theme: 'gradient' });
+    setFormData({ name: '', color: '#3B82F6', icon: '📔' });
   };
 
   const handleTransferEntries = async () => {
@@ -524,34 +510,6 @@ export default function JournalsPage() {
                             )}
                           </div>
                           <p className="text-xs text-gray-600 mt-1 text-center">{color.name}</p>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Theme Selection */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Background Theme
-                    </label>
-                    <div className="grid grid-cols-2 gap-3">
-                      {themeOptions.map((theme) => (
-                        <button
-                          key={theme.value}
-                          onClick={() => setFormData({ ...formData, theme: theme.value })}
-                          className={`p-3 rounded-lg text-left transition-all border-2 ${
-                            formData.theme === theme.value
-                              ? 'border-blue-500 bg-blue-50'
-                              : 'border-gray-200 hover:border-gray-300 bg-white'
-                          }`}
-                        >
-                          <div className="flex items-center justify-between mb-1">
-                            <p className="font-semibold text-gray-900 text-sm">{theme.name}</p>
-                            {formData.theme === theme.value && (
-                              <Check size={16} className="text-blue-600" />
-                            )}
-                          </div>
-                          <p className="text-xs text-gray-600">{theme.description}</p>
                         </button>
                       ))}
                     </div>
