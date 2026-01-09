@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Layout } from '@/components/Layout';
 import { RichTextEditor } from '@/components/editor/RichTextEditor';
@@ -31,7 +31,6 @@ export default function NewEntryPage() {
   const [locationSuggestions, setLocationSuggestions] = useState<any[]>([]);
   const [isSearchingLocation, setIsSearchingLocation] = useState(false);
   const [showLocationSuggestions, setShowLocationSuggestions] = useState(false);
-  const [userCoordinates, setUserCoordinates] = useState<{ lat: number; lon: number } | null>(null);
   const [nearbySuggestions, setNearbySuggestions] = useState<any[]>([]);
   const [hasRequestedLocation, setHasRequestedLocation] = useState(false);
 
@@ -50,36 +49,7 @@ export default function NewEntryPage() {
     'Who inspired you this week?',
   ];
 
-  // Request user's location on component mount to get nearby suggestions
-  useEffect(() => {
-    if (!hasRequestedLocation) {
-      requestUserLocation();
-    }
-  }, [hasRequestedLocation]);
-
-  const requestUserLocation = () => {
-    if (!navigator.geolocation) {
-      return;
-    }
-
-    setHasRequestedLocation(true);
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const coords = {
-          lat: position.coords.latitude,
-          lon: position.coords.longitude,
-        };
-        setUserCoordinates(coords);
-        await fetchNearbySuggestions(coords);
-      },
-      (error) => {
-        console.error('Location permission denied or unavailable:', error);
-        // Silently fail - user can still search manually
-      }
-    );
-  };
-
-  const fetchNearbySuggestions = async (coords: { lat: number; lon: number }) => {
+  const fetchNearbySuggestions = useCallback(async (coords: { lat: number; lon: number }) => {
     try {
       // Use Nominatim reverse geocoding to get current location
       const reverseResponse = await fetch(
@@ -134,7 +104,35 @@ export default function NewEntryPage() {
       console.error('Error fetching nearby locations:', error);
       // Fail silently - user can still search manually
     }
-  };
+  }, []);
+
+  const requestUserLocation = useCallback(() => {
+    if (!navigator.geolocation) {
+      return;
+    }
+
+    setHasRequestedLocation(true);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const coords = {
+          lat: position.coords.latitude,
+          lon: position.coords.longitude,
+        };
+        await fetchNearbySuggestions(coords);
+      },
+      (error) => {
+        console.error('Location permission denied or unavailable:', error);
+        // Silently fail - user can still search manually
+      }
+    );
+  }, [fetchNearbySuggestions]);
+
+  // Request user's location on component mount to get nearby suggestions
+  useEffect(() => {
+    if (!hasRequestedLocation) {
+      requestUserLocation();
+    }
+  }, [hasRequestedLocation, requestUserLocation]);
 
   const searchLocation = async (query: string) => {
     if (query.length < 3) {
