@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Layout } from '@/components/Layout';
 import { RichTextEditor } from '@/components/editor/RichTextEditor';
@@ -31,17 +31,9 @@ export default function NewEntryPage() {
   const [locationSuggestions, setLocationSuggestions] = useState<any[]>([]);
   const [isSearchingLocation, setIsSearchingLocation] = useState(false);
   const [showLocationSuggestions, setShowLocationSuggestions] = useState(false);
-
-  const suggestedLocations = [
-    { name: 'New York, NY, USA', display: 'New York, New York, USA' },
-    { name: 'Los Angeles, CA, USA', display: 'Los Angeles, California, USA' },
-    { name: 'Chicago, IL, USA', display: 'Chicago, Illinois, USA' },
-    { name: 'London, UK', display: 'London, United Kingdom' },
-    { name: 'Paris, France', display: 'Paris, France' },
-    { name: 'Tokyo, Japan', display: 'Tokyo, Japan' },
-    { name: 'Sydney, NSW, Australia', display: 'Sydney, New South Wales, Australia' },
-    { name: 'Toronto, ON, Canada', display: 'Toronto, Ontario, Canada' },
-  ];
+  const [userCoordinates, setUserCoordinates] = useState<{ lat: number; lon: number } | null>(null);
+  const [nearbySuggestions, setNearbySuggestions] = useState<any[]>([]);
+  const [hasRequestedLocation, setHasRequestedLocation] = useState(false);
 
   const templates = [
     { id: 1, name: 'Daily Reflection', content: '<p>What went well today?</p><p><br></p><p>What could have gone better?</p><p><br></p><p>What am I grateful for?</p>' },
@@ -57,6 +49,92 @@ export default function NewEntryPage() {
     'What lesson did you learn today?',
     'Who inspired you this week?',
   ];
+
+  // Request user's location on component mount to get nearby suggestions
+  useEffect(() => {
+    if (!hasRequestedLocation) {
+      requestUserLocation();
+    }
+  }, [hasRequestedLocation]);
+
+  const requestUserLocation = () => {
+    if (!navigator.geolocation) {
+      return;
+    }
+
+    setHasRequestedLocation(true);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const coords = {
+          lat: position.coords.latitude,
+          lon: position.coords.longitude,
+        };
+        setUserCoordinates(coords);
+        await fetchNearbySuggestions(coords);
+      },
+      (error) => {
+        console.error('Location permission denied or unavailable:', error);
+        // Silently fail - user can still search manually
+      }
+    );
+  };
+
+  const fetchNearbySuggestions = async (coords: { lat: number; lon: number }) => {
+    try {
+      // Use Nominatim reverse geocoding to get current location
+      const reverseResponse = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?lat=${coords.lat}&lon=${coords.lon}&format=json&addressdetails=1`
+      );
+      const reverseData = await reverseResponse.json();
+
+      // Search for nearby cities within a radius
+      const nearbyResponse = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=10&featuretype=settlement&viewbox=${coords.lon - 0.5},${coords.lat + 0.5},${coords.lon + 0.5},${coords.lat - 0.5}&bounded=1`
+      );
+      const nearbyData = await nearbyResponse.json();
+
+      // Format nearby locations
+      const formattedNearby = nearbyData
+        .map((result: any) => {
+          const parts = [];
+          if (result.address.suburb) parts.push(result.address.suburb);
+          if (result.address.city) parts.push(result.address.city);
+          if (result.address.state) parts.push(result.address.state);
+          if (result.address.country) parts.push(result.address.country);
+
+          return {
+            display: parts.join(', '),
+            name: result.display_name,
+            lat: result.lat,
+            lon: result.lon,
+          };
+        })
+        .filter((loc: any) => loc.display); // Filter out empty results
+
+      // Add current location as first suggestion
+      const currentLocationParts = [];
+      if (reverseData.address?.suburb) currentLocationParts.push(reverseData.address.suburb);
+      if (reverseData.address?.city) currentLocationParts.push(reverseData.address.city);
+      if (reverseData.address?.state) currentLocationParts.push(reverseData.address.state);
+      if (reverseData.address?.country) currentLocationParts.push(reverseData.address.country);
+
+      const suggestions = [
+        {
+          display: currentLocationParts.join(', ') || 'Current Location',
+          name: reverseData.display_name,
+          lat: coords.lat,
+          lon: coords.lon,
+          isCurrent: true,
+        },
+        ...formattedNearby.slice(0, 7), // Get up to 7 nearby locations
+      ];
+
+      setNearbySuggestions(suggestions);
+    } catch (error) {
+      console.error('Error fetching nearby locations:', error);
+      // Fail silently - user can still search manually
+    }
+  };
 
   const searchLocation = async (query: string) => {
     if (query.length < 3) {
@@ -638,21 +716,37 @@ export default function NewEntryPage() {
                       </div>
                     )}
 
-                    {/* Suggested Locations */}
-                    {location.length === 0 && (
+                    {/* Nearby Suggested Locations */}
+                    {location.length === 0 && nearbySuggestions.length > 0 && (
                       <div className="p-2 border-t border-gray-200">
-                        <p className="text-xs font-semibold text-gray-500 px-3 py-2">Popular Locations</p>
-                        {suggestedLocations.map((suggestion, index) => (
+                        <p className="text-xs font-semibold text-gray-500 px-3 py-2">Nearby Locations</p>
+                        {nearbySuggestions.map((suggestion, index) => (
                           <button
                             key={index}
                             type="button"
                             onClick={() => selectLocation(suggestion.display)}
                             className="w-full text-left px-3 py-2 hover:bg-blue-50 rounded-lg transition-colors flex items-center gap-2"
                           >
-                            <MapPin size={14} className="text-gray-400" />
-                            <span className="text-sm text-gray-900">{suggestion.display}</span>
+                            {suggestion.isCurrent ? (
+                              <Navigation size={14} className="text-blue-500" />
+                            ) : (
+                              <MapPin size={14} className="text-gray-400" />
+                            )}
+                            <span className="text-sm text-gray-900">
+                              {suggestion.display}
+                              {suggestion.isCurrent && (
+                                <span className="ml-2 text-xs text-blue-600 font-medium">(Current)</span>
+                              )}
+                            </span>
                           </button>
                         ))}
+                      </div>
+                    )}
+
+                    {/* No suggestions available */}
+                    {location.length === 0 && nearbySuggestions.length === 0 && !isSearchingLocation && (
+                      <div className="p-4 text-center text-sm text-gray-500">
+                        Type to search for a location
                       </div>
                     )}
 
