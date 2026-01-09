@@ -413,7 +413,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
           </div>
 
           <div className="border-t border-gray-800 mt-8 pt-8 flex justify-between items-center">
-            <p>&copy; 2024 This, Today. All rights reserved.</p>
+            <p>&copy; 2026 This, Today. All rights reserved.</p>
             <div className="flex space-x-6">
               <a href="#" className="hover:text-white transition">
                 Twitter
