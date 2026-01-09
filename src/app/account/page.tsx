@@ -42,6 +42,7 @@ export default function AccountPage() {
       bio: '',
       timezone: 'America/New_York',
       dateFormat: 'MM/DD/YYYY',
+      photoUrl: '',
     };
   });
 
@@ -76,6 +77,32 @@ export default function AccountPage() {
     toast.success('Password change request sent to your email');
   };
 
+  const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Check file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('Photo must be less than 5MB');
+        return;
+      }
+
+      // Check file type
+      if (!file.type.startsWith('image/')) {
+        toast.error('Please select an image file');
+        return;
+      }
+
+      // Convert to base64 and store
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const photoUrl = reader.result as string;
+        setProfile({ ...profile, photoUrl });
+        toast.success('Photo uploaded! Click Save Profile to keep changes.');
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSignOut = async () => {
     await logout();
     toast.success('Signed out successfully');
@@ -105,13 +132,36 @@ export default function AccountPage() {
 
             {/* Profile Picture */}
             <div className="mb-6 flex items-center gap-6">
-              <div className="w-24 h-24 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full flex items-center justify-center text-white text-3xl font-bold">
-                {profile.name.charAt(0).toUpperCase()}
+              {profile.photoUrl ? (
+                <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-gray-200">
+                  <img
+                    src={profile.photoUrl}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ) : (
+                <div className="w-24 h-24 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full flex items-center justify-center text-white text-3xl font-bold">
+                  {profile.name.charAt(0).toUpperCase()}
+                </div>
+              )}
+              <div>
+                <input
+                  type="file"
+                  id="photo-upload"
+                  accept="image/*"
+                  onChange={handlePhotoChange}
+                  className="hidden"
+                />
+                <label
+                  htmlFor="photo-upload"
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
+                >
+                  <Camera size={18} />
+                  Change Photo
+                </label>
+                <p className="text-xs text-gray-500 mt-2">Max 5MB (JPG, PNG, GIF)</p>
               </div>
-              <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                <Camera size={18} />
-                Change Photo
-              </button>
             </div>
 
             <div className="space-y-4">
