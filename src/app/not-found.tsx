@@ -25,9 +25,9 @@ export default function NotFound() {
               </Link>
             </Button>
             <Button variant="outline" asChild className="flex-1">
-              <Link href="/search">
+              <Link href="/journal">
                 <Search className="mr-2 h-4 w-4" />
-                Search
+                My Journal
               </Link>
             </Button>
           </div>
@@ -36,18 +36,18 @@ export default function NotFound() {
             <p className="text-sm font-medium mb-2">Popular Pages:</p>
             <ul className="text-sm text-muted-foreground space-y-1">
               <li>
-                <Link href="/dev/components" className="hover:text-foreground transition-colors">
-                  → Component Showcase
+                <Link href="/journal" className="hover:text-foreground transition-colors">
+                  &rarr; Journal Entries
                 </Link>
               </li>
               <li>
-                <Link href="/dev/dev-menu" className="hover:text-foreground transition-colors">
-                  → Developer Menu
+                <Link href="/calendar" className="hover:text-foreground transition-colors">
+                  &rarr; Calendar
                 </Link>
               </li>
               <li>
-                <Link href="/dev/debug" className="hover:text-foreground transition-colors">
-                  → Debug Console
+                <Link href="/prompts" className="hover:text-foreground transition-colors">
+                  &rarr; Writing Prompts
                 </Link>
               </li>
             </ul>

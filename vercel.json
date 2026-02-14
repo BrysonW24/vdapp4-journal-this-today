@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/journal/:id/edit",
+      "destination": "/journal/_placeholder/edit.html"
+    },
+    {
+      "source": "/journal/:id((?!new|_placeholder).+)",
+      "destination": "/journal/_placeholder.html"
+    }
+  ]
+}
