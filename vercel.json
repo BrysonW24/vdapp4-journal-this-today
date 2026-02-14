@@ -2,11 +2,11 @@
   "rewrites": [
     {
       "source": "/journal/:id/edit",
-      "destination": "/journal/_placeholder/edit.html"
+      "destination": "/journal/_placeholder/edit"
     },
     {
-      "source": "/journal/:id((?!new|_placeholder).+)",
-      "destination": "/journal/_placeholder.html"
+      "source": "/journal/:id",
+      "destination": "/journal/_placeholder"
     }
   ]
 }
