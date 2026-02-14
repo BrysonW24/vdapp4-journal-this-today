@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { Layout } from '@/components/Layout';
 import { useJournalStore } from '@/stores/journal-store';
 import { MOOD_METADATA, type JournalEntry } from '@/types/journal';
@@ -13,17 +13,29 @@ import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 
 export default function EntryDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
+  const pathname = usePathname();
   const { getEntryById, toggleFavorite, deleteEntry } = useJournalStore();
   const [entryId, setEntryId] = useState<string | null>(null);
   const [entry, setEntry] = useState<JournalEntry | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
+  // Extract actual ID from the browser URL pathname instead of params
+  // (params.id may be '_placeholder' due to Vercel rewrites for static export)
   useEffect(() => {
-    params.then((resolvedParams) => {
-      setEntryId(resolvedParams.id);
-      setEntry(getEntryById(resolvedParams.id) || null);
-    });
-  }, [params, getEntryById]);
+    const segments = pathname.split('/');
+    // pathname = /journal/abc123 -> segments = ["", "journal", "abc123"]
+    const urlId = segments[2];
+    if (urlId && urlId !== '_placeholder') {
+      setEntryId(urlId);
+      setEntry(getEntryById(urlId) || null);
+    } else {
+      // Fallback to params if pathname doesn't have a real ID
+      params.then((resolvedParams) => {
+        setEntryId(resolvedParams.id);
+        setEntry(getEntryById(resolvedParams.id) || null);
+      });
+    }
+  }, [pathname, params, getEntryById]);
 
   useEffect(() => {
     if (entryId) {

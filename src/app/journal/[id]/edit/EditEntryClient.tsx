@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { Layout } from '@/components/Layout';
 import { RichTextEditor } from '@/components/editor/RichTextEditor';
 import { MoodPicker } from '@/components/journal/MoodPicker';
@@ -12,6 +12,7 @@ import { toast } from 'sonner';
 
 export default function EditEntryPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
+  const pathname = usePathname();
   const { getEntryById, updateEntry } = useJournalStore();
 
   const [entryId, setEntryId] = useState<string | null>(null);
@@ -24,10 +25,14 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
   const [tagInput, setTagInput] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
-  // Resolve params and load entry
+  // Extract actual ID from the browser URL pathname instead of params
+  // (params.id may be '_placeholder' due to Vercel rewrites for static export)
   useEffect(() => {
-    params.then((resolvedParams) => {
-      const id = resolvedParams.id;
+    const segments = pathname.split('/');
+    // pathname = /journal/abc123/edit -> segments = ["", "journal", "abc123", "edit"]
+    const urlId = segments[2];
+    if (urlId && urlId !== '_placeholder') {
+      const id = urlId;
       setEntryId(id);
       const foundEntry = getEntryById(id);
       if (foundEntry) {
@@ -40,8 +45,25 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
       } else {
         setEntry(null);
       }
-    });
-  }, [params, getEntryById]);
+    } else {
+      // Fallback to params
+      params.then((resolvedParams) => {
+        const id = resolvedParams.id;
+        setEntryId(id);
+        const foundEntry = getEntryById(id);
+        if (foundEntry) {
+          setEntry(foundEntry);
+          setTitle(foundEntry.title);
+          setContent(foundEntry.content);
+          setMood(foundEntry.mood);
+          setTags(foundEntry.tags || []);
+          setCategory(foundEntry.category || '');
+        } else {
+          setEntry(null);
+        }
+      });
+    }
+  }, [pathname, params, getEntryById]);
 
   const handleAddTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && tagInput.trim()) {
