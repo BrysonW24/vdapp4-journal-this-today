@@ -6,7 +6,7 @@ import { useJournalsStore } from '@/stores/journals-store';
 import { EntryCard } from '@/components/journal/EntryCard';
 import { QuoteOfTheDay } from '@/components/journal/QuoteOfTheDay';
 import { Layout } from '@/components/Layout';
-import { BookOpen, Calendar, Star, Image as ImageIcon, Search, Grid, List, Plus, Lightbulb, CalendarDays, FileText, Mic, MapPin, ChevronDown, Settings } from 'lucide-react';
+import { BookOpen, Calendar, Star, Image as ImageIcon, Search, Grid, List, Plus, Lightbulb, CalendarDays, FileText, Mic, ChevronDown, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { DEFAULT_PROMPT_PACKS } from '@/types/journal';
 import type { Journal } from '@/lib/db';
@@ -193,28 +193,6 @@ export default function JournalPage() {
             >
               <Calendar size={18} />
               Calendar
-            </button>
-            <button
-              onClick={() => setActiveView('media')}
-              className={`flex items-center gap-2 px-6 py-2.5 rounded-lg transition-all font-medium ${
-                activeView === 'media'
-                  ? 'bg-gray-900 text-white'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-              }`}
-            >
-              <ImageIcon size={18} />
-              Media
-            </button>
-            <button
-              onClick={() => setActiveView('map')}
-              className={`flex items-center gap-2 px-6 py-2.5 rounded-lg transition-all font-medium ${
-                activeView === 'map'
-                  ? 'bg-gray-900 text-white'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-              }`}
-            >
-              <MapPin size={18} />
-              Map
             </button>
           </div>
 
@@ -535,48 +513,10 @@ export default function JournalPage() {
             </div>
           )}
 
-          {/* Media View */}
-          {activeView === 'media' && (
-            <div>
-              <div className="mb-6 flex gap-2 bg-white rounded-xl p-2 w-fit">
-                <button className="px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-medium">All</button>
-                <button className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg text-sm font-medium">Photo</button>
-                <button className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg text-sm font-medium">Video</button>
-                <button className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg text-sm font-medium">Audio</button>
-                <button className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg text-sm font-medium">PDF</button>
-              </div>
-              <div className="text-center py-16 bg-white rounded-xl border-2 border-gray-100">
-                <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-2xl flex items-center justify-center">
-                  <ImageIcon className="text-gray-400" size={40} />
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Media Timeline</h3>
-                <p className="text-gray-600 max-w-md mx-auto">
-                  Photo, video, audio, and PDF files will appear here when added to your journal.
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* Map View */}
-          {activeView === 'map' && (
-            <div className="text-center py-16 bg-white rounded-xl border-2 border-gray-100">
-              <div className="w-24 h-24 mx-auto mb-6 bg-blue-50 rounded-2xl flex items-center justify-center">
-                <MapPin className="text-blue-600" size={40} />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Map View</h3>
-              <p className="text-gray-600 max-w-md mx-auto mb-6">
-                See your journal entries on a map. Add location to your entries to view them here.
-              </p>
-              <div className="w-full h-96 bg-gray-100 rounded-xl flex items-center justify-center">
-                <p className="text-gray-500">🗺️ Map visualization coming soon</p>
-              </div>
-            </div>
-          )}
-
-          {/* Floating Action Button */}
+          {/* Floating Action Button - hidden on mobile where bottom nav has New button */}
           <Link
             href="/journal/new"
-            className="fixed bottom-8 right-8 w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full shadow-2xl flex items-center justify-center hover:shadow-3xl transition-all hover:scale-110"
+            className="hidden md:flex fixed bottom-8 right-8 w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full shadow-2xl items-center justify-center hover:shadow-3xl transition-all hover:scale-110"
           >
             <Plus size={28} />
           </Link>

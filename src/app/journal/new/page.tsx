@@ -7,7 +7,7 @@ import { RichTextEditor } from '@/components/editor/RichTextEditor';
 import { MoodPicker } from '@/components/journal/MoodPicker';
 import { useJournalStore } from '@/stores/journal-store';
 import { MoodLevel, ContentType } from '@/types/journal';
-import { Save, X, Tag, FolderOpen, Image as ImageIcon, FileText, Lightbulb, Mic, MapPin, Navigation } from 'lucide-react';
+import { Save, X, Tag, FolderOpen, FileText, Lightbulb, Mic, MapPin, Navigation } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function NewEntryPage() {
@@ -238,20 +238,7 @@ export default function NewEntryPage() {
     );
   };
 
-  const handleImageUpload = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.multiple = true;
-    input.onchange = (e: Event) => {
-      const target = e.target as HTMLInputElement;
-      const files = target.files;
-      if (files) {
-        toast.success(`${files.length} image(s) selected (attachment feature coming soon)`);
-      }
-    };
-    input.click();
-  };
+
 
   const stopRecording = () => {
     if (recognition) {
@@ -536,14 +523,6 @@ export default function NewEntryPage() {
 
             {/* Quick Actions */}
             <div className="flex gap-3 py-4 border-y-2 border-gray-200">
-              <button
-                type="button"
-                onClick={handleImageUpload}
-                className="flex flex-col items-center gap-1 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors"
-              >
-                <ImageIcon size={20} className="text-gray-700" />
-                <span className="text-xs text-gray-600">Photos</span>
-              </button>
               <button
                 type="button"
                 onClick={() => setShowTemplates(!showTemplates)}

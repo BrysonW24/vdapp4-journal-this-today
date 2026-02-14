@@ -1,4 +1,4 @@
-import EntryDetailPage from './EntryDetailClient';
+import EditEntryPage from './EditEntryClient';
 
 export const revalidate = 0;
 export const dynamicParams = false;
@@ -8,5 +8,5 @@ export async function generateStaticParams() {
 }
 
 export default function Page({ params }: { params: Promise<{ id: string }> }) {
-  return <EntryDetailPage params={params} />;
+  return <EditEntryPage params={params} />;
 }

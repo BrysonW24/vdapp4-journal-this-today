@@ -2,7 +2,7 @@
   "name": "this-today-journal",
   "version": "1.0.0",
   "private": true,
-  "description": "This, Today - A beautiful Day One-inspired journaling app built with Next.js 15",
+  "description": "This, Today - A beautiful journaling app built with Next.js 15",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -15,6 +15,7 @@
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
     "db:seed": "prisma db seed",
+    "build:mobile": "next build && npx cap sync",
     "sync:capacitor": "npx cap sync"
   },
   "dependencies": {

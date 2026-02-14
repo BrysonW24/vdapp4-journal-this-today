@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Layout } from '@/components/Layout';
 import { useRouter } from 'next/navigation';
 import {
@@ -26,6 +26,7 @@ import { toast } from 'sonner';
 import { useJournalsStore } from '@/stores/journals-store';
 import { useJournalStore } from '@/stores/journal-store';
 import type { Journal } from '@/lib/db';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 
 export default function JournalsPage() {
   const router = useRouter();
@@ -105,24 +106,28 @@ export default function JournalsPage() {
     }
   };
 
+  const [deleteConfirmJournal, setDeleteConfirmJournal] = useState<Journal | null>(null);
+  const [transferConfirmOpen, setTransferConfirmOpen] = useState(false);
+
   const handleDeleteJournal = async (journal: Journal) => {
     if (journal.isDefault) {
       toast.error('Cannot delete the default journal');
       return;
     }
+    setDeleteConfirmJournal(journal);
+  };
 
-    if (!window.confirm(`Delete "${journal.name}"? This will also delete all entries in this journal.`)) {
-      return;
-    }
-
+  const confirmDeleteJournal = useCallback(async () => {
+    if (!deleteConfirmJournal) return;
     try {
-      await deleteJournal(journal.id);
+      await deleteJournal(deleteConfirmJournal.id);
       toast.success('Journal and all its entries deleted');
     } catch (error) {
       console.error('Failed to delete journal:', error);
       toast.error(error instanceof Error ? error.message : 'Failed to delete journal');
     }
-  };
+    setDeleteConfirmJournal(null);
+  }, [deleteConfirmJournal, deleteJournal]);
 
   const handleSetDefault = async (journal: Journal) => {
     try {
@@ -169,11 +174,14 @@ export default function JournalsPage() {
       return;
     }
 
-    const entryCount = entries.filter(e => e.journalId === transferFrom.id).length;
+    setTransferConfirmOpen(true);
+  };
 
-    if (!window.confirm(`Transfer ${entryCount} entries from "${transferFrom.name}" to "${toJournal.name}"?`)) {
-      return;
-    }
+  const confirmTransferEntries = useCallback(async () => {
+    if (!transferFrom || !transferTo) return;
+    const toJournal = journals.find(j => j.id === transferTo);
+    if (!toJournal) return;
+    const entryCount = entries.filter(e => e.journalId === transferFrom.id).length;
 
     try {
       await transferEntries(transferFrom.id, transferTo);
@@ -185,7 +193,8 @@ export default function JournalsPage() {
       console.error('Failed to transfer entries:', error);
       toast.error('Failed to transfer entries');
     }
-  };
+    setTransferConfirmOpen(false);
+  }, [transferFrom, transferTo, journals, entries, transferEntries]);
 
   const startTransfer = (journal: Journal) => {
     setTransferFrom(journal);
@@ -770,6 +779,23 @@ export default function JournalsPage() {
           )}
         </div>
       </div>
+      <ConfirmDialog
+        open={!!deleteConfirmJournal}
+        onOpenChange={(open) => { if (!open) setDeleteConfirmJournal(null); }}
+        title="Delete Journal"
+        description={`Delete "${deleteConfirmJournal?.name}"? This will also delete all entries in this journal.`}
+        confirmLabel="Delete"
+        onConfirm={confirmDeleteJournal}
+        variant="destructive"
+      />
+      <ConfirmDialog
+        open={transferConfirmOpen}
+        onOpenChange={setTransferConfirmOpen}
+        title="Transfer Entries"
+        description={`Transfer entries from "${transferFrom?.name}" to the selected journal?`}
+        confirmLabel="Transfer"
+        onConfirm={confirmTransferEntries}
+      />
     </Layout>
   );
 }

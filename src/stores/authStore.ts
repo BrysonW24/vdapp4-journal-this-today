@@ -10,52 +10,28 @@ interface User {
 interface AuthState {
   isAuthenticated: boolean;
   user: User | null;
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => Promise<void>;
+  login: (name?: string) => void;
+  logout: () => void;
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
-      isAuthenticated: false,
-      user: null,
+      isAuthenticated: true,
+      user: { id: 'local', email: '', name: 'You' },
 
-      login: async (email: string, password: string) => {
-        try {
-          const response = await fetch('/api/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password }),
-          });
-
-          if (!response.ok) {
-            throw new Error('Login failed');
-          }
-
-          const data = await response.json();
-          set({
-            isAuthenticated: true,
-            user: data.user,
-          });
-        } catch (error) {
-          console.error('Login error:', error);
-          throw error;
-        }
+      login: (name?: string) => {
+        set({
+          isAuthenticated: true,
+          user: { id: 'local', email: '', name: name || 'You' },
+        });
       },
 
-      logout: async () => {
-        try {
-          await fetch('/api/auth/logout', {
-            method: 'POST',
-          });
-
-          set({
-            isAuthenticated: false,
-            user: null,
-          });
-        } catch (error) {
-          console.error('Logout error:', error);
-        }
+      logout: () => {
+        set({
+          isAuthenticated: false,
+          user: null,
+        });
       },
     }),
     {

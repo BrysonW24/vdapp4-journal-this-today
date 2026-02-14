@@ -7,8 +7,6 @@ import { useAuthStore } from '@/stores/authStore';
 import {
   User,
   Mail,
-  Key,
-  Shield,
   Bell,
   Moon,
   Globe,
@@ -38,7 +36,7 @@ export default function AccountPage() {
     }
     return {
       name: user?.name || 'Journal User',
-      email: user?.email || 'user@example.com',
+      email: user?.email || '',
       bio: '',
       timezone: 'America/New_York',
       dateFormat: 'MM/DD/YYYY',
@@ -54,11 +52,6 @@ export default function AccountPage() {
     defaultMood: 'neutral',
   });
 
-  const [security, setSecurity] = useState({
-    twoFactorEnabled: false,
-    sessionTimeout: 30,
-  });
-
   const handleProfileUpdate = () => {
     // Save to localStorage so Layout can pick it up
     if (typeof window !== 'undefined') {
@@ -71,10 +64,6 @@ export default function AccountPage() {
 
   const handlePreferencesUpdate = () => {
     toast.success('Preferences saved!');
-  };
-
-  const handlePasswordChange = () => {
-    toast.success('Password change request sent to your email');
   };
 
   const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -343,65 +332,6 @@ export default function AccountPage() {
                 <Save size={20} />
                 Save Preferences
               </button>
-            </div>
-          </div>
-
-          {/* Security Section */}
-          <div className="mb-8 bg-white rounded-xl border-2 border-gray-100 p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-              <Shield size={24} />
-              Security
-            </h2>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  <Key size={16} className="inline mr-2" />
-                  Password
-                </label>
-                <button
-                  onClick={handlePasswordChange}
-                  className="px-6 py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors"
-                >
-                  Change Password
-                </button>
-              </div>
-
-              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-                <div className="flex items-center gap-3">
-                  <Shield size={20} className="text-gray-700" />
-                  <div>
-                    <p className="font-medium text-gray-900">Two-Factor Authentication</p>
-                    <p className="text-sm text-gray-600">Add an extra layer of security</p>
-                  </div>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={security.twoFactorEnabled}
-                    onChange={(e) => setSecurity({ ...security, twoFactorEnabled: e.target.checked })}
-                    className="sr-only peer"
-                  />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                </label>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Session Timeout (minutes)
-                </label>
-                <select
-                  value={security.sessionTimeout}
-                  onChange={(e) => setSecurity({ ...security, sessionTimeout: parseInt(e.target.value) })}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-                >
-                  <option value="15">15 minutes</option>
-                  <option value="30">30 minutes</option>
-                  <option value="60">1 hour</option>
-                  <option value="120">2 hours</option>
-                  <option value="1440">24 hours</option>
-                </select>
-              </div>
             </div>
           </div>
 

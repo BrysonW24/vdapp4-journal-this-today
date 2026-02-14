@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import { useJournalStore } from '@/stores/journal-store';
+import { useJournalsStore } from '@/stores/journals-store';
 import { EntryCard } from '@/components/journal/EntryCard';
 import { QuoteOfTheDay } from '@/components/journal/QuoteOfTheDay';
 import { Layout } from '@/components/Layout';
 import { BookOpen, Calendar, Star, Image as ImageIcon, Search, Grid, List, Plus, TrendingUp, ChevronDown, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { format } from 'date-fns';
-import { Journal } from '@/types/journal';
 
 export default function Home() {
   const {
@@ -21,62 +21,26 @@ export default function Home() {
     getDaysJournaled,
   } = useJournalStore();
 
+  const {
+    journals,
+    loadJournals,
+    selectedJournalId,
+    selectJournal,
+  } = useJournalsStore();
+
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<'all' | 'favorites'>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
   const [showJournalMenu, setShowJournalMenu] = useState(false);
-  const [selectedJournal, setSelectedJournal] = useState<Journal>({
-    id: '1',
-    name: 'Personal',
-    color: '#3B82F6',
-    icon: '📔',
-    isDefault: true,
-    entryCount: 42,
-    createdAt: new Date('2024-01-01'),
-    lastUsedAt: new Date(),
-    theme: 'gradient',
-  });
 
-  // Mock journals - in production, this would come from a store or API
-  const [journals] = useState<Journal[]>([
-    {
-      id: '1',
-      name: 'Personal',
-      color: '#3B82F6',
-      icon: '📔',
-      isDefault: true,
-      entryCount: 42,
-      createdAt: new Date('2024-01-01'),
-      lastUsedAt: new Date(),
-      theme: 'gradient',
-    },
-    {
-      id: '2',
-      name: 'Work',
-      color: '#8B5CF6',
-      icon: '💼',
-      isDefault: false,
-      entryCount: 18,
-      createdAt: new Date('2024-02-01'),
-      lastUsedAt: new Date('2024-12-20'),
-      theme: 'grid',
-    },
-    {
-      id: '3',
-      name: 'Travel',
-      color: '#10B981',
-      icon: '🌍',
-      isDefault: false,
-      entryCount: 7,
-      createdAt: new Date('2024-03-01'),
-      lastUsedAt: new Date('2024-11-15'),
-      theme: 'dots',
-    },
-  ]);
+  const selectedJournal = journals.find((j) => j.id === selectedJournalId) ||
+    journals.find((j) => j.isDefault) ||
+    journals[0] || { id: 'default', name: 'Personal', color: '#3B82F6', icon: '📔', isDefault: true, createdAt: new Date() };
 
   useEffect(() => {
     loadEntries();
-  }, [loadEntries]);
+    loadJournals();
+  }, [loadEntries, loadJournals]);
 
   const filteredEntries = searchQuery
     ? searchEntries(searchQuery)
@@ -106,7 +70,7 @@ export default function Home() {
   // Create dynamic background style based on journal color and theme
   const getBackgroundStyle = () => {
     const rgb = hexToRgb(selectedJournal.color);
-    const theme = selectedJournal.theme || 'gradient';
+    const theme = (selectedJournal as any).theme || 'gradient';
 
     const baseStyles: React.CSSProperties = {
       transition: 'all 0.5s ease',
@@ -258,7 +222,7 @@ export default function Home() {
                         <button
                           key={journal.id}
                           onClick={() => {
-                            setSelectedJournal(journal);
+                            selectJournal(journal.id);
                             setShowJournalMenu(false);
                           }}
                           className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all ${
@@ -275,7 +239,7 @@ export default function Home() {
                           </div>
                           <div className="flex-1 text-left">
                             <p className="font-semibold text-gray-900 dark:text-gray-100">{journal.name}</p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">{journal.entryCount} entries</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">{entries.filter((e) => e.journalId === journal.id).length} entries</p>
                           </div>
                           {journal.isDefault && (
                             <Star size={16} className="text-blue-600 dark:text-blue-400" fill="currentColor" />

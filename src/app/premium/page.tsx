@@ -33,7 +33,7 @@ export default function PremiumPage() {
 
         {/* Heading */}
         <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-3 leading-tight">
-          The very best of Day One.
+          The very best of This, Today.
         </h1>
         <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-12 leading-tight">
           Free for your first month.

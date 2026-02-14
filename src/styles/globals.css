@@ -58,6 +58,23 @@
   }
 }
 
+/* Safe Area Insets for iOS */
+:root {
+  --sat: env(safe-area-inset-top);
+  --sar: env(safe-area-inset-right);
+  --sab: env(safe-area-inset-bottom);
+  --sal: env(safe-area-inset-left);
+}
+
+/* Hide scrollbar for toolbar */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* Global Styles */
 html {
   scroll-behavior: smooth;

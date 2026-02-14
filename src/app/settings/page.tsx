@@ -17,6 +17,7 @@ import {
   Settings as SettingsIcon,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 
 export default function SettingsPage() {
   const { entries, loadEntries, exportToJSON, exportToPlainText, exportToMarkdown, importFromJSON } =
@@ -237,67 +238,11 @@ export default function SettingsPage() {
     }
   };
 
-  const handleImportText = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
 
-    try {
-      const text = await file.text();
-      // Parse plain text - each entry separated by double newlines
-      const entries = text.split('\n\n\n').filter(e => e.trim());
 
-      toast.success(`Found ${entries.length} entries. Import functionality for text files coming soon!`);
-    } catch (_error) {
-      toast.error('Failed to import text file.');
-    }
-  };
-
-  const handleImportMarkdown = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    try {
-      const text = await file.text();
-      // Parse markdown - entries start with # Date
-      const entries = text.split(/^# /m).filter(e => e.trim());
-
-      toast.success(`Found ${entries.length} entries. Import functionality for markdown files coming soon!`);
-    } catch (_error) {
-      toast.error('Failed to import markdown file.');
-    }
-  };
-
-  const handleImportCSV = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    try {
-      const text = await file.text();
-      const lines = text.split('\n').filter(l => l.trim());
-
-      toast.success(`Found ${lines.length - 1} entries. Import functionality for CSV files coming soon!`);
-    } catch (_error) {
-      toast.error('Failed to import CSV file.');
-    }
-  };
+  const [clearDialogOpen, setClearDialogOpen] = useState(false);
 
   const handleClearAll = async () => {
-    if (
-      !window.confirm(
-        'Are you sure you want to delete ALL journal entries? This action cannot be undone!'
-      )
-    ) {
-      return;
-    }
-
-    if (
-      !window.confirm(
-        'This is your final warning. ALL your journal entries will be permanently deleted. Continue?'
-      )
-    ) {
-      return;
-    }
-
     try {
       await db.clearDatabase();
       await loadEntries();
@@ -548,54 +493,6 @@ export default function SettingsPage() {
                   className="hidden"
                 />
               </label>
-
-              <label className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl hover:border-green-400 hover:bg-green-50 transition-all cursor-pointer group">
-                <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center group-hover:bg-green-200 transition-colors">
-                  <FileText className="text-green-600" size={24} />
-                </div>
-                <div className="text-left flex-1">
-                  <p className="font-semibold text-gray-900 text-sm">Import Text</p>
-                  <p className="text-xs text-gray-600">Coming soon</p>
-                </div>
-                <input
-                  type="file"
-                  accept=".txt,text/plain"
-                  onChange={handleImportText}
-                  className="hidden"
-                />
-              </label>
-
-              <label className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl hover:border-purple-400 hover:bg-purple-50 transition-all cursor-pointer group">
-                <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center group-hover:bg-purple-200 transition-colors">
-                  <FileCode className="text-purple-600" size={24} />
-                </div>
-                <div className="text-left flex-1">
-                  <p className="font-semibold text-gray-900 text-sm">Import MD</p>
-                  <p className="text-xs text-gray-600">Coming soon</p>
-                </div>
-                <input
-                  type="file"
-                  accept=".md,.markdown,text/markdown"
-                  onChange={handleImportMarkdown}
-                  className="hidden"
-                />
-              </label>
-
-              <label className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl hover:border-orange-400 hover:bg-orange-50 transition-all cursor-pointer group">
-                <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center group-hover:bg-orange-200 transition-colors">
-                  <FileSpreadsheet className="text-orange-600" size={24} />
-                </div>
-                <div className="text-left flex-1">
-                  <p className="font-semibold text-gray-900 text-sm">Import CSV</p>
-                  <p className="text-xs text-gray-600">Coming soon</p>
-                </div>
-                <input
-                  type="file"
-                  accept=".csv,text/csv"
-                  onChange={handleImportCSV}
-                  className="hidden"
-                />
-              </label>
             </div>
           </div>
 
@@ -607,7 +504,7 @@ export default function SettingsPage() {
             </p>
 
             <button
-              onClick={handleClearAll}
+              onClick={() => setClearDialogOpen(true)}
               className="flex items-center gap-3 px-6 py-3 bg-red-600 text-white rounded-xl font-medium hover:bg-red-700 transition-all"
             >
               <Trash2 size={20} />
@@ -616,6 +513,16 @@ export default function SettingsPage() {
           </div>
         </div>
       </div>
+
+      <ConfirmDialog
+        open={clearDialogOpen}
+        onOpenChange={setClearDialogOpen}
+        title="Delete All Data"
+        description="Are you sure you want to permanently delete ALL journal entries? This action cannot be undone."
+        confirmLabel="Delete Everything"
+        onConfirm={handleClearAll}
+        variant="destructive"
+      />
     </Layout>
   );
 }

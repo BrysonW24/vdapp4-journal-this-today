@@ -12,8 +12,8 @@ export const metadata: Metadata = {
     default: 'This, Today - Your Personal Journal',
     template: '%s | This, Today',
   },
-  description: 'A beautiful Day One-inspired journaling app. Capture your thoughts, track your mood, and cherish your memories.',
-  keywords: ['journal', 'diary', 'journaling', 'mood tracker', 'personal journal', 'digital diary', 'Day One alternative'],
+  description: 'A beautiful journaling app. Capture your thoughts, track your mood, and cherish your memories.',
+  keywords: ['journal', 'diary', 'journaling', 'mood tracker', 'personal journal', 'digital diary'],
   authors: [{ name: 'Bryson Walter', url: 'https://vivacitydigitalapps.com' }],
   creator: 'Vivacity Digital Apps',
   openGraph: {
@@ -21,13 +21,13 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://thistoday.app',
     title: 'This, Today - Your Personal Journal',
-    description: 'A beautiful Day One-inspired journaling app. Capture your thoughts, track your mood, and cherish your memories.',
+    description: 'A beautiful journaling app. Capture your thoughts, track your mood, and cherish your memories.',
     siteName: 'This, Today',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'This, Today - Your Personal Journal',
-    description: 'A beautiful Day One-inspired journaling app. Capture your thoughts, track your mood, and cherish your memories.',
+    description: 'A beautiful journaling app. Capture your thoughts, track your mood, and cherish your memories.',
   },
   robots: {
     index: true,
@@ -36,7 +36,8 @@ export const metadata: Metadata = {
   viewport: {
     width: 'device-width',
     initialScale: 1.0,
-    maximumScale: 5.0,
+    maximumScale: 1.0,
+    viewportFit: 'cover' as any,
   },
   icons: {
     icon: '/favicon.ico',

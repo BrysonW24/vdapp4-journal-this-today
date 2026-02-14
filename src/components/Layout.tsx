@@ -8,6 +8,7 @@ import { Menu, X, Search, Moon, Sun, FileText } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useJournalStore } from '@/stores/journal-store';
 import { format } from 'date-fns';
+import { MobileBottomNav } from '@/components/MobileBottomNav';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -104,7 +105,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow sticky top-0 z-50">
+      <header className="bg-white dark:bg-gray-800 shadow sticky top-0 z-50 pt-[env(safe-area-inset-top)]">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           {/* Mobile Menu Button */}
           <button
@@ -315,115 +316,28 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1">
+      <main className="flex-1 pb-20 md:pb-0">
         <div className="max-w-7xl mx-auto">{children}</div>
       </main>
 
+      {/* Mobile Bottom Navigation */}
+      <MobileBottomNav />
+
       {/* Footer */}
-      <footer className="bg-gray-900 text-gray-300 mt-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {/* Company */}
-            <div>
-              <h3 className="text-white font-semibold mb-4">Company</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="/about" className="hover:text-white transition">
-                    About
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/blog" className="hover:text-white transition">
-                    Blog
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/careers" className="hover:text-white transition">
-                    Careers
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* Product */}
-            <div>
-              <h3 className="text-white font-semibold mb-4">Product</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="/features" className="hover:text-white transition">
-                    Features
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/pricing" className="hover:text-white transition">
-                    Pricing
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/security" className="hover:text-white transition">
-                    Security
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* Resources */}
-            <div>
-              <h3 className="text-white font-semibold mb-4">Resources</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="/docs" className="hover:text-white transition">
-                    Documentation
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/api" className="hover:text-white transition">
-                    API
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/support" className="hover:text-white transition">
-                    Support
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* Legal */}
-            <div>
-              <h3 className="text-white font-semibold mb-4">Legal</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="/privacy" className="hover:text-white transition">
-                    Privacy
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/terms" className="hover:text-white transition">
-                    Terms
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/cookies" className="hover:text-white transition">
-                    Cookies
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-800 mt-8 pt-8 flex justify-between items-center">
-            <p>&copy; 2026 This, Today. All rights reserved.</p>
-            <div className="flex space-x-6">
-              <a href="#" className="hover:text-white transition">
-                Twitter
-              </a>
-              <a href="#" className="hover:text-white transition">
-                GitHub
-              </a>
-              <a href="#" className="hover:text-white transition">
-                LinkedIn
-              </a>
+      <footer className="bg-gray-900 text-gray-300 mt-12 hidden md:block">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p className="text-sm">&copy; 2026 This, Today. All rights reserved.</p>
+            <div className="flex space-x-6 text-sm">
+              <Link href="/privacy" className="hover:text-white transition">
+                Privacy
+              </Link>
+              <Link href="/terms" className="hover:text-white transition">
+                Terms
+              </Link>
+              <Link href="/settings" className="hover:text-white transition">
+                Settings
+              </Link>
             </div>
           </div>
         </div>

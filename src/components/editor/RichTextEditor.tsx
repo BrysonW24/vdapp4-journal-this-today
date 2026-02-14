@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import TextAlign from '@tiptap/extension-text-align';
@@ -23,6 +24,7 @@ import {
   Link2,
   Image as ImageIcon,
 } from 'lucide-react';
+import { InputDialog } from '@/components/ui/input-dialog';
 
 interface RichTextEditorProps {
   content: string;
@@ -31,6 +33,9 @@ interface RichTextEditorProps {
 }
 
 export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
+  const [linkDialogOpen, setLinkDialogOpen] = useState(false);
+  const [imageDialogOpen, setImageDialogOpen] = useState(false);
+
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -50,7 +55,7 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
     },
     editorProps: {
       attributes: {
-        class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none min-h-[400px] px-4 py-4',
+        class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none min-h-[250px] sm:min-h-[400px] px-4 py-4',
       },
     },
   });
@@ -59,182 +64,120 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
     return null;
   }
 
-  const addLink = () => {
-    const url = window.prompt('Enter URL');
-    if (url) {
-      editor.chain().focus().setLink({ href: url }).run();
-    }
+  const addLink = (url: string) => {
+    editor.chain().focus().setLink({ href: url }).run();
   };
 
-  const addImage = () => {
-    const url = window.prompt('Enter image URL');
-    if (url) {
-      editor.chain().focus().setImage({ src: url }).run();
-    }
+  const addImage = (url: string) => {
+    editor.chain().focus().setImage({ src: url }).run();
   };
+
+  const ToolbarButton = ({ onClick, isActive, title, children }: { onClick: () => void; isActive?: boolean; title: string; children: React.ReactNode }) => (
+    <button
+      onClick={onClick}
+      className={`p-3 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex-shrink-0 ${
+        isActive ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-300'
+      }`}
+      title={title}
+    >
+      {children}
+    </button>
+  );
 
   return (
-    <div className="bg-white rounded-xl border-2 border-gray-200 overflow-hidden">
+    <div className="bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-200 dark:border-gray-600 overflow-hidden">
       {/* Toolbar */}
-      <div className="border-b-2 border-gray-200 p-3 flex flex-wrap gap-1 bg-gray-50">
+      <div className="border-b-2 border-gray-200 dark:border-gray-600 p-2 sm:p-3 flex overflow-x-auto gap-0.5 bg-gray-50 dark:bg-gray-700/50 scrollbar-hide">
         {/* Text Formatting */}
-        <button
-          onClick={() => editor.chain().focus().toggleBold().run()}
-          className={`p-2 rounded-lg hover:bg-gray-200 transition-colors ${
-            editor.isActive('bold') ? 'bg-blue-100 text-blue-600' : 'text-gray-700'
-          }`}
-          title="Bold"
-        >
+        <ToolbarButton onClick={() => editor.chain().focus().toggleBold().run()} isActive={editor.isActive('bold')} title="Bold">
           <Bold size={18} />
-        </button>
-        <button
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-          className={`p-2 rounded-lg hover:bg-gray-200 transition-colors ${
-            editor.isActive('italic') ? 'bg-blue-100 text-blue-600' : 'text-gray-700'
-          }`}
-          title="Italic"
-        >
+        </ToolbarButton>
+        <ToolbarButton onClick={() => editor.chain().focus().toggleItalic().run()} isActive={editor.isActive('italic')} title="Italic">
           <Italic size={18} />
-        </button>
-        <button
-          onClick={() => editor.chain().focus().toggleStrike().run()}
-          className={`p-2 rounded-lg hover:bg-gray-200 transition-colors ${
-            editor.isActive('strike') ? 'bg-blue-100 text-blue-600' : 'text-gray-700'
-          }`}
-          title="Strikethrough"
-        >
+        </ToolbarButton>
+        <ToolbarButton onClick={() => editor.chain().focus().toggleStrike().run()} isActive={editor.isActive('strike')} title="Strikethrough">
           <Strikethrough size={18} />
-        </button>
+        </ToolbarButton>
 
-        <div className="w-px h-8 bg-gray-300 mx-1"></div>
+        <div className="w-px h-8 bg-gray-300 dark:bg-gray-500 mx-1 flex-shrink-0 self-center"></div>
 
         {/* Headings */}
-        <button
-          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-          className={`p-2 rounded-lg hover:bg-gray-200 transition-colors ${
-            editor.isActive('heading', { level: 1 }) ? 'bg-blue-100 text-blue-600' : 'text-gray-700'
-          }`}
-          title="Heading 1"
-        >
+        <ToolbarButton onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} isActive={editor.isActive('heading', { level: 1 })} title="Heading 1">
           <Heading1 size={18} />
-        </button>
-        <button
-          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-          className={`p-2 rounded-lg hover:bg-gray-200 transition-colors ${
-            editor.isActive('heading', { level: 2 }) ? 'bg-blue-100 text-blue-600' : 'text-gray-700'
-          }`}
-          title="Heading 2"
-        >
+        </ToolbarButton>
+        <ToolbarButton onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} isActive={editor.isActive('heading', { level: 2 })} title="Heading 2">
           <Heading2 size={18} />
-        </button>
-        <button
-          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-          className={`p-2 rounded-lg hover:bg-gray-200 transition-colors ${
-            editor.isActive('heading', { level: 3 }) ? 'bg-blue-100 text-blue-600' : 'text-gray-700'
-          }`}
-          title="Heading 3"
-        >
+        </ToolbarButton>
+        <ToolbarButton onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} isActive={editor.isActive('heading', { level: 3 })} title="Heading 3">
           <Heading3 size={18} />
-        </button>
+        </ToolbarButton>
 
-        <div className="w-px h-8 bg-gray-300 mx-1"></div>
+        <div className="w-px h-8 bg-gray-300 dark:bg-gray-500 mx-1 flex-shrink-0 self-center"></div>
 
         {/* Lists */}
-        <button
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className={`p-2 rounded-lg hover:bg-gray-200 transition-colors ${
-            editor.isActive('bulletList') ? 'bg-blue-100 text-blue-600' : 'text-gray-700'
-          }`}
-          title="Bullet List"
-        >
+        <ToolbarButton onClick={() => editor.chain().focus().toggleBulletList().run()} isActive={editor.isActive('bulletList')} title="Bullet List">
           <List size={18} />
-        </button>
-        <button
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          className={`p-2 rounded-lg hover:bg-gray-200 transition-colors ${
-            editor.isActive('orderedList') ? 'bg-blue-100 text-blue-600' : 'text-gray-700'
-          }`}
-          title="Numbered List"
-        >
+        </ToolbarButton>
+        <ToolbarButton onClick={() => editor.chain().focus().toggleOrderedList().run()} isActive={editor.isActive('orderedList')} title="Numbered List">
           <ListOrdered size={18} />
-        </button>
+        </ToolbarButton>
 
-        <div className="w-px h-8 bg-gray-300 mx-1"></div>
+        <div className="w-px h-8 bg-gray-300 dark:bg-gray-500 mx-1 flex-shrink-0 self-center"></div>
 
         {/* Alignment */}
-        <button
-          onClick={() => editor.chain().focus().setTextAlign('left').run()}
-          className={`p-2 rounded-lg hover:bg-gray-200 transition-colors ${
-            editor.isActive({ textAlign: 'left' }) ? 'bg-blue-100 text-blue-600' : 'text-gray-700'
-          }`}
-          title="Align Left"
-        >
+        <ToolbarButton onClick={() => editor.chain().focus().setTextAlign('left').run()} isActive={editor.isActive({ textAlign: 'left' })} title="Align Left">
           <AlignLeft size={18} />
-        </button>
-        <button
-          onClick={() => editor.chain().focus().setTextAlign('center').run()}
-          className={`p-2 rounded-lg hover:bg-gray-200 transition-colors ${
-            editor.isActive({ textAlign: 'center' }) ? 'bg-blue-100 text-blue-600' : 'text-gray-700'
-          }`}
-          title="Align Center"
-        >
+        </ToolbarButton>
+        <ToolbarButton onClick={() => editor.chain().focus().setTextAlign('center').run()} isActive={editor.isActive({ textAlign: 'center' })} title="Align Center">
           <AlignCenter size={18} />
-        </button>
-        <button
-          onClick={() => editor.chain().focus().setTextAlign('right').run()}
-          className={`p-2 rounded-lg hover:bg-gray-200 transition-colors ${
-            editor.isActive({ textAlign: 'right' }) ? 'bg-blue-100 text-blue-600' : 'text-gray-700'
-          }`}
-          title="Align Right"
-        >
+        </ToolbarButton>
+        <ToolbarButton onClick={() => editor.chain().focus().setTextAlign('right').run()} isActive={editor.isActive({ textAlign: 'right' })} title="Align Right">
           <AlignRight size={18} />
-        </button>
-        <button
-          onClick={() => editor.chain().focus().setTextAlign('justify').run()}
-          className={`p-2 rounded-lg hover:bg-gray-200 transition-colors ${
-            editor.isActive({ textAlign: 'justify' }) ? 'bg-blue-100 text-blue-600' : 'text-gray-700'
-          }`}
-          title="Justify"
-        >
+        </ToolbarButton>
+        <ToolbarButton onClick={() => editor.chain().focus().setTextAlign('justify').run()} isActive={editor.isActive({ textAlign: 'justify' })} title="Justify">
           <AlignJustify size={18} />
-        </button>
+        </ToolbarButton>
 
-        <div className="w-px h-8 bg-gray-300 mx-1"></div>
+        <div className="w-px h-8 bg-gray-300 dark:bg-gray-500 mx-1 flex-shrink-0 self-center"></div>
 
         {/* Highlight */}
-        <button
-          onClick={() => editor.chain().focus().toggleHighlight().run()}
-          className={`p-2 rounded-lg hover:bg-gray-200 transition-colors ${
-            editor.isActive('highlight') ? 'bg-blue-100 text-blue-600' : 'text-gray-700'
-          }`}
-          title="Highlight"
-        >
+        <ToolbarButton onClick={() => editor.chain().focus().toggleHighlight().run()} isActive={editor.isActive('highlight')} title="Highlight">
           <Highlighter size={18} />
-        </button>
+        </ToolbarButton>
 
         {/* Link */}
-        <button
-          onClick={addLink}
-          className={`p-2 rounded-lg hover:bg-gray-200 transition-colors ${
-            editor.isActive('link') ? 'bg-blue-100 text-blue-600' : 'text-gray-700'
-          }`}
-          title="Add Link"
-        >
+        <ToolbarButton onClick={() => setLinkDialogOpen(true)} isActive={editor.isActive('link')} title="Add Link">
           <Link2 size={18} />
-        </button>
+        </ToolbarButton>
 
         {/* Image */}
-        <button
-          onClick={addImage}
-          className="p-2 rounded-lg hover:bg-gray-200 transition-colors text-gray-700"
-          title="Add Image"
-        >
+        <ToolbarButton onClick={() => setImageDialogOpen(true)} title="Add Image">
           <ImageIcon size={18} />
-        </button>
+        </ToolbarButton>
       </div>
 
       {/* Editor Content */}
       <EditorContent editor={editor} />
+
+      {/* Dialogs */}
+      <InputDialog
+        open={linkDialogOpen}
+        onOpenChange={setLinkDialogOpen}
+        title="Add Link"
+        description="Enter the URL for the link."
+        placeholder="https://example.com"
+        confirmLabel="Add Link"
+        onConfirm={addLink}
+      />
+      <InputDialog
+        open={imageDialogOpen}
+        onOpenChange={setImageDialogOpen}
+        title="Add Image"
+        description="Enter the URL of the image."
+        placeholder="https://example.com/image.jpg"
+        confirmLabel="Add Image"
+        onConfirm={addImage}
+      />
     </div>
   );
 }
