@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { Layout } from '@/components/Layout';
 import { useJournalStore } from '@/stores/journal-store';
+import { db } from '@/lib/db';
 import { MOOD_METADATA, type JournalEntry } from '@/types/journal';
 import { format } from 'date-fns';
 import { ArrowLeft, Star, Edit, Trash2, MapPin, Tag, FolderOpen, Clock } from 'lucide-react';
@@ -14,7 +15,7 @@ import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 export default function EntryDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { getEntryById, toggleFavorite, deleteEntry } = useJournalStore();
+  const { getEntryById, toggleFavorite, deleteEntry, loadEntries } = useJournalStore();
   const [entryId, setEntryId] = useState<string | null>(null);
   const [entry, setEntry] = useState<JournalEntry | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -22,27 +23,40 @@ export default function EntryDetailPage({ params }: { params: Promise<{ id: stri
 
   // Extract actual ID from the browser URL pathname instead of params
   // (params.id may be '_placeholder' due to Vercel rewrites for static export)
+  // Fetch directly from Dexie to avoid store hydration timing issues
   useEffect(() => {
     const segments = pathname.split('/');
     // pathname = /journal/abc123 -> segments = ["", "journal", "abc123"]
     const urlId = segments[2];
-    if (urlId && urlId !== '_placeholder') {
-      setEntryId(urlId);
-      setEntry(getEntryById(urlId) || null);
+
+    const fetchEntry = async (id: string) => {
+      setEntryId(id);
+      // Fetch directly from Dexie (IndexedDB) instead of the Zustand store
+      // which may not have loaded entries yet
+      const foundEntry = await db.entries.get(id);
+      setEntry(foundEntry || null);
       setIsLoading(false);
+      // Also load entries into the store for subsequent operations (toggle favorite, delete)
+      loadEntries();
+    };
+
+    if (urlId && urlId !== '_placeholder') {
+      fetchEntry(urlId);
     } else {
       // Fallback to params if pathname doesn't have a real ID
       params.then((resolvedParams) => {
-        setEntryId(resolvedParams.id);
-        setEntry(getEntryById(resolvedParams.id) || null);
-        setIsLoading(false);
+        fetchEntry(resolvedParams.id);
       });
     }
-  }, [pathname, params, getEntryById]);
+  }, [pathname, params, loadEntries]);
 
+  // Re-sync entry from store when store updates (e.g., after toggleFavorite)
   useEffect(() => {
     if (entryId) {
-      setEntry(getEntryById(entryId) || null);
+      const storeEntry = getEntryById(entryId);
+      if (storeEntry) {
+        setEntry(storeEntry);
+      }
     }
   }, [entryId, getEntryById]);
 
@@ -88,9 +102,10 @@ export default function EntryDetailPage({ params }: { params: Promise<{ id: stri
 
   const moodData = entry.mood ? MOOD_METADATA[entry.mood] : null;
 
-  const handleToggleFavorite = () => {
-    toggleFavorite(entry.id);
-    setEntry(getEntryById(entry.id) || null);
+  const handleToggleFavorite = async () => {
+    await toggleFavorite(entry.id);
+    const updatedEntry = await db.entries.get(entry.id);
+    if (updatedEntry) setEntry(updatedEntry);
     toast.success(entry.isFavorite ? 'Removed from favorites' : 'Added to favorites');
   };
 

@@ -6,6 +6,7 @@ import { Layout } from '@/components/Layout';
 import { RichTextEditor } from '@/components/editor/RichTextEditor';
 import { MoodPicker } from '@/components/journal/MoodPicker';
 import { useJournalStore } from '@/stores/journal-store';
+import { db } from '@/lib/db';
 import { MoodLevel, type JournalEntry } from '@/types/journal';
 import { Save, X, Tag, FolderOpen, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
@@ -13,7 +14,7 @@ import { toast } from 'sonner';
 export default function EditEntryPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { getEntryById, updateEntry } = useJournalStore();
+  const { updateEntry, loadEntries } = useJournalStore();
 
   const [entryId, setEntryId] = useState<string | null>(null);
   const [entry, setEntry] = useState<JournalEntry | null>(null);
@@ -28,14 +29,17 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
 
   // Extract actual ID from the browser URL pathname instead of params
   // (params.id may be '_placeholder' due to Vercel rewrites for static export)
+  // Fetch directly from Dexie to avoid store hydration timing issues
   useEffect(() => {
     const segments = pathname.split('/');
     // pathname = /journal/abc123/edit -> segments = ["", "journal", "abc123", "edit"]
     const urlId = segments[2];
-    if (urlId && urlId !== '_placeholder') {
-      const id = urlId;
+
+    const fetchEntry = async (id: string) => {
       setEntryId(id);
-      const foundEntry = getEntryById(id);
+      // Fetch directly from Dexie (IndexedDB) instead of the Zustand store
+      // which may not have loaded entries yet
+      const foundEntry = await db.entries.get(id);
       if (foundEntry) {
         setEntry(foundEntry);
         setTitle(foundEntry.title);
@@ -47,26 +51,19 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
         setEntry(null);
       }
       setIsLoading(false);
+      // Also load entries into the store for the updateEntry action
+      loadEntries();
+    };
+
+    if (urlId && urlId !== '_placeholder') {
+      fetchEntry(urlId);
     } else {
       // Fallback to params
       params.then((resolvedParams) => {
-        const id = resolvedParams.id;
-        setEntryId(id);
-        const foundEntry = getEntryById(id);
-        if (foundEntry) {
-          setEntry(foundEntry);
-          setTitle(foundEntry.title);
-          setContent(foundEntry.content);
-          setMood(foundEntry.mood);
-          setTags(foundEntry.tags || []);
-          setCategory(foundEntry.category || '');
-        } else {
-          setEntry(null);
-        }
-        setIsLoading(false);
+        fetchEntry(resolvedParams.id);
       });
     }
-  }, [pathname, params, getEntryById]);
+  }, [pathname, params, loadEntries]);
 
   const handleAddTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && tagInput.trim()) {
