@@ -36,6 +36,7 @@ export function TutorialStep({
           : 'fixed'
       }`}
       style={isCentered ? { zIndex: 70 } : { zIndex: 70, ...style }}
+      onClick={(e) => e.stopPropagation()}
     >
       <div
         className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 w-full animate-tour-slide-up"
