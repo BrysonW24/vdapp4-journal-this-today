@@ -17,6 +17,7 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
 
   const [entryId, setEntryId] = useState<string | null>(null);
   const [entry, setEntry] = useState<JournalEntry | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [mood, setMood] = useState<MoodLevel | undefined>(undefined);
@@ -45,6 +46,7 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
       } else {
         setEntry(null);
       }
+      setIsLoading(false);
     } else {
       // Fallback to params
       params.then((resolvedParams) => {
@@ -61,6 +63,7 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
         } else {
           setEntry(null);
         }
+        setIsLoading(false);
       });
     }
   }, [pathname, params, getEntryById]);
@@ -110,6 +113,24 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
       setIsSaving(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div className="text-center py-12">
+              <div className="animate-pulse space-y-4">
+                <div className="h-8 bg-gray-200 rounded w-1/3 mx-auto"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/4 mx-auto"></div>
+                <div className="h-64 bg-gray-200 rounded mt-8"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   if (!entry) {
     return (
