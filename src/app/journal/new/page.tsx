@@ -21,6 +21,8 @@ export default function NewEntryPage() {
   const [category, setCategory] = useState('');
   const [tagInput, setTagInput] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const [errors, setErrors] = useState<{ title?: string; content?: string }>({});
+  const [touched, setTouched] = useState<{ title?: boolean; content?: boolean }>({});
   const [showTemplates, setShowTemplates] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
@@ -355,14 +357,35 @@ export default function NewEntryPage() {
     setTags(tags.filter((tag) => tag !== tagToRemove));
   };
 
-  const handleSave = async () => {
-    if (!title.trim()) {
-      toast.error('Please add a title to your entry');
-      return;
+  // Inline validation
+  const validate = useCallback(() => {
+    const newErrors: { title?: string; content?: string } = {};
+    if (touched.title && !title.trim()) {
+      newErrors.title = 'Title is required';
     }
+    const strippedContent = content.replace(/<[^>]*>/g, '').trim();
+    if (touched.content && !strippedContent) {
+      newErrors.content = 'Content is required';
+    }
+    setErrors(newErrors);
+    return newErrors;
+  }, [title, content, touched]);
 
-    if (!content.trim()) {
-      toast.error('Please write some content');
+  // Run validation when fields change
+  useEffect(() => {
+    validate();
+  }, [validate]);
+
+  const handleSave = async () => {
+    // Mark all fields as touched
+    setTouched({ title: true, content: true });
+    const strippedContent = content.replace(/<[^>]*>/g, '').trim();
+    if (!title.trim() || !strippedContent) {
+      const newErrors: { title?: string; content?: string } = {};
+      if (!title.trim()) newErrors.title = 'Title is required';
+      if (!strippedContent) newErrors.content = 'Content is required';
+      setErrors(newErrors);
+      toast.error('Please fill in all required fields');
       return;
     }
 
@@ -454,8 +477,17 @@ export default function NewEntryPage() {
                 placeholder="Give your entry a title..."
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full text-3xl font-bold border-none focus:outline-none focus:ring-0 bg-transparent text-gray-900 placeholder-gray-400"
+                onBlur={() => setTouched((prev) => ({ ...prev, title: true }))}
+                className={`w-full text-3xl font-bold border-b-2 focus:outline-none focus:ring-0 bg-transparent text-gray-900 placeholder-gray-400 pb-2 transition-colors ${
+                  errors.title ? 'border-red-400' : 'border-transparent focus:border-blue-400'
+                }`}
               />
+              {errors.title && (
+                <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                  <span className="inline-block w-1 h-1 bg-red-500 rounded-full" />
+                  {errors.title}
+                </p>
+              )}
             </div>
 
             {/* Mood Picker */}
@@ -740,11 +772,22 @@ export default function NewEntryPage() {
               <label className="block text-sm font-medium text-gray-700 mb-3">
                 Write your thoughts...
               </label>
-              <RichTextEditor
-                content={content}
-                onChange={setContent}
-                placeholder="What's on your mind today?"
-              />
+              <div
+                className={`rounded-xl transition-all ${errors.content ? 'ring-2 ring-red-400' : ''}`}
+                onBlur={() => setTouched((prev) => ({ ...prev, content: true }))}
+              >
+                <RichTextEditor
+                  content={content}
+                  onChange={setContent}
+                  placeholder="What's on your mind today?"
+                />
+              </div>
+              {errors.content && (
+                <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                  <span className="inline-block w-1 h-1 bg-red-500 rounded-full" />
+                  {errors.content}
+                </p>
+              )}
             </div>
 
             {/* Word Count */}

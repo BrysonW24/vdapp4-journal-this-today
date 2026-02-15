@@ -18,7 +18,9 @@ import {
   FileType,
   Settings as SettingsIcon,
   GraduationCap,
+  HelpCircle,
 } from 'lucide-react';
+import Link from 'next/link';
 import { toast } from 'sonner';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 
@@ -262,139 +264,139 @@ export default function SettingsPage() {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           {/* Header */}
           <div className="mb-12">
             <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
               Settings
             </h1>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-gray-600 dark:text-gray-400">
               Manage your journal data and preferences
             </p>
           </div>
 
           {/* Statistics */}
-          <div className="mb-12 bg-white rounded-xl border-2 border-gray-100 p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Statistics</h2>
+          <div className="mb-12 bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-100 dark:border-gray-700 p-8">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Statistics</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
                   <BookOpen className="text-blue-600" size={24} />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Total Entries</p>
-                  <p className="text-2xl font-bold text-gray-900">{entries.length}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Total Entries</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{entries.length}</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-xl flex items-center justify-center">
                   <Star className="text-yellow-600" size={24} />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Favorites</p>
-                  <p className="text-2xl font-bold text-gray-900">{favoriteCount}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Favorites</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{favoriteCount}</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center">
                   <Database className="text-purple-600" size={24} />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Database Size</p>
-                  <p className="text-2xl font-bold text-gray-900">{formatBytes(dbSize)}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Database Size</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{formatBytes(dbSize)}</p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Export Data */}
-          <div className="mb-12 bg-white rounded-xl border-2 border-gray-100 p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Export Data</h2>
-            <p className="text-gray-600 mb-6">
+          <div className="mb-12 bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-100 dark:border-gray-700 p-8">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Export Data</h2>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
               Download your journal entries in various formats
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
               <button
                 onClick={handleExportJSON}
-                className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl hover:border-blue-400 hover:bg-blue-50 transition-all group"
+                className="flex items-center gap-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-xl hover:border-blue-400 hover:bg-blue-50 dark:hover:border-blue-500 dark:hover:bg-blue-900/20 transition-all group"
               >
-                <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center group-hover:bg-blue-200 dark:group-hover:bg-blue-900/50 transition-colors">
                   <FileJson className="text-blue-600" size={24} />
                 </div>
                 <div className="text-left">
-                  <p className="font-semibold text-gray-900">JSON</p>
-                  <p className="text-sm text-gray-600">Full backup</p>
+                  <p className="font-semibold text-gray-900 dark:text-gray-100">JSON</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Full backup</p>
                 </div>
               </button>
 
               <button
                 onClick={handleExportPlainText}
-                className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl hover:border-green-400 hover:bg-green-50 transition-all group"
+                className="flex items-center gap-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-xl hover:border-green-400 hover:bg-green-50 dark:hover:border-green-500 dark:hover:bg-green-900/20 transition-all group"
               >
-                <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center group-hover:bg-green-200 transition-colors">
+                <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center group-hover:bg-green-200 dark:group-hover:bg-green-900/50 transition-colors">
                   <FileText className="text-green-600" size={24} />
                 </div>
                 <div className="text-left">
-                  <p className="font-semibold text-gray-900">Plain Text</p>
-                  <p className="text-sm text-gray-600">Simple format</p>
+                  <p className="font-semibold text-gray-900 dark:text-gray-100">Plain Text</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Simple format</p>
                 </div>
               </button>
 
               <button
                 onClick={handleExportMarkdown}
-                className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl hover:border-purple-400 hover:bg-purple-50 transition-all group"
+                className="flex items-center gap-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-xl hover:border-purple-400 hover:bg-purple-50 dark:hover:border-purple-500 dark:hover:bg-purple-900/20 transition-all group"
               >
-                <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center group-hover:bg-purple-200 transition-colors">
+                <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center group-hover:bg-purple-200 dark:group-hover:bg-purple-900/50 transition-colors">
                   <FileCode className="text-purple-600" size={24} />
                 </div>
                 <div className="text-left">
-                  <p className="font-semibold text-gray-900">Markdown</p>
-                  <p className="text-sm text-gray-600">Formatted</p>
+                  <p className="font-semibold text-gray-900 dark:text-gray-100">Markdown</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Formatted</p>
                 </div>
               </button>
 
               <button
                 onClick={handleExportCSV}
-                className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl hover:border-orange-400 hover:bg-orange-50 transition-all group"
+                className="flex items-center gap-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-xl hover:border-orange-400 hover:bg-orange-50 dark:hover:border-orange-500 dark:hover:bg-orange-900/20 transition-all group"
               >
-                <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center group-hover:bg-orange-200 transition-colors">
+                <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center group-hover:bg-orange-200 dark:group-hover:bg-orange-900/50 transition-colors">
                   <FileSpreadsheet className="text-orange-600" size={24} />
                 </div>
                 <div className="text-left">
-                  <p className="font-semibold text-gray-900">CSV</p>
-                  <p className="text-sm text-gray-600">Spreadsheet</p>
+                  <p className="font-semibold text-gray-900 dark:text-gray-100">CSV</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Spreadsheet</p>
                 </div>
               </button>
 
               <button
                 onClick={handleExportPDF}
-                className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl hover:border-red-400 hover:bg-red-50 transition-all group"
+                className="flex items-center gap-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-xl hover:border-red-400 hover:bg-red-50 dark:hover:border-red-500 dark:hover:bg-red-900/20 transition-all group"
               >
-                <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center group-hover:bg-red-200 transition-colors">
+                <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center group-hover:bg-red-200 dark:group-hover:bg-red-900/50 transition-colors">
                   <FileType className="text-red-600" size={24} />
                 </div>
                 <div className="text-left">
-                  <p className="font-semibold text-gray-900">PDF</p>
-                  <p className="text-sm text-gray-600">Print ready</p>
+                  <p className="font-semibold text-gray-900 dark:text-gray-100">PDF</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Print ready</p>
                 </div>
               </button>
             </div>
 
             {/* PDF Settings Panel */}
             {showPDFSettings && (
-              <div className="bg-red-50 border-2 border-red-200 rounded-xl p-6 mb-6">
+              <div className="bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-xl p-6 mb-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
                     <SettingsIcon size={20} />
                     PDF Export Settings
                   </h3>
                   <button
                     onClick={() => setShowPDFSettings(false)}
-                    className="text-gray-600 hover:text-gray-900"
+                    className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
                   >
                     ✕
                   </button>
@@ -402,13 +404,13 @@ export default function SettingsPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Page Size
                     </label>
                     <select
                       value={pdfSettings.pageSize}
                       onChange={(e) => setPdfSettings({ ...pdfSettings, pageSize: e.target.value })}
-                      className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-red-500 focus:ring-2 focus:ring-red-200"
+                      className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:border-red-500 focus:ring-2 focus:ring-red-200"
                     >
                       <option value="a4">A4</option>
                       <option value="letter">Letter</option>
@@ -417,13 +419,13 @@ export default function SettingsPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Font Size
                     </label>
                     <select
                       value={pdfSettings.fontSize}
                       onChange={(e) => setPdfSettings({ ...pdfSettings, fontSize: parseInt(e.target.value) })}
-                      className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-red-500 focus:ring-2 focus:ring-red-200"
+                      className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:border-red-500 focus:ring-2 focus:ring-red-200"
                     >
                       <option value="10">10pt</option>
                       <option value="12">12pt</option>
@@ -441,7 +443,7 @@ export default function SettingsPage() {
                       onChange={(e) => setPdfSettings({ ...pdfSettings, includeMood: e.target.checked })}
                       className="w-5 h-5 text-red-600 border-gray-300 rounded focus:ring-red-500"
                     />
-                    <span className="text-sm text-gray-700">Include mood indicators</span>
+                    <span className="text-sm text-gray-700 dark:text-gray-300">Include mood indicators</span>
                   </label>
 
                   <label className="flex items-center gap-3">
@@ -451,7 +453,7 @@ export default function SettingsPage() {
                       onChange={(e) => setPdfSettings({ ...pdfSettings, includeTags: e.target.checked })}
                       className="w-5 h-5 text-red-600 border-gray-300 rounded focus:ring-red-500"
                     />
-                    <span className="text-sm text-gray-700">Include tags</span>
+                    <span className="text-sm text-gray-700 dark:text-gray-300">Include tags</span>
                   </label>
 
                   <label className="flex items-center gap-3">
@@ -461,7 +463,7 @@ export default function SettingsPage() {
                       onChange={(e) => setPdfSettings({ ...pdfSettings, includeLocation: e.target.checked })}
                       className="w-5 h-5 text-red-600 border-gray-300 rounded focus:ring-red-500"
                     />
-                    <span className="text-sm text-gray-700">Include locations</span>
+                    <span className="text-sm text-gray-700 dark:text-gray-300">Include locations</span>
                   </label>
                 </div>
 
@@ -476,20 +478,20 @@ export default function SettingsPage() {
           </div>
 
           {/* Import Data */}
-          <div className="mb-12 bg-white rounded-xl border-2 border-gray-100 p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Import Data</h2>
-            <p className="text-gray-600 mb-6">
+          <div className="mb-12 bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-100 dark:border-gray-700 p-8">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Import Data</h2>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
               Import journal entries from backup files in various formats
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <label className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl hover:border-blue-400 hover:bg-blue-50 transition-all cursor-pointer group">
-                <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+              <label className="flex items-center gap-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-xl hover:border-blue-400 hover:bg-blue-50 dark:hover:border-blue-500 dark:hover:bg-blue-900/20 transition-all cursor-pointer group">
+                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center group-hover:bg-blue-200 dark:group-hover:bg-blue-900/50 transition-colors">
                   <FileJson className="text-blue-600" size={24} />
                 </div>
                 <div className="text-left flex-1">
-                  <p className="font-semibold text-gray-900 text-sm">Import JSON</p>
-                  <p className="text-xs text-gray-600">Full restore</p>
+                  <p className="font-semibold text-gray-900 dark:text-gray-100 text-sm">Import JSON</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Full restore</p>
                 </div>
                 <input
                   type="file"
@@ -520,10 +522,26 @@ export default function SettingsPage() {
             </button>
           </div>
 
+          {/* Help & Support */}
+          <div className="mb-12 bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-100 dark:border-gray-700 p-8">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Help & Support</h2>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
+              Find answers to common questions and get help
+            </p>
+
+            <Link
+              href="/help"
+              className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-xl font-medium hover:shadow-lg transition-all hover:-translate-y-0.5 w-fit"
+            >
+              <HelpCircle size={20} />
+              View Help & FAQ
+            </Link>
+          </div>
+
           {/* Danger Zone */}
-          <div className="bg-red-50 rounded-xl border-2 border-red-200 p-8">
-            <h2 className="text-2xl font-bold text-red-900 mb-2">Danger Zone</h2>
-            <p className="text-red-700 mb-6">
+          <div className="bg-red-50 dark:bg-red-900/20 rounded-xl border-2 border-red-200 dark:border-red-800 p-8">
+            <h2 className="text-2xl font-bold text-red-900 dark:text-red-300 mb-2">Danger Zone</h2>
+            <p className="text-red-700 dark:text-red-400 mb-6">
               Permanently delete all your journal data. This action cannot be undone!
             </p>
 

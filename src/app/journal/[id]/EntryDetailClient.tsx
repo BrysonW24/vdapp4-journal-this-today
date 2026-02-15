@@ -63,13 +63,47 @@ export default function EntryDetailPage({ params }: { params: Promise<{ id: stri
   if (isLoading) {
     return (
       <Layout>
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div className="text-center py-12">
-              <div className="animate-pulse space-y-4">
-                <div className="h-8 bg-gray-200 rounded w-1/3 mx-auto"></div>
-                <div className="h-4 bg-gray-200 rounded w-1/4 mx-auto"></div>
-                <div className="h-64 bg-gray-200 rounded mt-8"></div>
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 animate-pulse">
+            {/* Back link skeleton */}
+            <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-32 mb-6" />
+
+            {/* Header skeleton */}
+            <div className="mb-8">
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-4 flex-1">
+                  <div className="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-xl" />
+                  <div className="flex-1">
+                    <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-2/3 mb-3" />
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/3" />
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <div className="w-11 h-11 bg-gray-200 dark:bg-gray-700 rounded-xl" />
+                  <div className="w-11 h-11 bg-gray-200 dark:bg-gray-700 rounded-xl" />
+                  <div className="w-11 h-11 bg-gray-200 dark:bg-gray-700 rounded-xl" />
+                </div>
+              </div>
+            </div>
+
+            {/* Tags skeleton */}
+            <div className="mb-8 flex gap-3">
+              <div className="h-9 bg-gray-200 dark:bg-gray-700 rounded-xl w-24" />
+              <div className="h-9 bg-gray-200 dark:bg-gray-700 rounded-xl w-20" />
+              <div className="h-9 bg-gray-200 dark:bg-gray-700 rounded-xl w-28" />
+            </div>
+
+            {/* Content skeleton */}
+            <div className="bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-100 dark:border-gray-700 p-8">
+              <div className="space-y-3">
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full" />
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-11/12" />
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-4/5" />
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full" />
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6" />
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3" />
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full" />
               </div>
             </div>
           </div>

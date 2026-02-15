@@ -100,21 +100,21 @@ export default function AccountPage() {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           {/* Header */}
           <div className="mb-12">
             <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
               Account Settings
             </h1>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-gray-600 dark:text-gray-400">
               Manage your account and preferences
             </p>
           </div>
 
           {/* Profile Section */}
-          <div className="mb-8 bg-white rounded-xl border-2 border-gray-100 p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+          <div className="mb-8 bg-white rounded-xl border-2 border-gray-100 p-8 dark:bg-gray-800 dark:border-gray-700">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2 dark:text-gray-100">
               <User size={24} />
               Profile Information
             </h2>
@@ -122,7 +122,7 @@ export default function AccountPage() {
             {/* Profile Picture */}
             <div className="mb-6 flex items-center gap-6">
               {profile.photoUrl ? (
-                <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-gray-200">
+                <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-gray-200 dark:border-gray-600">
                   <img
                     src={profile.photoUrl}
                     alt="Profile"
@@ -149,25 +149,25 @@ export default function AccountPage() {
                   <Camera size={18} />
                   Change Photo
                 </label>
-                <p className="text-xs text-gray-500 mt-2">Max 5MB (JPG, PNG, GIF)</p>
+                <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">Max 5MB (JPG, PNG, GIF)</p>
               </div>
             </div>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Full Name
                 </label>
                 <input
                   type="text"
                   value={profile.name}
                   onChange={(e) => setProfile({ ...profile, name: e.target.value })}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder-gray-400"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   <Mail size={16} className="inline mr-2" />
                   Email Address
                 </label>
@@ -175,12 +175,12 @@ export default function AccountPage() {
                   type="email"
                   value={profile.email}
                   onChange={(e) => setProfile({ ...profile, email: e.target.value })}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder-gray-400"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Bio
                 </label>
                 <textarea
@@ -188,20 +188,20 @@ export default function AccountPage() {
                   onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
                   placeholder="Tell us about yourself..."
                   rows={4}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all resize-none"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all resize-none dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder-gray-400"
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     <Globe size={16} className="inline mr-2" />
                     Timezone
                   </label>
                   <select
                     value={profile.timezone}
                     onChange={(e) => setProfile({ ...profile, timezone: e.target.value })}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder-gray-400"
                   >
                     <option value="America/New_York">Eastern Time (ET)</option>
                     <option value="America/Chicago">Central Time (CT)</option>
@@ -215,14 +215,14 @@ export default function AccountPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     <Calendar size={16} className="inline mr-2" />
                     Date Format
                   </label>
                   <select
                     value={profile.dateFormat}
                     onChange={(e) => setProfile({ ...profile, dateFormat: e.target.value })}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder-gray-400"
                   >
                     <option value="MM/DD/YYYY">MM/DD/YYYY (US)</option>
                     <option value="DD/MM/YYYY">DD/MM/YYYY (EU)</option>
@@ -242,19 +242,19 @@ export default function AccountPage() {
           </div>
 
           {/* Preferences Section */}
-          <div className="mb-8 bg-white rounded-xl border-2 border-gray-100 p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+          <div className="mb-8 bg-white rounded-xl border-2 border-gray-100 p-8 dark:bg-gray-800 dark:border-gray-700">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2 dark:text-gray-100">
               <Bell size={24} />
               Preferences
             </h2>
 
             <div className="space-y-6">
-              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+              <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
                 <div className="flex items-center gap-3">
-                  <Moon size={20} className="text-gray-700" />
+                  <Moon size={20} className="text-gray-700 dark:text-gray-300" />
                   <div>
-                    <p className="font-medium text-gray-900">Dark Mode</p>
-                    <p className="text-sm text-gray-600">Enable dark theme</p>
+                    <p className="font-medium text-gray-900 dark:text-gray-100">Dark Mode</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Enable dark theme</p>
                   </div>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
@@ -264,16 +264,16 @@ export default function AccountPage() {
                     onChange={(e) => setPreferences({ ...preferences, darkMode: e.target.checked })}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  <div className="w-11 h-6 bg-gray-200 dark:bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                 </label>
               </div>
 
-              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+              <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
                 <div className="flex items-center gap-3">
-                  <Bell size={20} className="text-gray-700" />
+                  <Bell size={20} className="text-gray-700 dark:text-gray-300" />
                   <div>
-                    <p className="font-medium text-gray-900">Notifications</p>
-                    <p className="text-sm text-gray-600">Receive app notifications</p>
+                    <p className="font-medium text-gray-900 dark:text-gray-100">Notifications</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Receive app notifications</p>
                   </div>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
@@ -283,16 +283,16 @@ export default function AccountPage() {
                     onChange={(e) => setPreferences({ ...preferences, notifications: e.target.checked })}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  <div className="w-11 h-6 bg-gray-200 dark:bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                 </label>
               </div>
 
-              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+              <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
                 <div className="flex items-center gap-3">
-                  <Mail size={20} className="text-gray-700" />
+                  <Mail size={20} className="text-gray-700 dark:text-gray-300" />
                   <div>
-                    <p className="font-medium text-gray-900">Email Digest</p>
-                    <p className="text-sm text-gray-600">Weekly summary emails</p>
+                    <p className="font-medium text-gray-900 dark:text-gray-100">Email Digest</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Weekly summary emails</p>
                   </div>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
@@ -302,16 +302,16 @@ export default function AccountPage() {
                     onChange={(e) => setPreferences({ ...preferences, emailDigest: e.target.checked })}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  <div className="w-11 h-6 bg-gray-200 dark:bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                 </label>
               </div>
 
-              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+              <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
                 <div className="flex items-center gap-3">
-                  <Save size={20} className="text-gray-700" />
+                  <Save size={20} className="text-gray-700 dark:text-gray-300" />
                   <div>
-                    <p className="font-medium text-gray-900">Auto-Save</p>
-                    <p className="text-sm text-gray-600">Automatically save entries</p>
+                    <p className="font-medium text-gray-900 dark:text-gray-100">Auto-Save</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Automatically save entries</p>
                   </div>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
@@ -321,7 +321,7 @@ export default function AccountPage() {
                     onChange={(e) => setPreferences({ ...preferences, autoSave: e.target.checked })}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  <div className="w-11 h-6 bg-gray-200 dark:bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                 </label>
               </div>
 
@@ -336,9 +336,9 @@ export default function AccountPage() {
           </div>
 
           {/* Sign Out */}
-          <div className="bg-gray-50 rounded-xl border-2 border-gray-200 p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Sign Out</h2>
-            <p className="text-gray-600 mb-6">
+          <div className="bg-gray-50 rounded-xl border-2 border-gray-200 p-8 dark:bg-gray-800 dark:border-gray-700">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Sign Out</h2>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
               Sign out of your account on this device
             </p>
 
