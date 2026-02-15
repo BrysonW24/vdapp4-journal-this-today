@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useJournalStore } from '@/stores/journal-store';
 import { useJournalsStore } from '@/stores/journals-store';
 import { EntryCard } from '@/components/journal/EntryCard';
@@ -32,6 +32,21 @@ export default function Home() {
   const [filter, setFilter] = useState<'all' | 'favorites'>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
   const [showJournalMenu, setShowJournalMenu] = useState(false);
+  const journalMenuRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  const handleClickOutside = useCallback((event: MouseEvent) => {
+    if (journalMenuRef.current && !journalMenuRef.current.contains(event.target as Node)) {
+      setShowJournalMenu(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (showJournalMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showJournalMenu, handleClickOutside]);
 
   const selectedJournal = journals.find((j) => j.id === selectedJournalId) ||
     journals.find((j) => j.isDefault) ||
@@ -194,7 +209,7 @@ export default function Home() {
               </div>
 
               {/* Journal Selector */}
-              <div className="relative inline-block">
+              <div className="relative inline-block" ref={journalMenuRef}>
                 <button
                   onClick={() => setShowJournalMenu(!showJournalMenu)}
                   className="flex items-center gap-2 group"
