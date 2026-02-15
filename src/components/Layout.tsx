@@ -159,6 +159,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
             <button
               onClick={() => setSearchOpen(!searchOpen)}
               className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700"
+              data-tour-step="search-button"
             >
               <Search size={20} />
             </button>
@@ -168,6 +169,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
               className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700"
               title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+              data-tour-step="theme-toggle"
             >
               {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
             </button>
@@ -176,6 +178,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
             <Link
               href="/journal/new"
               className="hidden sm:flex px-4 lg:px-6 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-lg transition-all hover:-translate-y-0.5 font-medium text-sm"
+              data-tour-step="new-entry-button"
             >
               + New Entry
             </Link>

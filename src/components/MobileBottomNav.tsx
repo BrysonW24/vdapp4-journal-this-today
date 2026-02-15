@@ -27,6 +27,7 @@ export function MobileBottomNav() {
             <Link
               key={tab.href}
               href={tab.href}
+              {...(tab.href === '/journal/new' ? { 'data-tour-step': 'new-entry-button-mobile' } : {})}
               className={`flex flex-col items-center justify-center gap-1 min-w-[64px] min-h-[44px] px-3 py-2 rounded-lg transition-colors ${
                 isActive
                   ? 'text-blue-600 dark:text-blue-400'

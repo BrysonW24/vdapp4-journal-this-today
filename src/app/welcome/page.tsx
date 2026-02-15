@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { db } from '@/lib/db';
 
 export default function WelcomePage() {
   const router = useRouter();
@@ -40,7 +41,10 @@ export default function WelcomePage() {
         {/* Action Button */}
         <div className="w-full max-w-md space-y-4">
           <button
-            onClick={() => router.push('/journal')}
+            onClick={async () => {
+              await db.settings.put({ key: 'start_onboarding', value: true });
+              router.push('/journal');
+            }}
             className="w-full bg-white/95 backdrop-blur-sm rounded-[1.75rem] py-4 px-6 flex items-center justify-center gap-3 hover:bg-white transition-all shadow-2xl active:scale-[0.98]"
           >
             <span className="text-black font-semibold text-lg">Get Started</span>

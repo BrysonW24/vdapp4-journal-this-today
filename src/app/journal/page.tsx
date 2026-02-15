@@ -10,6 +10,7 @@ import { BookOpen, Calendar, Star, Image as ImageIcon, Search, Grid, List, Plus,
 import Link from 'next/link';
 import { DEFAULT_PROMPT_PACKS } from '@/types/journal';
 import type { Journal } from '@/lib/db';
+import { TutorialOverlay } from '@/components/onboarding/TutorialOverlay';
 
 export default function JournalPage() {
   const {
@@ -107,7 +108,7 @@ export default function JournalPage() {
           {/* Header */}
           <div className="mb-8">
             {/* Journal Selector */}
-            <div className="relative inline-block mb-4" ref={journalMenuRef}>
+            <div className="relative inline-block mb-4" ref={journalMenuRef} data-tour-step="journal-selector">
               <button
                 onClick={() => setShowJournalMenu(!showJournalMenu)}
                 className="flex items-center gap-2 group"
@@ -263,7 +264,7 @@ export default function JournalPage() {
           </div>
 
           {/* Quick Start */}
-          <div className="mb-8 bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-100 dark:border-gray-700 p-6">
+          <div className="mb-8 bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-100 dark:border-gray-700 p-6" data-tour-step="quick-start-section">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Quick Start</h2>
               <Link href="/prompts" className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-500">
@@ -537,6 +538,7 @@ export default function JournalPage() {
           </Link>
         </div>
       </div>
+      <TutorialOverlay />
     </Layout>
   );
 }

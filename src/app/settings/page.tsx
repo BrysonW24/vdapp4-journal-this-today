@@ -1,8 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Layout } from '@/components/Layout';
 import { useJournalStore } from '@/stores/journal-store';
+import { useOnboarding } from '@/hooks/useOnboarding';
 import { db } from '@/lib/db';
 import {
   Trash2,
@@ -15,13 +17,16 @@ import {
   FileSpreadsheet,
   FileType,
   Settings as SettingsIcon,
+  GraduationCap,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 
 export default function SettingsPage() {
+  const router = useRouter();
   const { entries, loadEntries, exportToJSON, exportToPlainText, exportToMarkdown, importFromJSON } =
     useJournalStore();
+  const { resetTour } = useOnboarding();
   const [dbSize, setDbSize] = useState(0);
   const [showPDFSettings, setShowPDFSettings] = useState(false);
   const [pdfSettings, setPdfSettings] = useState({
@@ -494,6 +499,25 @@ export default function SettingsPage() {
                 />
               </label>
             </div>
+          </div>
+
+          {/* Tutorial */}
+          <div className="mb-12 bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-100 dark:border-gray-700 p-8">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Tutorial</h2>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
+              Re-watch the guided tour to learn about key features
+            </p>
+
+            <button
+              onClick={async () => {
+                await resetTour();
+                router.push('/journal');
+              }}
+              className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-medium hover:shadow-lg transition-all hover:-translate-y-0.5"
+            >
+              <GraduationCap size={20} />
+              Replay Tutorial
+            </button>
           </div>
 
           {/* Danger Zone */}
