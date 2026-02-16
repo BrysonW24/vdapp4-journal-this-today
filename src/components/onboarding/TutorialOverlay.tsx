@@ -277,7 +277,7 @@ export function TutorialOverlay() {
         {/* Spotlight border glow around target */}
         {targetRect && (
           <div
-            className="absolute rounded-xl ring-2 ring-blue-400/50 ring-offset-2 ring-offset-transparent animate-pulse pointer-events-none"
+            className="absolute rounded-xl ring-2 ring-zen-sage/50 ring-offset-2 ring-offset-transparent animate-pulse pointer-events-none"
             style={{
               left: targetRect.left - SPOTLIGHT_PADDING,
               top: targetRect.top - SPOTLIGHT_PADDING,

@@ -19,6 +19,8 @@ import {
   Settings as SettingsIcon,
   GraduationCap,
   HelpCircle,
+  ChevronRight,
+  Upload,
 } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
@@ -262,297 +264,275 @@ export default function SettingsPage() {
 
   const favoriteCount = entries.filter((e) => e.isFavorite).length;
 
+  // Reusable iOS-style row component
+  const SettingsRow = ({
+    icon,
+    iconBg,
+    label,
+    value,
+    onClick,
+    chevron = true,
+    className = '',
+    labelClassName = '',
+  }: {
+    icon: React.ReactNode;
+    iconBg: string;
+    label: string;
+    value?: string | React.ReactNode;
+    onClick?: () => void;
+    chevron?: boolean;
+    className?: string;
+    labelClassName?: string;
+  }) => {
+    const Wrapper = onClick ? 'button' : 'div';
+    return (
+      <Wrapper
+        onClick={onClick}
+        className={`flex items-center w-full px-4 py-3 bg-white dark:bg-zen-night-card transition-colors ${onClick ? 'hover:bg-zen-parchment dark:hover:bg-zen-night-surface cursor-pointer' : ''} ${className}`}
+      >
+        <div className={`w-8 h-8 rounded-lg flex items-center justify-center mr-3 flex-shrink-0 ${iconBg}`}>
+          {icon}
+        </div>
+        <span className={`flex-1 text-left text-zen-forest dark:text-zen-parchment text-[15px] ${labelClassName}`}>{label}</span>
+        {value && (
+          <span className="text-zen-stone dark:text-zen-stone text-[15px] mr-2">{value}</span>
+        )}
+        {chevron && (
+          <ChevronRight size={18} className="text-zen-stone/60 flex-shrink-0" />
+        )}
+      </Wrapper>
+    );
+  };
+
+  // Group container
+  const SettingsGroup = ({ children }: { children: React.ReactNode }) => (
+    <div className="rounded-xl overflow-hidden border border-zen-sand dark:border-zen-night-border divide-y divide-zen-sand/60 dark:divide-zen-night-border/60">
+      {children}
+    </div>
+  );
+
+  // Section header
+  const SectionHeader = ({ title }: { title: string }) => (
+    <p className="text-xs font-semibold text-zen-moss dark:text-zen-stone uppercase tracking-wider px-4 pb-2 pt-6 first:pt-0">
+      {title}
+    </p>
+  );
+
   return (
     <Layout>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="min-h-screen bg-zen-cream dark:bg-zen-night">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
           {/* Header */}
-          <div className="mb-12">
-            <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+          <div className="mb-8">
+            <h1 className="text-3xl font-semibold text-zen-forest dark:text-zen-sage-light">
               Settings
             </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-400">
-              Manage your journal data and preferences
-            </p>
           </div>
 
-          {/* Statistics */}
-          <div className="mb-12 bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-100 dark:border-gray-700 p-8">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Statistics</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
-                  <BookOpen className="text-blue-600" size={24} />
-                </div>
+          {/* STATISTICS */}
+          <SectionHeader title="Statistics" />
+          <SettingsGroup>
+            <SettingsRow
+              icon={<BookOpen className="text-zen-sage dark:text-zen-sage-light" size={18} />}
+              iconBg="bg-zen-sage-soft dark:bg-zen-sage/20"
+              label="Total Entries"
+              value={String(entries.length)}
+              chevron={false}
+            />
+            <SettingsRow
+              icon={<Star className="text-zen-clay dark:text-zen-clay" size={18} />}
+              iconBg="bg-zen-clay/20 dark:bg-zen-clay/10"
+              label="Favorites"
+              value={String(favoriteCount)}
+              chevron={false}
+            />
+            <SettingsRow
+              icon={<Database className="text-zen-creek-light dark:text-zen-creek" size={18} />}
+              iconBg="bg-zen-creek/20 dark:bg-zen-creek/10"
+              label="Database Size"
+              value={formatBytes(dbSize)}
+              chevron={false}
+            />
+          </SettingsGroup>
+
+          {/* EXPORT */}
+          <SectionHeader title="Export" />
+          <SettingsGroup>
+            <SettingsRow
+              icon={<FileJson className="text-zen-sage dark:text-zen-sage-light" size={18} />}
+              iconBg="bg-zen-sage-soft dark:bg-zen-sage/20"
+              label="Export as JSON"
+              onClick={handleExportJSON}
+            />
+            <SettingsRow
+              icon={<FileText className="text-zen-sage dark:text-zen-sage-light" size={18} />}
+              iconBg="bg-zen-sage-soft dark:bg-zen-sage/20"
+              label="Export as Plain Text"
+              onClick={handleExportPlainText}
+            />
+            <SettingsRow
+              icon={<FileCode className="text-zen-creek-light dark:text-zen-creek" size={18} />}
+              iconBg="bg-zen-creek/20 dark:bg-zen-creek/10"
+              label="Export as Markdown"
+              onClick={handleExportMarkdown}
+            />
+            <SettingsRow
+              icon={<FileSpreadsheet className="text-zen-clay dark:text-zen-clay" size={18} />}
+              iconBg="bg-zen-clay/20 dark:bg-zen-clay/10"
+              label="Export as CSV"
+              onClick={handleExportCSV}
+            />
+            <SettingsRow
+              icon={<FileType className="text-zen-clay-light dark:text-zen-clay" size={18} />}
+              iconBg="bg-zen-clay/20 dark:bg-zen-clay/10"
+              label="Export as PDF"
+              onClick={handleExportPDF}
+            />
+          </SettingsGroup>
+
+          {/* PDF Settings Panel */}
+          {showPDFSettings && (
+            <div className="mt-3 bg-white dark:bg-zen-night-card border border-zen-sand dark:border-zen-night-border rounded-xl p-5">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-base font-semibold text-zen-forest dark:text-zen-parchment flex items-center gap-2">
+                  <SettingsIcon size={18} />
+                  PDF Export Settings
+                </h3>
+                <button
+                  onClick={() => setShowPDFSettings(false)}
+                  className="text-zen-moss dark:text-zen-stone hover:text-zen-forest dark:hover:text-zen-parchment"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Total Entries</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{entries.length}</p>
+                  <label className="block text-sm font-medium text-zen-moss dark:text-zen-stone mb-1">
+                    Page Size
+                  </label>
+                  <select
+                    value={pdfSettings.pageSize}
+                    onChange={(e) => setPdfSettings({ ...pdfSettings, pageSize: e.target.value })}
+                    className="w-full px-3 py-2 border border-zen-sand dark:border-zen-night-border dark:bg-zen-night-card dark:text-zen-parchment rounded-lg text-sm focus:border-zen-sage focus:ring-2 focus:ring-zen-sage-soft"
+                  >
+                    <option value="a4">A4</option>
+                    <option value="letter">Letter</option>
+                    <option value="legal">Legal</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-zen-moss dark:text-zen-stone mb-1">
+                    Font Size
+                  </label>
+                  <select
+                    value={pdfSettings.fontSize}
+                    onChange={(e) => setPdfSettings({ ...pdfSettings, fontSize: parseInt(e.target.value) })}
+                    className="w-full px-3 py-2 border border-zen-sand dark:border-zen-night-border dark:bg-zen-night-card dark:text-zen-parchment rounded-lg text-sm focus:border-zen-sage focus:ring-2 focus:ring-zen-sage-soft"
+                  >
+                    <option value="10">10pt</option>
+                    <option value="12">12pt</option>
+                    <option value="14">14pt</option>
+                    <option value="16">16pt</option>
+                  </select>
                 </div>
               </div>
 
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-xl flex items-center justify-center">
-                  <Star className="text-yellow-600" size={24} />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Favorites</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{favoriteCount}</p>
-                </div>
+              <div className="space-y-2 mb-4">
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={pdfSettings.includeMood}
+                    onChange={(e) => setPdfSettings({ ...pdfSettings, includeMood: e.target.checked })}
+                    className="w-4 h-4 text-zen-sage border-zen-sand rounded focus:ring-zen-sage"
+                  />
+                  <span className="text-sm text-zen-moss dark:text-zen-stone">Include mood indicators</span>
+                </label>
+
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={pdfSettings.includeTags}
+                    onChange={(e) => setPdfSettings({ ...pdfSettings, includeTags: e.target.checked })}
+                    className="w-4 h-4 text-zen-sage border-zen-sand rounded focus:ring-zen-sage"
+                  />
+                  <span className="text-sm text-zen-moss dark:text-zen-stone">Include tags</span>
+                </label>
+
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={pdfSettings.includeLocation}
+                    onChange={(e) => setPdfSettings({ ...pdfSettings, includeLocation: e.target.checked })}
+                    className="w-4 h-4 text-zen-sage border-zen-sand rounded focus:ring-zen-sage"
+                  />
+                  <span className="text-sm text-zen-moss dark:text-zen-stone">Include locations</span>
+                </label>
               </div>
-
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center">
-                  <Database className="text-purple-600" size={24} />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Database Size</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{formatBytes(dbSize)}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Export Data */}
-          <div className="mb-12 bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-100 dark:border-gray-700 p-8">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Export Data</h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
-              Download your journal entries in various formats
-            </p>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-              <button
-                onClick={handleExportJSON}
-                className="flex items-center gap-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-xl hover:border-blue-400 hover:bg-blue-50 dark:hover:border-blue-500 dark:hover:bg-blue-900/20 transition-all group"
-              >
-                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center group-hover:bg-blue-200 dark:group-hover:bg-blue-900/50 transition-colors">
-                  <FileJson className="text-blue-600" size={24} />
-                </div>
-                <div className="text-left">
-                  <p className="font-semibold text-gray-900 dark:text-gray-100">JSON</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Full backup</p>
-                </div>
-              </button>
-
-              <button
-                onClick={handleExportPlainText}
-                className="flex items-center gap-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-xl hover:border-green-400 hover:bg-green-50 dark:hover:border-green-500 dark:hover:bg-green-900/20 transition-all group"
-              >
-                <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center group-hover:bg-green-200 dark:group-hover:bg-green-900/50 transition-colors">
-                  <FileText className="text-green-600" size={24} />
-                </div>
-                <div className="text-left">
-                  <p className="font-semibold text-gray-900 dark:text-gray-100">Plain Text</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Simple format</p>
-                </div>
-              </button>
-
-              <button
-                onClick={handleExportMarkdown}
-                className="flex items-center gap-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-xl hover:border-purple-400 hover:bg-purple-50 dark:hover:border-purple-500 dark:hover:bg-purple-900/20 transition-all group"
-              >
-                <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center group-hover:bg-purple-200 dark:group-hover:bg-purple-900/50 transition-colors">
-                  <FileCode className="text-purple-600" size={24} />
-                </div>
-                <div className="text-left">
-                  <p className="font-semibold text-gray-900 dark:text-gray-100">Markdown</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Formatted</p>
-                </div>
-              </button>
-
-              <button
-                onClick={handleExportCSV}
-                className="flex items-center gap-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-xl hover:border-orange-400 hover:bg-orange-50 dark:hover:border-orange-500 dark:hover:bg-orange-900/20 transition-all group"
-              >
-                <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center group-hover:bg-orange-200 dark:group-hover:bg-orange-900/50 transition-colors">
-                  <FileSpreadsheet className="text-orange-600" size={24} />
-                </div>
-                <div className="text-left">
-                  <p className="font-semibold text-gray-900 dark:text-gray-100">CSV</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Spreadsheet</p>
-                </div>
-              </button>
 
               <button
                 onClick={handleExportPDF}
-                className="flex items-center gap-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-xl hover:border-red-400 hover:bg-red-50 dark:hover:border-red-500 dark:hover:bg-red-900/20 transition-all group"
+                className="w-full px-5 py-2.5 bg-zen-clay-light text-white rounded-xl font-medium text-sm hover:bg-zen-clay hover:shadow-sm transition-all"
               >
-                <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center group-hover:bg-red-200 dark:group-hover:bg-red-900/50 transition-colors">
-                  <FileType className="text-red-600" size={24} />
-                </div>
-                <div className="text-left">
-                  <p className="font-semibold text-gray-900 dark:text-gray-100">PDF</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Print ready</p>
-                </div>
+                Generate PDF
               </button>
             </div>
+          )}
 
-            {/* PDF Settings Panel */}
-            {showPDFSettings && (
-              <div className="bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-xl p-6 mb-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-                    <SettingsIcon size={20} />
-                    PDF Export Settings
-                  </h3>
-                  <button
-                    onClick={() => setShowPDFSettings(false)}
-                    className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
-                  >
-                    ✕
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Page Size
-                    </label>
-                    <select
-                      value={pdfSettings.pageSize}
-                      onChange={(e) => setPdfSettings({ ...pdfSettings, pageSize: e.target.value })}
-                      className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:border-red-500 focus:ring-2 focus:ring-red-200"
-                    >
-                      <option value="a4">A4</option>
-                      <option value="letter">Letter</option>
-                      <option value="legal">Legal</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Font Size
-                    </label>
-                    <select
-                      value={pdfSettings.fontSize}
-                      onChange={(e) => setPdfSettings({ ...pdfSettings, fontSize: parseInt(e.target.value) })}
-                      className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:border-red-500 focus:ring-2 focus:ring-red-200"
-                    >
-                      <option value="10">10pt</option>
-                      <option value="12">12pt</option>
-                      <option value="14">14pt</option>
-                      <option value="16">16pt</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="space-y-3 mb-6">
-                  <label className="flex items-center gap-3">
-                    <input
-                      type="checkbox"
-                      checked={pdfSettings.includeMood}
-                      onChange={(e) => setPdfSettings({ ...pdfSettings, includeMood: e.target.checked })}
-                      className="w-5 h-5 text-red-600 border-gray-300 rounded focus:ring-red-500"
-                    />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">Include mood indicators</span>
-                  </label>
-
-                  <label className="flex items-center gap-3">
-                    <input
-                      type="checkbox"
-                      checked={pdfSettings.includeTags}
-                      onChange={(e) => setPdfSettings({ ...pdfSettings, includeTags: e.target.checked })}
-                      className="w-5 h-5 text-red-600 border-gray-300 rounded focus:ring-red-500"
-                    />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">Include tags</span>
-                  </label>
-
-                  <label className="flex items-center gap-3">
-                    <input
-                      type="checkbox"
-                      checked={pdfSettings.includeLocation}
-                      onChange={(e) => setPdfSettings({ ...pdfSettings, includeLocation: e.target.checked })}
-                      className="w-5 h-5 text-red-600 border-gray-300 rounded focus:ring-red-500"
-                    />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">Include locations</span>
-                  </label>
-                </div>
-
-                <button
-                  onClick={handleExportPDF}
-                  className="w-full px-6 py-3 bg-gradient-to-r from-red-600 to-pink-600 text-white rounded-xl font-medium hover:shadow-xl transition-all hover:-translate-y-1"
-                >
-                  Generate PDF
-                </button>
+          {/* IMPORT */}
+          <SectionHeader title="Import" />
+          <SettingsGroup>
+            <label className="flex items-center w-full px-4 py-3 bg-white dark:bg-zen-night-card hover:bg-zen-parchment dark:hover:bg-zen-night-surface transition-colors cursor-pointer">
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center mr-3 flex-shrink-0 bg-zen-sage-soft dark:bg-zen-sage/20">
+                <Upload className="text-zen-sage dark:text-zen-sage-light" size={18} />
               </div>
-            )}
-          </div>
+              <span className="flex-1 text-left text-zen-forest dark:text-zen-parchment text-[15px]">Import from JSON</span>
+              <ChevronRight size={18} className="text-zen-stone/60 flex-shrink-0" />
+              <input
+                type="file"
+                accept="application/json,.json"
+                onChange={handleImportJSON}
+                className="hidden"
+              />
+            </label>
+          </SettingsGroup>
 
-          {/* Import Data */}
-          <div className="mb-12 bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-100 dark:border-gray-700 p-8">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Import Data</h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
-              Import journal entries from backup files in various formats
-            </p>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <label className="flex items-center gap-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-xl hover:border-blue-400 hover:bg-blue-50 dark:hover:border-blue-500 dark:hover:bg-blue-900/20 transition-all cursor-pointer group">
-                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center group-hover:bg-blue-200 dark:group-hover:bg-blue-900/50 transition-colors">
-                  <FileJson className="text-blue-600" size={24} />
-                </div>
-                <div className="text-left flex-1">
-                  <p className="font-semibold text-gray-900 dark:text-gray-100 text-sm">Import JSON</p>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">Full restore</p>
-                </div>
-                <input
-                  type="file"
-                  accept="application/json,.json"
-                  onChange={handleImportJSON}
-                  className="hidden"
-                />
-              </label>
-            </div>
-          </div>
-
-          {/* Tutorial */}
-          <div className="mb-12 bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-100 dark:border-gray-700 p-8">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Tutorial</h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
-              Re-watch the guided tour to learn about key features
-            </p>
-
-            <button
+          {/* GENERAL */}
+          <SectionHeader title="General" />
+          <SettingsGroup>
+            <SettingsRow
+              icon={<GraduationCap className="text-zen-sage dark:text-zen-sage-light" size={18} />}
+              iconBg="bg-zen-sage-soft dark:bg-zen-sage/20"
+              label="Replay Tutorial"
               onClick={async () => {
                 await resetTour();
                 router.push('/journal');
               }}
-              className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-medium hover:shadow-lg transition-all hover:-translate-y-0.5"
-            >
-              <GraduationCap size={20} />
-              Replay Tutorial
-            </button>
-          </div>
-
-          {/* Help & Support */}
-          <div className="mb-12 bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-100 dark:border-gray-700 p-8">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Help & Support</h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
-              Find answers to common questions and get help
-            </p>
-
-            <Link
-              href="/help"
-              className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-xl font-medium hover:shadow-lg transition-all hover:-translate-y-0.5 w-fit"
-            >
-              <HelpCircle size={20} />
-              View Help & FAQ
+            />
+            <Link href="/help" className="block">
+              <SettingsRow
+                icon={<HelpCircle className="text-zen-creek-light dark:text-zen-creek" size={18} />}
+                iconBg="bg-zen-creek/20 dark:bg-zen-creek/10"
+                label="Help & FAQ"
+              />
             </Link>
-          </div>
+          </SettingsGroup>
 
-          {/* Danger Zone */}
-          <div className="bg-red-50 dark:bg-red-900/20 rounded-xl border-2 border-red-200 dark:border-red-800 p-8">
-            <h2 className="text-2xl font-bold text-red-900 dark:text-red-300 mb-2">Danger Zone</h2>
-            <p className="text-red-700 dark:text-red-400 mb-6">
-              Permanently delete all your journal data. This action cannot be undone!
-            </p>
-
-            <button
+          {/* DANGER */}
+          <SectionHeader title="Danger" />
+          <SettingsGroup>
+            <SettingsRow
+              icon={<Trash2 className="text-red-500" size={18} />}
+              iconBg="bg-red-50 dark:bg-red-900/20"
+              label="Clear All Data"
+              labelClassName="text-red-600 dark:text-red-400"
               onClick={() => setClearDialogOpen(true)}
-              className="flex items-center gap-3 px-6 py-3 bg-red-600 text-white rounded-xl font-medium hover:bg-red-700 transition-all"
-            >
-              <Trash2 size={20} />
-              Clear All Data
-            </button>
-          </div>
+            />
+          </SettingsGroup>
+
+          {/* Bottom spacer */}
+          <div className="h-8" />
         </div>
       </div>
 

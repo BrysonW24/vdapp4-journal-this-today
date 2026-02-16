@@ -63,47 +63,47 @@ export default function EntryDetailPage({ params }: { params: Promise<{ id: stri
   if (isLoading) {
     return (
       <Layout>
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
+        <div className="min-h-screen bg-zen-cream dark:bg-zen-night">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 animate-pulse">
             {/* Back link skeleton */}
-            <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-32 mb-6" />
+            <div className="h-5 bg-zen-sand dark:bg-zen-night-surface rounded w-32 mb-6" />
 
             {/* Header skeleton */}
             <div className="mb-8">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-4 flex-1">
-                  <div className="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-xl" />
+                  <div className="w-16 h-16 bg-zen-sand dark:bg-zen-night-surface rounded-xl" />
                   <div className="flex-1">
-                    <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-2/3 mb-3" />
-                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/3" />
+                    <div className="h-8 bg-zen-sand dark:bg-zen-night-surface rounded w-2/3 mb-3" />
+                    <div className="h-4 bg-zen-sand dark:bg-zen-night-surface rounded w-1/3" />
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <div className="w-11 h-11 bg-gray-200 dark:bg-gray-700 rounded-xl" />
-                  <div className="w-11 h-11 bg-gray-200 dark:bg-gray-700 rounded-xl" />
-                  <div className="w-11 h-11 bg-gray-200 dark:bg-gray-700 rounded-xl" />
+                  <div className="w-11 h-11 bg-zen-sand dark:bg-zen-night-surface rounded-xl" />
+                  <div className="w-11 h-11 bg-zen-sand dark:bg-zen-night-surface rounded-xl" />
+                  <div className="w-11 h-11 bg-zen-sand dark:bg-zen-night-surface rounded-xl" />
                 </div>
               </div>
             </div>
 
             {/* Tags skeleton */}
             <div className="mb-8 flex gap-3">
-              <div className="h-9 bg-gray-200 dark:bg-gray-700 rounded-xl w-24" />
-              <div className="h-9 bg-gray-200 dark:bg-gray-700 rounded-xl w-20" />
-              <div className="h-9 bg-gray-200 dark:bg-gray-700 rounded-xl w-28" />
+              <div className="h-9 bg-zen-sand dark:bg-zen-night-surface rounded-xl w-24" />
+              <div className="h-9 bg-zen-sand dark:bg-zen-night-surface rounded-xl w-20" />
+              <div className="h-9 bg-zen-sand dark:bg-zen-night-surface rounded-xl w-28" />
             </div>
 
             {/* Content skeleton */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-100 dark:border-gray-700 p-8">
+            <div className="bg-white dark:bg-zen-night-surface rounded-xl border border-zen-sand dark:border-zen-night-border p-8">
               <div className="space-y-3">
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full" />
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-11/12" />
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-4/5" />
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full" />
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6" />
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3" />
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full" />
+                <div className="h-4 bg-zen-sand dark:bg-zen-night-surface rounded w-full" />
+                <div className="h-4 bg-zen-sand dark:bg-zen-night-surface rounded w-11/12" />
+                <div className="h-4 bg-zen-sand dark:bg-zen-night-surface rounded w-4/5" />
+                <div className="h-4 bg-zen-sand dark:bg-zen-night-surface rounded w-full" />
+                <div className="h-4 bg-zen-sand dark:bg-zen-night-surface rounded w-3/4" />
+                <div className="h-4 bg-zen-sand dark:bg-zen-night-surface rounded w-5/6" />
+                <div className="h-4 bg-zen-sand dark:bg-zen-night-surface rounded w-2/3" />
+                <div className="h-4 bg-zen-sand dark:bg-zen-night-surface rounded w-full" />
               </div>
             </div>
           </div>
@@ -115,14 +115,14 @@ export default function EntryDetailPage({ params }: { params: Promise<{ id: stri
   if (!entry) {
     return (
       <Layout>
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+        <div className="min-h-screen bg-zen-cream dark:bg-zen-night">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div className="text-center py-12 bg-white rounded-xl border-2 border-gray-100">
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Entry not found</h3>
-              <p className="text-gray-600 mb-6">This journal entry doesn&apos;t exist.</p>
+            <div className="text-center py-12 bg-white dark:bg-zen-night-surface rounded-xl border border-zen-sand dark:border-zen-night-border">
+              <h3 className="text-xl font-semibold text-zen-forest dark:text-zen-cream mb-2">Entry not found</h3>
+              <p className="text-zen-moss dark:text-zen-stone mb-6">This journal entry doesn&apos;t exist.</p>
               <Link
                 href="/journal"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-medium hover:shadow-xl transition-all hover:-translate-y-1"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-zen-sage text-white rounded-xl font-medium hover:bg-zen-sage-light hover:shadow-sm transition-all"
               >
                 <ArrowLeft size={20} />
                 Back to Journal
@@ -156,13 +156,13 @@ export default function EntryDetailPage({ params }: { params: Promise<{ id: stri
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <div className="min-h-screen bg-zen-cream dark:bg-zen-night">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           {/* Header */}
           <div className="mb-8">
             <Link
               href="/journal"
-              className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 transition-colors"
+              className="inline-flex items-center gap-2 text-zen-moss dark:text-zen-stone hover:text-zen-forest dark:hover:text-zen-cream mb-6 transition-colors"
             >
               <ArrowLeft size={20} />
               Back to Journal
@@ -177,17 +177,17 @@ export default function EntryDetailPage({ params }: { params: Promise<{ id: stri
                       style={{
                         backgroundColor: moodData.bgColor,
                         borderColor: moodData.borderColor,
-                        borderWidth: '2px',
+                        borderWidth: '1px',
                       }}
                     >
                       {moodData.emoji}
                     </div>
                   )}
                   <div>
-                    <h1 className="text-4xl font-bold text-gray-900 mb-2">
+                    <h1 className="text-4xl font-bold text-zen-forest dark:text-zen-cream mb-2">
                       {entry.title || 'Untitled Entry'}
                     </h1>
-                    <div className="flex items-center gap-4 text-sm text-gray-600">
+                    <div className="flex items-center gap-4 text-sm text-zen-moss dark:text-zen-stone">
                       <span className="flex items-center gap-1">
                         <Clock size={16} />
                         {format(new Date(entry.createdAt), 'EEEE, MMMM d, yyyy')}
@@ -201,26 +201,26 @@ export default function EntryDetailPage({ params }: { params: Promise<{ id: stri
               <div className="flex gap-2">
                 <button
                   onClick={handleToggleFavorite}
-                  className="p-3 bg-white border-2 border-gray-200 rounded-xl hover:border-yellow-400 transition-all"
+                  className="p-3 bg-white dark:bg-zen-night-surface border border-zen-sand dark:border-zen-night-border rounded-xl hover:border-yellow-400 transition-all"
                 >
                   <Star
                     size={20}
                     className={
                       entry.isFavorite
                         ? 'fill-yellow-400 text-yellow-400'
-                        : 'text-gray-400'
+                        : 'text-zen-stone'
                     }
                   />
                 </button>
                 <Link
                   href={`/journal/${entry.id}/edit`}
-                  className="p-3 bg-white border-2 border-gray-200 rounded-xl hover:border-blue-400 transition-all"
+                  className="p-3 bg-white dark:bg-zen-night-surface border border-zen-sand dark:border-zen-night-border rounded-xl hover:border-zen-sage transition-all"
                 >
-                  <Edit size={20} className="text-gray-700" />
+                  <Edit size={20} className="text-zen-moss dark:text-zen-stone" />
                 </Link>
                 <button
                   onClick={() => setDeleteDialogOpen(true)}
-                  className="p-3 bg-white border-2 border-gray-200 rounded-xl hover:border-red-400 transition-all"
+                  className="p-3 bg-white dark:bg-zen-night-surface border border-zen-sand dark:border-zen-night-border rounded-xl hover:border-red-400 transition-all"
                 >
                   <Trash2 size={20} className="text-red-600" />
                 </button>
@@ -231,7 +231,7 @@ export default function EntryDetailPage({ params }: { params: Promise<{ id: stri
           {/* Metadata */}
           <div className="mb-8 flex flex-wrap gap-3">
             {entry.category && (
-              <span className="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-xl text-sm font-medium border-2 border-purple-200">
+              <span className="flex items-center gap-2 px-4 py-2 bg-zen-parchment dark:bg-zen-night-surface text-zen-moss dark:text-zen-sage-light rounded-xl text-sm font-medium border border-zen-sand dark:border-zen-night-border">
                 <FolderOpen size={16} />
                 {entry.category}
               </span>
@@ -240,7 +240,7 @@ export default function EntryDetailPage({ params }: { params: Promise<{ id: stri
             {entry.tags.map((tag) => (
               <span
                 key={tag}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-xl text-sm font-medium border-2 border-blue-200"
+                className="flex items-center gap-2 px-4 py-2 bg-zen-parchment dark:bg-zen-night-surface text-zen-sage dark:text-zen-sage-light rounded-xl text-sm font-medium border border-zen-sand dark:border-zen-night-border"
               >
                 <Tag size={16} />
                 #{tag}
@@ -248,7 +248,7 @@ export default function EntryDetailPage({ params }: { params: Promise<{ id: stri
             ))}
 
             {entry.location && (
-              <span className="flex items-center gap-2 px-4 py-2 bg-green-50 text-green-700 rounded-xl text-sm font-medium border-2 border-green-200">
+              <span className="flex items-center gap-2 px-4 py-2 bg-green-50 dark:bg-zen-night-surface text-green-700 dark:text-green-400 rounded-xl text-sm font-medium border border-green-200 dark:border-zen-night-border">
                 <MapPin size={16} />
                 {entry.location.placeName || 'Location'}
               </span>
@@ -256,7 +256,7 @@ export default function EntryDetailPage({ params }: { params: Promise<{ id: stri
 
             {moodData && (
               <span
-                className="px-4 py-2 rounded-xl text-sm font-medium border-2"
+                className="px-4 py-2 rounded-xl text-sm font-medium border"
                 style={{
                   backgroundColor: moodData.bgColor,
                   borderColor: moodData.borderColor,
@@ -269,7 +269,7 @@ export default function EntryDetailPage({ params }: { params: Promise<{ id: stri
           </div>
 
           {/* Content */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-100 dark:border-gray-700 p-8 shadow-sm">
+          <div className="bg-white dark:bg-zen-night-surface rounded-xl border border-zen-sand dark:border-zen-night-border p-8 shadow-sm">
             <div
               className="prose prose-lg max-w-none dark:prose-invert"
               dangerouslySetInnerHTML={{ __html: entry.content }}
@@ -278,17 +278,17 @@ export default function EntryDetailPage({ params }: { params: Promise<{ id: stri
 
           {/* Map Display */}
           {entry.location && entry.location.latitude !== 0 && entry.location.longitude !== 0 && (
-            <div className="bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-100 dark:border-gray-700 p-6 shadow-sm">
+            <div className="bg-white dark:bg-zen-night-surface rounded-xl border border-zen-sand dark:border-zen-night-border p-6 shadow-sm">
               <div className="flex items-center gap-2 mb-4">
                 <MapPin className="text-green-600 dark:text-green-400" size={20} />
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Location</h3>
+                <h3 className="text-lg font-semibold text-zen-forest dark:text-zen-cream">Location</h3>
               </div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+              <p className="text-sm text-zen-moss dark:text-zen-stone mb-4">
                 {entry.location.placeName || entry.location.address || 'Unknown Location'}
               </p>
 
               {/* OpenStreetMap Embed */}
-              <div className="w-full h-80 rounded-xl overflow-hidden border-2 border-gray-200 dark:border-gray-600">
+              <div className="w-full h-80 rounded-xl overflow-hidden border border-zen-sand dark:border-zen-night-border">
                 <iframe
                   width="100%"
                   height="100%"
@@ -305,7 +305,7 @@ export default function EntryDetailPage({ params }: { params: Promise<{ id: stri
                   href={`https://www.openstreetmap.org/?mlat=${entry.location.latitude}&mlon=${entry.location.longitude}#map=15/${entry.location.latitude}/${entry.location.longitude}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                  className="text-sm text-zen-sage dark:text-zen-sage-light hover:underline"
                 >
                   View larger map →
                 </a>
@@ -314,7 +314,7 @@ export default function EntryDetailPage({ params }: { params: Promise<{ id: stri
           )}
 
           {/* Footer */}
-          <div className="mt-8 text-sm text-gray-500 text-center">
+          <div className="mt-8 text-sm text-zen-stone dark:text-zen-stone text-center">
             {entry.updatedAt !== entry.createdAt && (
               <p>Last edited {format(new Date(entry.updatedAt), 'MMMM d, yyyy \'at\' h:mm a')}</p>
             )}

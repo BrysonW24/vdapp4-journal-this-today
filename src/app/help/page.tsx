@@ -139,26 +139,26 @@ export default function HelpPage() {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
+      <div className="min-h-screen bg-zen-cream dark:bg-zen-night">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <Link
             href="/journal"
-            className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 mb-8 transition-colors"
+            className="inline-flex items-center gap-2 text-zen-moss hover:text-zen-forest dark:text-zen-stone dark:hover:text-zen-sand mb-8 transition-colors"
           >
             <ArrowLeft size={20} />
             Back
           </Link>
 
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-xl">
-              <HelpCircle className="text-green-600 dark:text-green-400" size={28} />
+            <div className="p-3 bg-zen-sage/10 dark:bg-zen-sage/20 rounded-xl">
+              <HelpCircle className="text-zen-sage dark:text-zen-sage-light" size={28} />
             </div>
-            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-100">
+            <h1 className="text-3xl sm:text-4xl font-bold text-zen-forest dark:text-zen-sand">
               Help & Support
             </h1>
           </div>
 
-          <p className="text-gray-600 dark:text-gray-400 mb-8 text-lg">
+          <p className="text-zen-moss dark:text-zen-stone mb-8 text-lg">
             Find answers to common questions about using This, Today.
           </p>
 
@@ -166,10 +166,10 @@ export default function HelpPage() {
           <div className="space-y-8">
             {FAQ_SECTIONS.map((section) => (
               <div key={section.title}>
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
+                <h2 className="text-xl font-semibold text-zen-forest dark:text-zen-sand mb-4">
                   {section.title}
                 </h2>
-                <div className="bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-100 dark:border-gray-700 overflow-hidden divide-y divide-gray-100 dark:divide-gray-700">
+                <div className="bg-white dark:bg-zen-night-card rounded-xl border border-zen-sand dark:border-zen-night-border overflow-hidden divide-y divide-zen-sand dark:divide-zen-night-border">
                   {section.items.map((item) => {
                     const key = `${section.title}-${item.question}`;
                     const isOpen = openItems.has(key);
@@ -178,29 +178,29 @@ export default function HelpPage() {
                       <div key={item.question}>
                         <button
                           onClick={() => toggleItem(key)}
-                          className="w-full flex items-center gap-3 p-4 sm:p-5 text-left hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                          className="w-full flex items-center gap-3 p-4 sm:p-5 text-left hover:bg-zen-parchment dark:hover:bg-zen-night-border/50 transition-colors"
                         >
-                          <div className="flex-shrink-0 w-9 h-9 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center text-blue-600 dark:text-blue-400">
+                          <div className="flex-shrink-0 w-9 h-9 bg-zen-sage/10 dark:bg-zen-sage/20 rounded-lg flex items-center justify-center text-zen-sage dark:text-zen-sage-light">
                             {item.icon}
                           </div>
-                          <span className="flex-1 font-medium text-gray-900 dark:text-gray-100 text-sm sm:text-base">
+                          <span className="flex-1 font-medium text-zen-forest dark:text-zen-sand text-sm sm:text-base">
                             {item.question}
                           </span>
                           {isOpen ? (
                             <ChevronUp
                               size={20}
-                              className="flex-shrink-0 text-gray-400"
+                              className="flex-shrink-0 text-zen-stone"
                             />
                           ) : (
                             <ChevronDown
                               size={20}
-                              className="flex-shrink-0 text-gray-400"
+                              className="flex-shrink-0 text-zen-stone"
                             />
                           )}
                         </button>
                         {isOpen && (
                           <div className="px-4 sm:px-5 pb-4 sm:pb-5 pl-16 sm:pl-[4.25rem]">
-                            <p className="text-gray-600 dark:text-gray-300 leading-relaxed text-sm sm:text-base">
+                            <p className="text-zen-moss dark:text-zen-sand leading-relaxed text-sm sm:text-base">
                               {item.answer}
                             </p>
                           </div>
@@ -214,14 +214,14 @@ export default function HelpPage() {
           </div>
 
           {/* Contact Section */}
-          <div className="mt-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-8 text-white">
+          <div className="mt-12 bg-zen-sage rounded-xl p-8 text-white">
             <h2 className="text-2xl font-bold mb-3">Still need help?</h2>
-            <p className="text-blue-100 mb-6">
+            <p className="text-white/80 mb-6">
               If you can&apos;t find what you&apos;re looking for, reach out to our support team.
             </p>
             <a
               href="mailto:hello@vivacitydigital.com.au"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-white text-blue-600 rounded-xl font-medium hover:shadow-lg transition-all hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-white text-zen-sage rounded-xl font-medium hover:shadow-sm transition-all hover:-translate-y-0.5"
             >
               <Mail size={20} />
               Contact Support
@@ -232,24 +232,24 @@ export default function HelpPage() {
           <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Link
               href="/privacy"
-              className="flex items-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-100 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-500 transition-all"
+              className="flex items-center gap-3 p-4 bg-white dark:bg-zen-night-card rounded-xl border border-zen-sand dark:border-zen-night-border hover:border-zen-sage dark:hover:border-zen-sage transition-all"
             >
-              <Shield size={20} className="text-blue-600 dark:text-blue-400" />
+              <Shield size={20} className="text-zen-sage dark:text-zen-sage-light" />
               <div>
-                <p className="font-medium text-gray-900 dark:text-gray-100">Privacy Policy</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="font-medium text-zen-forest dark:text-zen-sand">Privacy Policy</p>
+                <p className="text-sm text-zen-moss dark:text-zen-stone">
                   How we protect your data
                 </p>
               </div>
             </Link>
             <Link
               href="/terms"
-              className="flex items-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-100 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-500 transition-all"
+              className="flex items-center gap-3 p-4 bg-white dark:bg-zen-night-card rounded-xl border border-zen-sand dark:border-zen-night-border hover:border-zen-sage dark:hover:border-zen-sage transition-all"
             >
-              <BookOpen size={20} className="text-purple-600 dark:text-purple-400" />
+              <BookOpen size={20} className="text-zen-sage dark:text-zen-sage-light" />
               <div>
-                <p className="font-medium text-gray-900 dark:text-gray-100">Terms of Service</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="font-medium text-zen-forest dark:text-zen-sand">Terms of Service</p>
+                <p className="text-sm text-zen-moss dark:text-zen-stone">
                   Our terms and conditions
                 </p>
               </div>

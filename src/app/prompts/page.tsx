@@ -18,36 +18,33 @@ export default function PromptsPage() {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <div className="min-h-screen bg-zen-cream dark:bg-zen-night">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+            <h1 className="text-3xl font-semibold text-zen-forest dark:text-zen-sage-light">
               Prompts
             </h1>
-            <p className="text-xl text-gray-600">
-              Get inspired with journaling prompts
-            </p>
           </div>
 
           {/* Tabs */}
-          <div className="flex gap-2 mb-8 bg-white rounded-xl p-2 w-fit">
+          <div className="flex gap-2 mb-8 bg-zen-parchment/60 dark:bg-zen-night-surface rounded-lg p-1 w-fit">
             <button
               onClick={() => setActiveTab('gallery')}
-              className={`px-6 py-2 rounded-lg font-medium transition-all ${
+              className={`px-6 py-2 rounded-lg font-medium text-sm transition-all ${
                 activeTab === 'gallery'
-                  ? 'bg-gray-900 text-white'
-                  : 'text-gray-600 hover:text-gray-900'
+                  ? 'bg-white dark:bg-zen-night-card text-zen-forest dark:text-zen-parchment shadow-sm'
+                  : 'text-zen-moss dark:text-zen-stone hover:text-zen-forest dark:hover:text-zen-parchment'
               }`}
             >
               Gallery
             </button>
             <button
               onClick={() => setActiveTab('my-prompts')}
-              className={`px-6 py-2 rounded-lg font-medium transition-all ${
+              className={`px-6 py-2 rounded-lg font-medium text-sm transition-all ${
                 activeTab === 'my-prompts'
-                  ? 'bg-gray-900 text-white'
-                  : 'text-gray-600 hover:text-gray-900'
+                  ? 'bg-white dark:bg-zen-night-card text-zen-forest dark:text-zen-parchment shadow-sm'
+                  : 'text-zen-moss dark:text-zen-stone hover:text-zen-forest dark:hover:text-zen-parchment'
               }`}
             >
               My Prompts
@@ -58,21 +55,21 @@ export default function PromptsPage() {
           {activeTab === 'gallery' && (
             <div>
               {/* Recommended Section */}
-              <div className="mb-12">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Recommended</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="mb-10">
+                <h2 className="text-lg font-semibold text-zen-forest dark:text-zen-parchment mb-4">Recommended</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {DEFAULT_PROMPT_PACKS.find(p => p.id === 'look-back-2025')?.prompts.slice(0, 2).map((prompt) => (
                     <button
                       key={prompt.id}
                       onClick={() => handlePromptClick(prompt.question)}
-                      className="relative bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-6 text-white hover:shadow-xl transition-all hover:-translate-y-1 text-left group"
+                      className="relative bg-zen-sage dark:bg-zen-sage/80 rounded-xl p-5 text-white hover:shadow-sm transition-all text-left group"
                     >
-                      <div className="absolute top-4 right-4">
-                        <Star size={20} className="text-white opacity-70 group-hover:opacity-100 transition-opacity" />
+                      <div className="absolute top-3 right-3">
+                        <Star size={18} className="text-white opacity-70 group-hover:opacity-100 transition-opacity" />
                       </div>
-                      <p className="text-lg font-medium pr-8">{prompt.question}</p>
-                      <div className="mt-4 flex items-center text-sm opacity-90">
-                        <ChevronRight size={16} className="mr-1" />
+                      <p className="text-[15px] font-medium pr-8 leading-snug">{prompt.question}</p>
+                      <div className="mt-3 flex items-center text-xs opacity-90">
+                        <ChevronRight size={14} className="mr-1" />
                         Look Back on 2025
                       </div>
                     </button>
@@ -82,31 +79,24 @@ export default function PromptsPage() {
 
               {/* Prompt Packs */}
               <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Prompt Packs</h2>
-                <div className="space-y-3">
+                <h2 className="text-lg font-semibold text-zen-forest dark:text-zen-parchment mb-4">Prompt Packs</h2>
+                <div className="rounded-xl overflow-hidden border border-zen-sand dark:border-zen-night-border divide-y divide-zen-sand/60 dark:divide-zen-night-border/60">
                   {DEFAULT_PROMPT_PACKS.map((pack) => (
-                    <details key={pack.id} className="bg-white rounded-xl border-2 border-gray-100 overflow-hidden">
-                      <summary className="flex items-center justify-between p-6 cursor-pointer hover:bg-gray-50 transition-colors list-none">
-                        <div className="flex items-center gap-4">
-                          <div className="text-3xl">{pack.icon}</div>
-                          <div>
-                            <h3 className="text-lg font-semibold text-gray-900">{pack.name}</h3>
-                            {pack.description && (
-                              <p className="text-sm text-gray-600">{pack.description}</p>
-                            )}
-                          </div>
-                        </div>
-                        <ChevronRight className="text-gray-400" size={20} />
+                    <details key={pack.id} className="bg-white dark:bg-zen-night-card">
+                      <summary className="flex items-center px-4 py-3 cursor-pointer hover:bg-zen-parchment dark:hover:bg-zen-night-surface transition-colors list-none">
+                        <span className="text-2xl mr-3 flex-shrink-0">{pack.icon}</span>
+                        <span className="flex-1 text-[15px] font-medium text-zen-forest dark:text-zen-parchment">{pack.name}</span>
+                        <ChevronRight className="text-zen-stone/60 flex-shrink-0" size={18} />
                       </summary>
-                      <div className="border-t-2 border-gray-100 p-4 bg-gray-50">
-                        <div className="space-y-2">
+                      <div className="border-t border-zen-sand dark:border-zen-night-border px-4 py-3 bg-zen-parchment/50 dark:bg-zen-night-surface">
+                        <div className="space-y-1.5">
                           {pack.prompts.map((prompt) => (
                             <button
                               key={prompt.id}
                               onClick={() => handlePromptClick(prompt.question)}
-                              className="w-full text-left p-4 bg-white rounded-lg hover:shadow-md transition-all hover:-translate-y-0.5 border border-gray-200"
+                              className="w-full text-left px-3 py-2.5 bg-white dark:bg-zen-night-card rounded-lg hover:shadow-sm transition-all border border-zen-sand/60 dark:border-zen-night-border/60"
                             >
-                              <p className="text-gray-900">{prompt.question}</p>
+                              <p className="text-sm text-zen-forest dark:text-zen-parchment">{prompt.question}</p>
                             </button>
                           ))}
                         </div>
@@ -120,12 +110,12 @@ export default function PromptsPage() {
 
           {/* My Prompts Tab */}
           {activeTab === 'my-prompts' && (
-            <div className="text-center py-12 bg-white rounded-xl border-2 border-gray-100">
-              <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-2xl flex items-center justify-center">
+            <div className="text-center py-12 bg-white dark:bg-zen-night-card rounded-xl border border-zen-sand dark:border-zen-night-border">
+              <div className="w-24 h-24 mx-auto mb-6 bg-zen-parchment dark:bg-zen-night-surface rounded-2xl flex items-center justify-center">
                 <div className="text-5xl opacity-30">📁</div>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Nothing added yet</h3>
-              <p className="text-gray-600 max-w-md mx-auto">
+              <h3 className="text-xl font-semibold text-zen-forest dark:text-zen-parchment mb-2">Nothing added yet</h3>
+              <p className="text-zen-moss dark:text-zen-stone max-w-md mx-auto">
                 Build your own prompt collection by adding prompt packs here.
               </p>
             </div>

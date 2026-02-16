@@ -54,30 +54,27 @@ export default function CalendarPage() {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <div className="min-h-screen bg-zen-cream dark:bg-zen-night">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           {/* Header */}
-          <div className="mb-12">
-            <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
-              Calendar View
+          <div className="mb-8">
+            <h1 className="text-3xl font-semibold text-zen-forest dark:text-zen-sage-light">
+              Calendar
             </h1>
-            <p className="text-xl text-gray-600">
-              See your journaling journey at a glance
-            </p>
           </div>
 
           {/* Calendar Controls */}
-          <div className="mb-8 flex items-center justify-between bg-white rounded-xl border-2 border-gray-100 p-6">
+          <div className="mb-8 flex items-center justify-between bg-white dark:bg-zen-night-card rounded-xl border border-zen-sand dark:border-zen-night-border p-6 shadow-sm">
             <button
               onClick={goToPreviousMonth}
-              className="p-3 rounded-xl hover:bg-gray-100 transition-colors"
+              className="p-3 rounded-xl hover:bg-zen-parchment dark:hover:bg-zen-night-surface transition-colors"
             >
-              <ChevronLeft size={24} className="text-gray-700" />
+              <ChevronLeft size={24} className="text-zen-forest dark:text-zen-parchment" />
             </button>
 
             <div className="flex items-center gap-4">
-              <CalendarIcon size={24} className="text-blue-600" />
-              <h2 className="text-2xl font-bold text-gray-900">
+              <CalendarIcon size={24} className="text-zen-sage dark:text-zen-sage-light" />
+              <h2 className="text-xl font-semibold text-zen-forest dark:text-zen-parchment">
                 {format(currentMonth, 'MMMM yyyy')}
               </h2>
             </div>
@@ -85,27 +82,27 @@ export default function CalendarPage() {
             <div className="flex gap-2">
               <button
                 onClick={goToToday}
-                className="px-6 py-3 bg-blue-100 text-blue-700 rounded-xl font-medium hover:bg-blue-200 transition-colors"
+                className="px-6 py-3 bg-zen-sage-soft text-zen-sage dark:bg-zen-sage/20 dark:text-zen-sage-light rounded-xl font-medium hover:bg-zen-sage-light/30 dark:hover:bg-zen-sage/30 transition-colors"
               >
                 Today
               </button>
               <button
                 onClick={goToNextMonth}
-                className="p-3 rounded-xl hover:bg-gray-100 transition-colors"
+                className="p-3 rounded-xl hover:bg-zen-parchment dark:hover:bg-zen-night-surface transition-colors"
               >
-                <ChevronRight size={24} className="text-gray-700" />
+                <ChevronRight size={24} className="text-zen-forest dark:text-zen-parchment" />
               </button>
             </div>
           </div>
 
           {/* Calendar Grid */}
-          <div className="bg-white rounded-xl border-2 border-gray-100 p-6 shadow-sm">
+          <div className="bg-white dark:bg-zen-night-card rounded-xl border border-zen-sand dark:border-zen-night-border p-6 shadow-sm">
             {/* Day Headers */}
             <div className="grid grid-cols-7 gap-2 mb-4">
               {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
                 <div
                   key={day}
-                  className="text-center font-semibold text-gray-600 text-sm py-2"
+                  className="text-center font-semibold text-zen-moss dark:text-zen-stone text-sm py-2"
                 >
                   {day}
                 </div>
@@ -123,21 +120,21 @@ export default function CalendarPage() {
                 return (
                   <div
                     key={day.toString()}
-                    className={`min-h-[120px] rounded-xl border-2 p-3 transition-all ${
+                    className={`min-h-[120px] rounded-xl border p-3 transition-all ${
                       isDayToday
-                        ? 'border-blue-500 bg-blue-50'
+                        ? 'border-zen-sage bg-zen-sage-soft dark:border-zen-sage-light dark:bg-zen-sage/10'
                         : isCurrentMonth
-                        ? 'border-gray-200 bg-white hover:border-blue-300 hover:shadow-md'
-                        : 'border-gray-100 bg-gray-50'
+                        ? 'border-zen-sand bg-white dark:border-zen-night-border dark:bg-zen-night-surface hover:border-zen-sage-light hover:shadow-sm'
+                        : 'border-zen-sand/50 bg-zen-parchment dark:border-zen-night-border/50 dark:bg-zen-night'
                     }`}
                   >
                     <div
                       className={`text-sm font-semibold mb-2 ${
                         isDayToday
-                          ? 'text-blue-600'
+                          ? 'text-zen-sage dark:text-zen-sage-light'
                           : isCurrentMonth
-                          ? 'text-gray-900'
-                          : 'text-gray-400'
+                          ? 'text-zen-forest dark:text-zen-parchment'
+                          : 'text-zen-stone dark:text-zen-stone/50'
                       }`}
                     >
                       {format(day, 'd')}
@@ -179,7 +176,7 @@ export default function CalendarPage() {
                           );
                         })}
                         {dayEntries.length > 2 && (
-                          <div className="text-xs text-gray-500 text-center py-1">
+                          <div className="text-xs text-zen-stone text-center py-1">
                             +{dayEntries.length - 2} more
                           </div>
                         )}
@@ -192,8 +189,8 @@ export default function CalendarPage() {
           </div>
 
           {/* Legend */}
-          <div className="mt-8 bg-white rounded-xl border-2 border-gray-100 p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Mood Legend</h3>
+          <div className="mt-8 bg-white dark:bg-zen-night-card rounded-xl border border-zen-sand dark:border-zen-night-border p-6 shadow-sm">
+            <h3 className="text-lg font-semibold text-zen-forest dark:text-zen-parchment mb-4">Mood Legend</h3>
             <div className="flex flex-wrap gap-4">
               {Object.values(MOOD_METADATA).map((mood) => (
                 <div key={mood.label} className="flex items-center gap-2">
@@ -207,7 +204,7 @@ export default function CalendarPage() {
                   >
                     {mood.emoji}
                   </div>
-                  <span className="text-sm font-medium text-gray-700">
+                  <span className="text-sm font-medium text-zen-moss dark:text-zen-stone">
                     {mood.label}
                   </span>
                 </div>

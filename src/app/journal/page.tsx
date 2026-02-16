@@ -4,13 +4,14 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useJournalStore } from '@/stores/journal-store';
 import { useJournalsStore } from '@/stores/journals-store';
 import { EntryCard } from '@/components/journal/EntryCard';
-import { QuoteOfTheDay } from '@/components/journal/QuoteOfTheDay';
 import { Layout } from '@/components/Layout';
-import { BookOpen, Calendar, Star, Image as ImageIcon, Search, Grid, List, Plus, Lightbulb, CalendarDays, FileText, Mic, ChevronDown, Settings } from 'lucide-react';
+import { BookOpen, Star, Image as ImageIcon, Search, Plus, ChevronDown, Settings, TrendingUp, CalendarDays } from 'lucide-react';
 import Link from 'next/link';
-import { DEFAULT_PROMPT_PACKS } from '@/types/journal';
 import type { Journal } from '@/lib/db';
 import { TutorialOverlay } from '@/components/onboarding/TutorialOverlay';
+import { CalendarView } from '@/components/journal/CalendarView';
+import { MediaView } from '@/components/journal/MediaView';
+import { MapView } from '@/components/journal/MapView';
 
 export default function JournalPage() {
   const {
@@ -31,7 +32,6 @@ export default function JournalPage() {
   const [showJournalMenu, setShowJournalMenu] = useState(false);
   const journalMenuRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown when clicking outside
   const handleClickOutside = useCallback((event: MouseEvent) => {
     if (journalMenuRef.current && !journalMenuRef.current.contains(event.target as Node)) {
       setShowJournalMenu(false);
@@ -50,10 +50,8 @@ export default function JournalPage() {
     loadJournals();
   }, [loadEntries, loadJournals]);
 
-  // Get the currently selected journal or default to the first one
   const selectedJournal: Journal | undefined = journals.find(j => j.id === selectedJournalId) || journals.find(j => j.isDefault) || journals[0];
 
-  // Filter entries by selected journal, then apply other filters
   const journalFilteredEntries = selectedJournal
     ? entries.filter(e => e.journalId === selectedJournal.id)
     : entries;
@@ -70,7 +68,6 @@ export default function JournalPage() {
 
   const onThisDay = getOnThisDay();
 
-  // Group entries by year and month for smart organization
   const groupedEntries = React.useMemo(() => {
     const groups: {
       [year: string]: {
@@ -94,43 +91,45 @@ export default function JournalPage() {
 
     return groups;
   }, [displayedEntries]);
-  const stats = {
-    totalEntries: entries.length,
-    currentStreak: getCurrentStreak(),
-    daysJournaled: getDaysJournaled(),
-    mediaCount: 0,
-  };
+
+  const currentYear = new Date().getFullYear();
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          {/* Header */}
-          <div className="mb-8">
+      <div className="min-h-screen bg-white dark:bg-zen-night-card -mt-12">
+        {/* Hero Header — sage green */}
+        <div
+          className="relative pt-[env(safe-area-inset-top)]"
+          style={{
+            background: 'linear-gradient(160deg, #6B8F6E 0%, #5B7F5E 40%, #4A6E4D 100%)',
+          }}
+        >
+          {/* Subtle dot pattern */}
+          <div className="absolute inset-0 opacity-[0.03]" style={{
+            backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)',
+            backgroundSize: '20px 20px',
+          }} />
+
+          <div className="relative max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 pt-16 pb-20">
             {/* Journal Selector */}
-            <div className="relative inline-block mb-4" ref={journalMenuRef} data-tour-step="journal-selector">
+            <div className="relative" ref={journalMenuRef} data-tour-step="journal-selector">
               <button
                 onClick={() => setShowJournalMenu(!showJournalMenu)}
                 className="flex items-center gap-2 group"
               >
-                <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center text-3xl"
-                  style={{ backgroundColor: (selectedJournal?.color || '#3B82F6') + '20' }}
-                >
-                  {selectedJournal?.icon || '📔'}
-                </div>
-                <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                <h1 className="text-[28px] font-bold text-white tracking-tight">
                   {selectedJournal?.name || 'Journal'}
                 </h1>
                 <ChevronDown
-                  size={28}
-                  className="text-gray-400 group-hover:text-gray-600 transition-colors"
+                  size={18}
+                  className="text-white/40 group-hover:text-white/70 transition-colors mt-1"
                 />
               </button>
+              <p className="text-white/50 text-sm mt-0.5 font-medium">{currentYear}</p>
 
               {/* Dropdown Menu */}
               {showJournalMenu && (
-                <div className="absolute top-full left-0 mt-2 w-72 bg-white rounded-xl shadow-2xl border-2 border-gray-100 z-50 overflow-hidden">
+                <div className="absolute top-full left-0 mt-3 w-64 bg-white dark:bg-zen-night-card rounded-xl shadow-lg border border-zen-sand dark:border-zen-night-border z-50 overflow-hidden">
                   <div className="p-2">
                     {journals.map((journal) => (
                       <button
@@ -141,420 +140,286 @@ export default function JournalPage() {
                         }}
                         className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all ${
                           journal.id === selectedJournal?.id
-                            ? 'bg-blue-50 border-2 border-blue-200'
-                            : 'hover:bg-gray-50'
+                            ? 'bg-zen-sage/10 border border-zen-sage/20'
+                            : 'hover:bg-zen-parchment dark:hover:bg-zen-night-surface'
                         }`}
                       >
                         <div
-                          className="w-10 h-10 rounded-lg flex items-center justify-center text-xl flex-shrink-0"
-                          style={{ backgroundColor: journal.color + '20' }}
+                          className="w-9 h-9 rounded-lg flex items-center justify-center text-lg flex-shrink-0"
+                          style={{ backgroundColor: journal.color + '15' }}
                         >
                           {journal.icon}
                         </div>
                         <div className="flex-1 text-left">
-                          <p className="font-semibold text-gray-900">{journal.name}</p>
-                          <p className="text-xs text-gray-500">{entries.filter(e => e.journalId === journal.id).length} entries</p>
+                          <p className="font-medium text-zen-forest dark:text-zen-parchment">{journal.name}</p>
+                          <p className="text-xs text-zen-moss dark:text-zen-stone">{entries.filter(e => e.journalId === journal.id).length} entries</p>
                         </div>
                         {journal.isDefault && (
-                          <Star size={16} className="text-blue-600" fill="currentColor" />
+                          <Star size={14} className="text-zen-sage" fill="currentColor" />
                         )}
                       </button>
                     ))}
                   </div>
 
-                  <div className="border-t border-gray-200">
+                  <div className="border-t border-zen-sand dark:border-zen-night-border">
                     <Link
                       href="/journals"
-                      className="flex items-center gap-2 px-5 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                      className="flex items-center gap-2 px-5 py-3 text-sm text-zen-moss dark:text-zen-stone hover:bg-zen-parchment dark:hover:bg-zen-night-surface transition-colors"
                       onClick={() => setShowJournalMenu(false)}
                     >
-                      <Settings size={16} />
+                      <Settings size={14} />
                       <span>Manage Journals</span>
                     </Link>
                   </div>
                 </div>
               )}
             </div>
-
-            <p className="text-xl text-gray-600">
-              Capture your thoughts, track your moods, and reflect on your journey
-            </p>
           </div>
+        </div>
 
-          {/* Quote of the Day */}
-          <div className="mb-8">
-            <QuoteOfTheDay />
-          </div>
-
-          {/* View Tabs */}
-          <div className="mb-8 bg-white rounded-xl p-2 flex gap-2 w-fit">
-            <button
-              onClick={() => setActiveView('list')}
-              className={`flex items-center gap-2 px-6 py-2.5 rounded-lg transition-all font-medium ${
-                activeView === 'list'
-                  ? 'bg-gray-900 text-white'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-              }`}
+        {/* Content Card — overlaps hero */}
+        <div className="relative -mt-10">
+          <div className="bg-white dark:bg-zen-night-card rounded-t-[24px] min-h-[60vh] shadow-sm">
+            {/* View Tabs — Day One style, sticky below header */}
+            <div
+              className="sticky z-30 bg-white dark:bg-zen-night-card flex items-center gap-0.5 px-4 pt-4 pb-2 border-b border-zen-sand/50 dark:border-zen-night-border/50"
+              style={{ top: 'calc(48px + env(safe-area-inset-top))' }}
             >
-              <List size={18} />
-              List
-            </button>
-            <button
-              onClick={() => setActiveView('calendar')}
-              className={`flex items-center gap-2 px-6 py-2.5 rounded-lg transition-all font-medium ${
-                activeView === 'calendar'
-                  ? 'bg-gray-900 text-white'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-              }`}
-            >
-              <Calendar size={18} />
-              Calendar
-            </button>
-          </div>
-
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            <div className="bg-white rounded-xl border-2 border-gray-100 p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600 mb-1">Total Entries</p>
-                  <p className="text-3xl font-bold text-gray-900">{stats.totalEntries}</p>
-                </div>
-                <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                  <BookOpen className="text-blue-600" size={24} />
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl border-2 border-gray-100 p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600 mb-1">Current Streak</p>
-                  <p className="text-3xl font-bold text-gray-900">{stats.currentStreak} days</p>
-                </div>
-                <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
-                  <Calendar className="text-orange-600" size={24} />
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl border-2 border-gray-100 p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600 mb-1">Days Journaled</p>
-                  <p className="text-3xl font-bold text-gray-900">{stats.daysJournaled}</p>
-                </div>
-                <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                  <Star className="text-green-600" size={24} />
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl border-2 border-gray-100 p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600 mb-1">Media</p>
-                  <p className="text-3xl font-bold text-gray-900">{stats.mediaCount}</p>
-                </div>
-                <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                  <ImageIcon className="text-purple-600" size={24} />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Quick Start */}
-          <div className="mb-8 bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-100 dark:border-gray-700 p-6" data-tour-step="quick-start-section">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Quick Start</h2>
-              <Link href="/prompts" className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-500">
-                See more
-              </Link>
-            </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-              Instantly create an entry with one of the following:
-            </p>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-              <Link
-                href="/journal/new"
-                className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all"
-              >
-                <Plus className="text-blue-600 dark:text-blue-400" size={24} />
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">New Entry</span>
-              </Link>
-              <Link
-                href="/prompts"
-                className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all"
-              >
-                <Lightbulb className="text-blue-600 dark:text-blue-400" size={24} />
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Suggestions</span>
-              </Link>
-              <Link
-                href="/calendar"
-                className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all"
-              >
-                <CalendarDays className="text-blue-600 dark:text-blue-400" size={24} />
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Day View</span>
-              </Link>
-              <Link
-                href="/journal/new"
-                className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all"
-              >
-                <FileText className="text-blue-600 dark:text-blue-400" size={24} />
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Templates</span>
-              </Link>
-              <Link
-                href="/journal/new"
-                className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all"
-              >
-                <Mic className="text-blue-600 dark:text-blue-400" size={24} />
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Audio</span>
-              </Link>
-            </div>
-          </div>
-
-          {/* On This Day */}
-          {onThisDay.length > 0 ? (
-            <div className="mb-8">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-bold text-gray-900">On This Day</h2>
-                <Link href="/calendar" className="text-sm text-blue-600 hover:text-blue-700">
-                  See more
-                </Link>
-              </div>
-              <p className="text-gray-600 mb-4">
-                No past memories yet! Create an entry now, and you&apos;ll see it here next year.
-              </p>
-              <div className="flex gap-2 mb-4">
-                <button className="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium">
-                  2024
-                </button>
-                <button className="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-200">
-                  2023
-                </button>
-                <button className="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-200">
-                  2022
-                </button>
-              </div>
-            </div>
-          ) : null}
-
-          {/* Daily Prompt */}
-          <div className="mb-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-6 text-white">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold">Daily Prompt</h2>
-              <Link href="/prompts" className="text-sm text-blue-100 hover:text-white">
-                See more
-              </Link>
-            </div>
-            <Link
-              href={`/journal/new?prompt=${encodeURIComponent(DEFAULT_PROMPT_PACKS[6].prompts[1].question)}`}
-              className="block bg-white/10 backdrop-blur-sm rounded-xl p-4 hover:bg-white/20 transition-all"
-            >
-              <p className="text-lg font-medium">
-                {DEFAULT_PROMPT_PACKS[6].prompts[1].question}
-              </p>
-            </Link>
-          </div>
-
-          {/* List View */}
-          {activeView === 'list' && (
-            <>
-              {/* Search and Filters */}
-              <div className="mb-8 flex flex-col sm:flex-row gap-4 items-center justify-between">
-            <div className="relative flex-1 w-full">
-              <Search
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-                size={20}
-              />
-              <input
-                type="text"
-                placeholder="Search entries..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-              />
-            </div>
-
-            <div className="flex gap-2">
-              <button
-                onClick={() => setFilter('all')}
-                className={`px-6 py-3 rounded-xl font-medium transition-all ${
-                  filter === 'all'
-                    ? 'bg-blue-600 text-white shadow-lg'
-                    : 'bg-white text-gray-600 border-2 border-gray-200 hover:border-blue-300'
-                }`}
-              >
-                All
-              </button>
-              <button
-                onClick={() => setFilter('favorites')}
-                className={`px-6 py-3 rounded-xl font-medium transition-all ${
-                  filter === 'favorites'
-                    ? 'bg-blue-600 text-white shadow-lg'
-                    : 'bg-white text-gray-600 border-2 border-gray-200 hover:border-blue-300'
-                }`}
-              >
-                <Star size={18} className="inline mr-2" />
-                Favorites
-              </button>
-
               <button
                 onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
-                className="px-4 py-3 bg-white rounded-xl border-2 border-gray-200 hover:border-blue-300 transition-all"
+                className="px-3 py-2 text-zen-moss/60 dark:text-zen-stone/60 hover:text-zen-forest dark:hover:text-zen-parchment transition-colors"
+                title={viewMode === 'grid' ? 'Switch to list' : 'Switch to grid'}
               >
-                {viewMode === 'grid' ? <List size={20} /> : <Grid size={20} />}
+                <BookOpen size={17} />
               </button>
-            </div>
-          </div>
-
-          {/* On This Day */}
-          {onThisDay.length > 0 && (
-            <div className="mb-12 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl p-8 text-white">
-              <h2 className="text-2xl font-bold mb-4">On This Day</h2>
-              <p className="text-purple-100 mb-4">
-                You have {onThisDay.length} {onThisDay.length === 1 ? 'entry' : 'entries'} from previous years on this day
-              </p>
-              <div className="flex gap-4 overflow-x-auto">
-                {onThisDay.map((entry) => (
-                  <Link
-                    key={entry.id}
-                    href={`/journal/${entry.id}`}
-                    className="min-w-[300px] bg-white/10 backdrop-blur-sm rounded-lg p-4 hover:bg-white/20 transition-all"
-                  >
-                    <p className="font-medium mb-2">{entry.title}</p>
-                    <p className="text-sm text-purple-100">
-                      {new Date(entry.createdAt).getFullYear()}
-                    </p>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Entries Grid/List */}
-          {isLoading ? (
-            <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'flex flex-col gap-4'}>
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-100 dark:border-gray-700 p-6 animate-pulse">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-xl" />
-                    <div className="flex-1">
-                      <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2" />
-                      <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2" />
-                    </div>
-                  </div>
-                  <div className="space-y-2 mb-4">
-                    <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-full" />
-                    <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-5/6" />
-                    <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-2/3" />
-                  </div>
-                  <div className="flex gap-2">
-                    <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded-full w-16" />
-                    <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded-full w-20" />
-                  </div>
-                </div>
+              <div className="w-px h-4 bg-zen-sand/60 dark:bg-zen-night-border/60 mx-1" />
+              {(['list', 'calendar', 'media', 'map'] as const).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveView(tab)}
+                  className={`relative px-3.5 py-2 text-[14px] font-medium transition-colors ${
+                    activeView === tab
+                      ? 'text-zen-forest dark:text-zen-parchment'
+                      : 'text-zen-moss/40 dark:text-zen-stone/40 hover:text-zen-moss dark:hover:text-zen-stone'
+                  }`}
+                >
+                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  {activeView === tab && (
+                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-zen-forest dark:bg-zen-parchment" />
+                  )}
+                </button>
               ))}
             </div>
-          ) : displayedEntries.length === 0 ? (
-            <div className="text-center py-12 bg-white rounded-xl border-2 border-gray-100">
-              <BookOpen className="mx-auto text-gray-400 mb-4" size={48} />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No entries yet</h3>
-              <p className="text-gray-600 mb-6">Start your journaling journey today!</p>
-              <Link
-                href="/journal/new"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-medium hover:shadow-xl transition-all hover:-translate-y-1"
-              >
-                <Plus size={20} />
-                Write First Entry
-              </Link>
-            </div>
-          ) : (
-            <div className="space-y-12">
-              {Object.keys(groupedEntries)
-                .sort((a, b) => parseInt(b) - parseInt(a))
-                .map((year) => (
-                  <div key={year}>
-                    {/* Year Header */}
-                    <div className="sticky top-16 z-40 bg-gradient-to-r from-blue-50 via-white to-purple-50 pb-4 mb-6">
-                      <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                        {year}
-                      </h2>
-                    </div>
 
-                    {/* Months within year */}
-                    <div className="space-y-8">
-                      {Object.keys(groupedEntries[year])
-                        .sort((a, b) => {
-                          const monthOrder = [
-                            'January',
-                            'February',
-                            'March',
-                            'April',
-                            'May',
-                            'June',
-                            'July',
-                            'August',
-                            'September',
-                            'October',
-                            'November',
-                            'December',
-                          ];
-                          return monthOrder.indexOf(b) - monthOrder.indexOf(a);
-                        })
-                        .map((month) => (
-                          <div key={month}>
-                            {/* Month Divider */}
-                            <div className="flex items-center gap-4 mb-6">
-                              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
-                              <h3 className="text-lg font-semibold text-gray-700 px-4 py-1 bg-white rounded-full border-2 border-gray-200">
-                                {month}
-                              </h3>
-                              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+            {/* Stats Grid — 2×2 compact — only on List view like Day One */}
+            {activeView === 'list' && (
+              <div className="grid grid-cols-2 gap-3 px-4 py-4">
+                <div className="bg-zen-parchment/50 dark:bg-zen-night-surface rounded-xl p-3.5">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-xs text-zen-moss/60 dark:text-zen-stone/60 font-medium">Entries</span>
+                    <BookOpen size={15} className="text-zen-sage/50" />
+                  </div>
+                  <p className="text-2xl font-bold text-zen-forest dark:text-zen-parchment">{journalFilteredEntries.length}</p>
+                </div>
+                <div className="bg-zen-parchment/50 dark:bg-zen-night-surface rounded-xl p-3.5">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-xs text-zen-moss/60 dark:text-zen-stone/60 font-medium">Streak</span>
+                    <TrendingUp size={15} className="text-zen-clay/50" />
+                  </div>
+                  <p className="text-2xl font-bold text-zen-forest dark:text-zen-parchment">{getCurrentStreak()}<span className="text-sm font-normal text-zen-moss/40 ml-1">days</span></p>
+                </div>
+                <div className="bg-zen-parchment/50 dark:bg-zen-night-surface rounded-xl p-3.5">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-xs text-zen-moss/60 dark:text-zen-stone/60 font-medium">Days</span>
+                    <CalendarDays size={15} className="text-zen-sage/50" />
+                  </div>
+                  <p className="text-2xl font-bold text-zen-forest dark:text-zen-parchment">{getDaysJournaled()}</p>
+                </div>
+                <div className="bg-zen-parchment/50 dark:bg-zen-night-surface rounded-xl p-3.5">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-xs text-zen-moss/60 dark:text-zen-stone/60 font-medium">Media</span>
+                    <ImageIcon size={15} className="text-zen-creek/50" />
+                  </div>
+                  <p className="text-2xl font-bold text-zen-forest dark:text-zen-parchment">0</p>
+                </div>
+              </div>
+            )}
+
+            {/* Content Area — full-bleed for calendar/media/map, padded for list */}
+            <div className={activeView === 'list' ? 'px-4 py-3' : ''}>
+              {/* List View */}
+              {activeView === 'list' && (
+                <>
+                  {/* Search & Filters — only when there are entries */}
+                  {journalFilteredEntries.length > 0 && (
+                    <div className="mb-4 flex flex-col sm:flex-row gap-2 items-center justify-between">
+                      <div className="relative flex-1 w-full">
+                        <Search
+                          className="absolute left-3 top-1/2 -translate-y-1/2 text-zen-moss/30"
+                          size={15}
+                        />
+                        <input
+                          type="text"
+                          placeholder="Search entries..."
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          className="w-full pl-9 pr-3 py-2 border border-zen-sand/60 dark:border-zen-night-border rounded-lg text-sm focus:border-zen-sage focus:ring-1 focus:ring-zen-sage/20 transition-all bg-zen-parchment/30 dark:bg-zen-night-surface text-zen-forest dark:text-zen-parchment placeholder-zen-moss/30"
+                        />
+                      </div>
+                      <div className="flex gap-1">
+                        <button
+                          onClick={() => setFilter('all')}
+                          className={`px-3.5 py-1.5 rounded-lg font-medium text-xs transition-all ${
+                            filter === 'all'
+                              ? 'bg-zen-sage text-white'
+                              : 'text-zen-moss/60 dark:text-zen-stone/60 hover:bg-zen-parchment/60 dark:hover:bg-zen-night-surface'
+                          }`}
+                        >
+                          All
+                        </button>
+                        <button
+                          onClick={() => setFilter('favorites')}
+                          className={`px-3.5 py-1.5 rounded-lg font-medium text-xs transition-all flex items-center gap-1 ${
+                            filter === 'favorites'
+                              ? 'bg-zen-sage text-white'
+                              : 'text-zen-moss/60 dark:text-zen-stone/60 hover:bg-zen-parchment/60 dark:hover:bg-zen-night-surface'
+                          }`}
+                        >
+                          <Star size={11} />
+                          Favorites
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* On This Day */}
+                  {onThisDay.length > 0 && (
+                    <div className="mb-5 bg-zen-sage/6 rounded-xl p-4 border border-zen-sage/8">
+                      <h2 className="text-xs font-semibold text-zen-sage uppercase tracking-wider mb-3">On This Day</h2>
+                      <div className="flex gap-2.5 overflow-x-auto">
+                        {onThisDay.map((entry) => (
+                          <Link
+                            key={entry.id}
+                            href={`/journal/${entry.id}`}
+                            className="min-w-[180px] bg-white dark:bg-zen-night-card rounded-lg p-3 border border-zen-sand/60 dark:border-zen-night-border hover:border-zen-sage/30 transition-all"
+                          >
+                            <p className="font-medium text-sm text-zen-forest dark:text-zen-parchment mb-0.5">{entry.title}</p>
+                            <p className="text-xs text-zen-moss/60 dark:text-zen-stone/60">
+                              {new Date(entry.createdAt).getFullYear()}
+                            </p>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Entries */}
+                  {isLoading ? (
+                    <div className="flex flex-col gap-3">
+                      {[1, 2, 3].map((i) => (
+                        <div key={i} className="rounded-xl p-4 animate-pulse border border-zen-sand/40 dark:border-zen-night-border/40">
+                          <div className="flex items-center gap-3 mb-3">
+                            <div className="w-7 h-7 bg-zen-sand/40 dark:bg-zen-night-border rounded-lg" />
+                            <div className="flex-1">
+                              <div className="h-3 bg-zen-sand/40 dark:bg-zen-night-border rounded w-3/4 mb-1.5" />
+                              <div className="h-2 bg-zen-sand/30 dark:bg-zen-night-border/60 rounded w-1/3" />
+                            </div>
+                          </div>
+                          <div className="space-y-1.5">
+                            <div className="h-2 bg-zen-sand/30 dark:bg-zen-night-border/60 rounded w-full" />
+                            <div className="h-2 bg-zen-sand/30 dark:bg-zen-night-border/60 rounded w-4/5" />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : displayedEntries.length === 0 ? (
+                    /* Empty Timeline — matches Day One */
+                    <div className="flex flex-col items-center justify-center py-36">
+                      <h3 className="text-[17px] font-medium text-zen-moss/50 dark:text-zen-stone/50 mb-1.5">Empty Timeline</h3>
+                      <p className="text-sm text-zen-moss/35 dark:text-zen-stone/35">
+                        Entries will appear here when added to your journal
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-6">
+                      {Object.keys(groupedEntries)
+                        .sort((a, b) => parseInt(b) - parseInt(a))
+                        .map((year) => (
+                          <div key={year}>
+                            <div className="sticky top-12 z-40 bg-white/90 dark:bg-zen-night-card/90 backdrop-blur-sm pb-2 mb-2">
+                              <h2 className="text-lg font-light text-zen-forest/80 dark:text-zen-parchment/80">
+                                {year}
+                              </h2>
                             </div>
 
-                            {/* Entries for this month */}
-                            <div
-                              className={
-                                viewMode === 'grid'
-                                  ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
-                                  : 'flex flex-col gap-4'
-                              }
-                            >
-                              {groupedEntries[year][month].map((entry) => (
-                                <EntryCard key={entry.id} entry={entry} />
-                              ))}
+                            <div className="space-y-5">
+                              {Object.keys(groupedEntries[year])
+                                .sort((a, b) => {
+                                  const monthOrder = [
+                                    'January', 'February', 'March', 'April', 'May', 'June',
+                                    'July', 'August', 'September', 'October', 'November', 'December',
+                                  ];
+                                  return monthOrder.indexOf(b) - monthOrder.indexOf(a);
+                                })
+                                .map((month) => (
+                                  <div key={month}>
+                                    <div className="flex items-center gap-3 mb-2.5">
+                                      <div className="h-px flex-1 bg-zen-sand/40 dark:bg-zen-night-border/40"></div>
+                                      <h3 className="text-[11px] font-medium text-zen-moss/40 dark:text-zen-stone/40 uppercase tracking-widest">
+                                        {month}
+                                      </h3>
+                                      <div className="h-px flex-1 bg-zen-sand/40 dark:bg-zen-night-border/40"></div>
+                                    </div>
+
+                                    <div
+                                      className={
+                                        viewMode === 'grid'
+                                          ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3'
+                                          : 'flex flex-col gap-2'
+                                      }
+                                    >
+                                      {groupedEntries[year][month].map((entry) => (
+                                        <EntryCard key={entry.id} entry={entry} />
+                                      ))}
+                                    </div>
+                                  </div>
+                                ))}
                             </div>
                           </div>
                         ))}
                     </div>
-                  </div>
-                ))}
+                  )}
+                </>
+              )}
+
+              {/* Calendar View — continuous scrolling months */}
+              {activeView === 'calendar' && (
+                <CalendarView entries={journalFilteredEntries} />
+              )}
+
+              {/* Media View — grid timeline with filters */}
+              {activeView === 'media' && (
+                <MediaView entries={journalFilteredEntries} />
+              )}
+
+              {/* Map View — interactive map with entry pins */}
+              {activeView === 'map' && (
+                <MapView entries={journalFilteredEntries} />
+              )}
             </div>
-          )}
-
-            </>
-          )}
-
-          {/* Calendar View */}
-          {activeView === 'calendar' && (
-            <div className="text-center py-12 bg-white rounded-xl border-2 border-gray-100">
-              <Calendar className="mx-auto text-gray-400 mb-4" size={48} />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Calendar View</h3>
-              <p className="text-gray-600 mb-6">
-                Visit the <Link href="/calendar" className="text-blue-600 hover:text-blue-700 underline">Calendar page</Link> to see your entries in a calendar format.
-              </p>
-            </div>
-          )}
-
-          {/* Floating Action Button - hidden on mobile where bottom nav has New button */}
-          <Link
-            href="/journal/new"
-            className="hidden md:flex fixed bottom-8 right-8 w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full shadow-2xl items-center justify-center hover:shadow-3xl transition-all hover:scale-110"
-          >
-            <Plus size={28} />
-          </Link>
+          </div>
         </div>
+
+        {/* Floating Action Button */}
+        <Link
+          href="/journal/new"
+          className="fixed bottom-24 md:bottom-8 right-5 md:right-8 w-14 h-14 bg-zen-clay text-white rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-all hover:scale-105 z-40"
+          style={{
+            boxShadow: '0 4px 20px rgba(196, 149, 106, 0.35)',
+          }}
+        >
+          <Plus size={26} strokeWidth={2.5} />
+        </Link>
       </div>
       <TutorialOverlay />
     </Layout>

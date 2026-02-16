@@ -442,34 +442,34 @@ export default function NewEntryPage() {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="min-h-screen bg-zen-cream dark:bg-zen-night">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           {/* Header */}
-          <div className="mb-8 flex items-center justify-between">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              New Journal Entry
+          <div className="mb-6 flex items-center justify-between gap-3">
+            <h1 className="text-xl font-semibold text-zen-forest dark:text-zen-sage-light whitespace-nowrap">
+              New Entry
             </h1>
-            <div className="flex gap-3">
+            <div className="flex gap-2">
               <button
                 onClick={() => router.push('/journal')}
-                className="px-6 py-3 bg-white border-2 border-gray-200 text-gray-700 rounded-xl font-medium hover:border-gray-300 transition-all flex items-center gap-2"
+                className="px-4 py-2 bg-white dark:bg-zen-night-card border border-zen-sand dark:border-zen-night-border text-zen-forest dark:text-zen-parchment rounded-xl text-sm font-medium hover:border-zen-stone transition-all flex items-center gap-1.5"
               >
-                <X size={20} />
+                <X size={16} />
                 Cancel
               </button>
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-medium hover:shadow-xl transition-all hover:-translate-y-1 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 bg-zen-sage text-white rounded-xl text-sm font-medium hover:bg-zen-sage-light hover:shadow-sm transition-all flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Save size={20} />
+                <Save size={16} />
                 {isSaving ? 'Saving...' : 'Save Entry'}
               </button>
             </div>
           </div>
 
           {/* Entry Form */}
-          <div className="space-y-6">
+          <div className="space-y-5">
             {/* Title */}
             <div>
               <input
@@ -478,8 +478,8 @@ export default function NewEntryPage() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 onBlur={() => setTouched((prev) => ({ ...prev, title: true }))}
-                className={`w-full text-3xl font-bold border-b-2 focus:outline-none focus:ring-0 bg-transparent text-gray-900 placeholder-gray-400 pb-2 transition-colors ${
-                  errors.title ? 'border-red-400' : 'border-transparent focus:border-blue-400'
+                className={`w-full text-xl font-semibold border-b focus:outline-none focus:ring-0 bg-transparent text-zen-forest dark:text-zen-parchment placeholder-zen-stone/50 pb-2 transition-colors ${
+                  errors.title ? 'border-red-400' : 'border-transparent focus:border-zen-sage'
                 }`}
               />
               {errors.title && (
@@ -497,14 +497,14 @@ export default function NewEntryPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Category */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-zen-moss dark:text-zen-stone mb-2">
                   <FolderOpen size={16} className="inline mr-2" />
                   Category
                 </label>
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                  className="w-full px-4 py-3 border border-zen-sand dark:border-zen-night-border dark:bg-zen-night-card dark:text-zen-parchment rounded-xl focus:border-zen-sage focus:ring-2 focus:ring-zen-sage-soft transition-all"
                 >
                   <option value="">Select a category...</option>
                   <option value="Personal">👤 Personal</option>
@@ -520,7 +520,7 @@ export default function NewEntryPage() {
 
               {/* Tags */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-zen-moss dark:text-zen-stone mb-2">
                   <Tag size={16} className="inline mr-2" />
                   Tags
                 </label>
@@ -530,19 +530,19 @@ export default function NewEntryPage() {
                   value={tagInput}
                   onChange={(e) => setTagInput(e.target.value)}
                   onKeyDown={handleAddTag}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                  className="w-full px-4 py-3 border border-zen-sand dark:border-zen-night-border dark:bg-zen-night-card dark:text-zen-parchment rounded-xl focus:border-zen-sage focus:ring-2 focus:ring-zen-sage-soft transition-all"
                 />
                 {tags.length > 0 && (
                   <div className="flex gap-2 flex-wrap mt-3">
                     {tags.map((tag) => (
                       <span
                         key={tag}
-                        className="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium flex items-center gap-2"
+                        className="px-3 py-1 bg-zen-sage-soft dark:bg-zen-sage/20 text-zen-sage dark:text-zen-sage-light rounded-lg text-sm font-medium flex items-center gap-2"
                       >
                         #{tag}
                         <button
                           onClick={() => handleRemoveTag(tag)}
-                          className="hover:text-blue-900"
+                          className="hover:text-zen-forest dark:hover:text-white"
                         >
                           <X size={14} />
                         </button>
@@ -554,47 +554,47 @@ export default function NewEntryPage() {
             </div>
 
             {/* Quick Actions */}
-            <div className="flex gap-3 py-4 border-y-2 border-gray-200">
+            <div className="flex gap-3 py-4 border-y border-zen-sand dark:border-zen-night-border">
               <button
                 type="button"
                 onClick={() => setShowTemplates(!showTemplates)}
                 className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-colors ${
-                  showTemplates ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100'
+                  showTemplates ? 'bg-zen-sage-soft dark:bg-zen-sage/20 text-zen-sage' : 'hover:bg-zen-parchment dark:hover:bg-zen-night-surface'
                 }`}
               >
-                <FileText size={20} className={showTemplates ? 'text-blue-600' : 'text-gray-700'} />
-                <span className="text-xs text-gray-600">Templates</span>
+                <FileText size={20} className={showTemplates ? 'text-zen-sage' : 'text-zen-moss dark:text-zen-stone'} />
+                <span className="text-xs text-zen-moss dark:text-zen-stone">Templates</span>
               </button>
               <button
                 type="button"
                 onClick={() => setShowSuggestions(!showSuggestions)}
                 className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-colors ${
-                  showSuggestions ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100'
+                  showSuggestions ? 'bg-zen-sage-soft dark:bg-zen-sage/20 text-zen-sage' : 'hover:bg-zen-parchment dark:hover:bg-zen-night-surface'
                 }`}
               >
-                <Lightbulb size={20} className={showSuggestions ? 'text-blue-600' : 'text-gray-700'} />
-                <span className="text-xs text-gray-600">Suggestions</span>
+                <Lightbulb size={20} className={showSuggestions ? 'text-zen-sage' : 'text-zen-moss dark:text-zen-stone'} />
+                <span className="text-xs text-zen-moss dark:text-zen-stone">Suggestions</span>
               </button>
               <button
                 type="button"
                 onClick={handleAudioRecord}
-                className="flex flex-col items-center gap-1 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+                className="flex flex-col items-center gap-1 px-4 py-2 rounded-lg hover:bg-zen-parchment dark:hover:bg-zen-night-surface transition-colors"
               >
-                <Mic size={20} className="text-gray-700" />
-                <span className="text-xs text-gray-600">Audio</span>
+                <Mic size={20} className="text-zen-moss dark:text-zen-stone" />
+                <span className="text-xs text-zen-moss dark:text-zen-stone">Audio</span>
               </button>
               <button
                 type="button"
                 onClick={() => router.push('/prompts')}
-                className="flex flex-col items-center gap-1 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors ml-auto"
+                className="flex flex-col items-center gap-1 px-4 py-2 rounded-lg hover:bg-zen-parchment dark:hover:bg-zen-night-surface transition-colors ml-auto"
               >
-                <span className="text-xs text-gray-600">More Prompts →</span>
+                <span className="text-xs text-zen-moss dark:text-zen-stone">More Prompts →</span>
               </button>
             </div>
 
             {/* Voice Recording Interface */}
             {isRecording && (
-              <div className="bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl p-6 text-white shadow-xl">
+              <div className="bg-zen-sage dark:bg-zen-forest rounded-2xl p-6 text-white shadow-sm">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <div className="relative">
@@ -640,17 +640,17 @@ export default function NewEntryPage() {
 
             {/* Templates Modal */}
             {showTemplates && (
-              <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-6 mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Choose a Template</h3>
+              <div className="bg-zen-sage-soft dark:bg-zen-night-surface border border-zen-sage-light/30 dark:border-zen-night-border rounded-xl p-6 mb-6">
+                <h3 className="text-lg font-semibold text-zen-forest dark:text-zen-parchment mb-4">Choose a Template</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {templates.map((template) => (
                     <button
                       key={template.id}
                       onClick={() => handleUseTemplate(template)}
-                      className="text-left p-4 bg-white rounded-lg border-2 border-gray-200 hover:border-blue-400 hover:bg-blue-50 transition-all"
+                      className="text-left p-4 bg-white dark:bg-zen-night-card rounded-lg border border-zen-sand dark:border-zen-night-border hover:border-zen-sage hover:bg-zen-sage-soft/50 dark:hover:bg-zen-sage/10 transition-all"
                     >
-                      <h4 className="font-semibold text-gray-900 mb-2">{template.name}</h4>
-                      <p className="text-sm text-gray-600 line-clamp-2">{template.content.replace(/<[^>]*>/g, ' ')}</p>
+                      <h4 className="font-semibold text-zen-forest dark:text-zen-parchment mb-2">{template.name}</h4>
+                      <p className="text-sm text-zen-moss dark:text-zen-stone line-clamp-2">{template.content.replace(/<[^>]*>/g, ' ')}</p>
                     </button>
                   ))}
                 </div>
@@ -659,16 +659,16 @@ export default function NewEntryPage() {
 
             {/* Suggestions Modal */}
             {showSuggestions && (
-              <div className="bg-purple-50 border-2 border-purple-200 rounded-xl p-6 mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Writing Suggestions</h3>
+              <div className="bg-zen-creek/10 dark:bg-zen-night-surface border border-zen-creek/20 dark:border-zen-night-border rounded-xl p-6 mb-6">
+                <h3 className="text-lg font-semibold text-zen-forest dark:text-zen-parchment mb-4">Writing Suggestions</h3>
                 <div className="space-y-2">
                   {suggestions.map((suggestion, index) => (
                     <button
                       key={index}
                       onClick={() => handleUseSuggestion(suggestion)}
-                      className="w-full text-left p-3 bg-white rounded-lg border-2 border-gray-200 hover:border-purple-400 hover:bg-purple-50 transition-all"
+                      className="w-full text-left p-3 bg-white dark:bg-zen-night-card rounded-lg border border-zen-sand dark:border-zen-night-border hover:border-zen-creek hover:bg-zen-creek/10 dark:hover:bg-zen-creek/10 transition-all"
                     >
-                      <p className="text-gray-900">{suggestion}</p>
+                      <p className="text-zen-forest dark:text-zen-parchment">{suggestion}</p>
                     </button>
                   ))}
                 </div>
@@ -676,9 +676,9 @@ export default function NewEntryPage() {
             )}
 
             {/* Location */}
-            <div className="bg-white rounded-xl border-2 border-gray-200 p-6">
+            <div className="bg-white dark:bg-zen-night-card rounded-xl border border-zen-sand dark:border-zen-night-border p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-zen-moss dark:text-zen-stone">
                   <MapPin size={16} className="inline mr-2" />
                   Location
                 </label>
@@ -686,7 +686,7 @@ export default function NewEntryPage() {
                   type="button"
                   onClick={getCurrentLocation}
                   disabled={isGettingLocation}
-                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 px-4 py-2 bg-zen-sage text-white rounded-lg text-sm font-medium hover:bg-zen-sage-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Navigation size={16} />
                   {isGettingLocation ? 'Getting location...' : 'Use Current Location'}
@@ -700,13 +700,13 @@ export default function NewEntryPage() {
                   value={location}
                   onChange={(e) => handleLocationChange(e.target.value)}
                   onFocus={() => setShowLocationSuggestions(true)}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                  className="w-full px-4 py-3 border border-zen-sand dark:border-zen-night-border dark:bg-zen-night-surface dark:text-zen-parchment rounded-xl focus:border-zen-sage focus:ring-2 focus:ring-zen-sage-soft transition-all"
                 />
 
                 {/* Nearby Location Bubbles - Always visible when available */}
                 {nearbySuggestions.length > 0 && location.length === 0 && (
                   <div className="mt-3">
-                    <p className="text-xs font-medium text-gray-500 mb-2">Nearby Locations</p>
+                    <p className="text-xs font-medium text-zen-stone mb-2">Nearby Locations</p>
                     <div className="flex flex-wrap gap-2">
                       {nearbySuggestions.map((suggestion, index) => (
                         <button
@@ -715,14 +715,14 @@ export default function NewEntryPage() {
                           onClick={() => selectLocation(suggestion.display)}
                           className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
                             suggestion.isCurrent
-                              ? 'bg-blue-100 text-blue-700 border-2 border-blue-300 hover:bg-blue-200'
-                              : 'bg-gray-100 text-gray-700 border-2 border-gray-200 hover:bg-gray-200 hover:border-gray-300'
+                              ? 'bg-zen-sage-soft text-zen-sage border border-zen-sage-light/50 hover:bg-zen-sage-light/30 dark:bg-zen-sage/20 dark:text-zen-sage-light dark:border-zen-sage/30'
+                              : 'bg-zen-parchment text-zen-moss border border-zen-sand hover:bg-zen-sand/50 hover:border-zen-stone dark:bg-zen-night-surface dark:text-zen-stone dark:border-zen-night-border'
                           }`}
                         >
                           {suggestion.isCurrent ? (
-                            <Navigation size={12} className="text-blue-600" />
+                            <Navigation size={12} className="text-zen-sage dark:text-zen-sage-light" />
                           ) : (
-                            <MapPin size={12} className="text-gray-500" />
+                            <MapPin size={12} className="text-zen-stone" />
                           )}
                           <span>{suggestion.display}</span>
                           {suggestion.isCurrent && (
@@ -737,16 +737,16 @@ export default function NewEntryPage() {
                 {/* Search Results Dropdown - Only when typing */}
                 {showLocationSuggestions && locationSuggestions.length > 0 && (
                   <div className="mt-3">
-                    <p className="text-xs font-medium text-gray-500 mb-2">Search Results</p>
+                    <p className="text-xs font-medium text-zen-stone mb-2">Search Results</p>
                     <div className="flex flex-wrap gap-2">
                       {locationSuggestions.map((suggestion, index) => (
                         <button
                           key={index}
                           type="button"
                           onClick={() => selectLocation(suggestion.display)}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white rounded-lg text-sm font-medium border-2 border-gray-200 text-gray-700 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 transition-all"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-zen-night-card rounded-lg text-sm font-medium border border-zen-sand dark:border-zen-night-border text-zen-moss dark:text-zen-stone hover:bg-zen-sage-soft hover:border-zen-sage-light hover:text-zen-sage dark:hover:bg-zen-sage/10 dark:hover:text-zen-sage-light transition-all"
                         >
-                          <MapPin size={12} className="text-gray-500" />
+                          <MapPin size={12} className="text-zen-stone" />
                           <span>{suggestion.display}</span>
                         </button>
                       ))}
@@ -756,20 +756,20 @@ export default function NewEntryPage() {
 
                 {/* Loading State */}
                 {isSearchingLocation && (
-                  <div className="mt-3 text-center text-sm text-gray-500">
+                  <div className="mt-3 text-center text-sm text-zen-stone">
                     Searching locations...
                   </div>
                 )}
               </div>
 
-              <p className="text-xs text-gray-500 mt-2">
+              <p className="text-xs text-zen-stone mt-2">
                 Add a location to see your entries on the map view
               </p>
             </div>
 
             {/* Rich Text Editor */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">
+              <label className="block text-sm font-medium text-zen-moss dark:text-zen-stone mb-3">
                 Write your thoughts...
               </label>
               <div
@@ -791,7 +791,7 @@ export default function NewEntryPage() {
             </div>
 
             {/* Word Count */}
-            <div className="text-sm text-gray-500 text-right">
+            <div className="text-sm text-zen-stone text-right">
               {content.replace(/<[^>]*>/g, '').length} characters
             </div>
           </div>

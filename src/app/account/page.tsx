@@ -100,21 +100,21 @@ export default function AccountPage() {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
+      <div className="min-h-screen bg-zen-cream dark:bg-zen-night">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           {/* Header */}
           <div className="mb-12">
-            <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+            <h1 className="text-5xl font-bold text-zen-forest dark:text-zen-sage-light mb-4">
               Account Settings
             </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-400">
+            <p className="text-xl text-zen-moss dark:text-zen-stone">
               Manage your account and preferences
             </p>
           </div>
 
           {/* Profile Section */}
-          <div className="mb-8 bg-white rounded-xl border-2 border-gray-100 p-8 dark:bg-gray-800 dark:border-gray-700">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2 dark:text-gray-100">
+          <div className="mb-8 bg-white rounded-xl border border-zen-sand p-8 dark:bg-zen-night-card dark:border-zen-night-border">
+            <h2 className="text-2xl font-bold text-zen-forest mb-6 flex items-center gap-2 dark:text-zen-parchment">
               <User size={24} />
               Profile Information
             </h2>
@@ -122,7 +122,7 @@ export default function AccountPage() {
             {/* Profile Picture */}
             <div className="mb-6 flex items-center gap-6">
               {profile.photoUrl ? (
-                <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-gray-200 dark:border-gray-600">
+                <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-zen-sand dark:border-zen-night-border">
                   <img
                     src={profile.photoUrl}
                     alt="Profile"
@@ -130,7 +130,7 @@ export default function AccountPage() {
                   />
                 </div>
               ) : (
-                <div className="w-24 h-24 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full flex items-center justify-center text-white text-3xl font-bold">
+                <div className="w-24 h-24 bg-zen-sage rounded-full flex items-center justify-center text-white text-3xl font-bold">
                   {profile.name.charAt(0).toUpperCase()}
                 </div>
               )}
@@ -144,30 +144,30 @@ export default function AccountPage() {
                 />
                 <label
                   htmlFor="photo-upload"
-                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
+                  className="flex items-center gap-2 px-4 py-2 bg-zen-sage text-white rounded-lg hover:bg-zen-sage-light transition-colors cursor-pointer"
                 >
                   <Camera size={18} />
                   Change Photo
                 </label>
-                <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">Max 5MB (JPG, PNG, GIF)</p>
+                <p className="text-xs text-zen-stone dark:text-zen-stone mt-2">Max 5MB (JPG, PNG, GIF)</p>
               </div>
             </div>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-zen-moss dark:text-zen-stone mb-2">
                   Full Name
                 </label>
                 <input
                   type="text"
                   value={profile.name}
                   onChange={(e) => setProfile({ ...profile, name: e.target.value })}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder-gray-400"
+                  className="w-full px-4 py-3 border border-zen-sand rounded-xl focus:border-zen-sage focus:ring-2 focus:ring-zen-sage-soft transition-all dark:bg-zen-night-surface dark:border-zen-night-border dark:text-zen-parchment dark:placeholder-zen-stone"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-zen-moss dark:text-zen-stone mb-2">
                   <Mail size={16} className="inline mr-2" />
                   Email Address
                 </label>
@@ -175,12 +175,12 @@ export default function AccountPage() {
                   type="email"
                   value={profile.email}
                   onChange={(e) => setProfile({ ...profile, email: e.target.value })}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder-gray-400"
+                  className="w-full px-4 py-3 border border-zen-sand rounded-xl focus:border-zen-sage focus:ring-2 focus:ring-zen-sage-soft transition-all dark:bg-zen-night-surface dark:border-zen-night-border dark:text-zen-parchment dark:placeholder-zen-stone"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-zen-moss dark:text-zen-stone mb-2">
                   Bio
                 </label>
                 <textarea
@@ -188,20 +188,20 @@ export default function AccountPage() {
                   onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
                   placeholder="Tell us about yourself..."
                   rows={4}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all resize-none dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder-gray-400"
+                  className="w-full px-4 py-3 border border-zen-sand rounded-xl focus:border-zen-sage focus:ring-2 focus:ring-zen-sage-soft transition-all resize-none dark:bg-zen-night-surface dark:border-zen-night-border dark:text-zen-parchment dark:placeholder-zen-stone"
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-zen-moss dark:text-zen-stone mb-2">
                     <Globe size={16} className="inline mr-2" />
                     Timezone
                   </label>
                   <select
                     value={profile.timezone}
                     onChange={(e) => setProfile({ ...profile, timezone: e.target.value })}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder-gray-400"
+                    className="w-full px-4 py-3 border border-zen-sand rounded-xl focus:border-zen-sage focus:ring-2 focus:ring-zen-sage-soft transition-all dark:bg-zen-night-surface dark:border-zen-night-border dark:text-zen-parchment dark:placeholder-zen-stone"
                   >
                     <option value="America/New_York">Eastern Time (ET)</option>
                     <option value="America/Chicago">Central Time (CT)</option>
@@ -215,14 +215,14 @@ export default function AccountPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-zen-moss dark:text-zen-stone mb-2">
                     <Calendar size={16} className="inline mr-2" />
                     Date Format
                   </label>
                   <select
                     value={profile.dateFormat}
                     onChange={(e) => setProfile({ ...profile, dateFormat: e.target.value })}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder-gray-400"
+                    className="w-full px-4 py-3 border border-zen-sand rounded-xl focus:border-zen-sage focus:ring-2 focus:ring-zen-sage-soft transition-all dark:bg-zen-night-surface dark:border-zen-night-border dark:text-zen-parchment dark:placeholder-zen-stone"
                   >
                     <option value="MM/DD/YYYY">MM/DD/YYYY (US)</option>
                     <option value="DD/MM/YYYY">DD/MM/YYYY (EU)</option>
@@ -233,7 +233,7 @@ export default function AccountPage() {
 
               <button
                 onClick={handleProfileUpdate}
-                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-medium hover:shadow-xl transition-all hover:-translate-y-1"
+                className="flex items-center gap-2 px-6 py-3 bg-zen-sage text-white rounded-xl font-medium hover:bg-zen-sage-light hover:shadow-sm transition-all"
               >
                 <Save size={20} />
                 Save Profile
@@ -242,19 +242,19 @@ export default function AccountPage() {
           </div>
 
           {/* Preferences Section */}
-          <div className="mb-8 bg-white rounded-xl border-2 border-gray-100 p-8 dark:bg-gray-800 dark:border-gray-700">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2 dark:text-gray-100">
+          <div className="mb-8 bg-white rounded-xl border border-zen-sand p-8 dark:bg-zen-night-card dark:border-zen-night-border">
+            <h2 className="text-2xl font-bold text-zen-forest mb-6 flex items-center gap-2 dark:text-zen-parchment">
               <Bell size={24} />
               Preferences
             </h2>
 
             <div className="space-y-6">
-              <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+              <div className="flex items-center justify-between p-4 bg-zen-parchment dark:bg-zen-night-surface/50 rounded-xl">
                 <div className="flex items-center gap-3">
-                  <Moon size={20} className="text-gray-700 dark:text-gray-300" />
+                  <Moon size={20} className="text-zen-moss dark:text-zen-stone" />
                   <div>
-                    <p className="font-medium text-gray-900 dark:text-gray-100">Dark Mode</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Enable dark theme</p>
+                    <p className="font-medium text-zen-forest dark:text-zen-parchment">Dark Mode</p>
+                    <p className="text-sm text-zen-moss dark:text-zen-stone">Enable dark theme</p>
                   </div>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
@@ -264,16 +264,16 @@ export default function AccountPage() {
                     onChange={(e) => setPreferences({ ...preferences, darkMode: e.target.checked })}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 dark:bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  <div className="w-11 h-6 bg-zen-sand dark:bg-zen-night-border peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-zen-sage-soft rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-zen-sand after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-zen-sage"></div>
                 </label>
               </div>
 
-              <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+              <div className="flex items-center justify-between p-4 bg-zen-parchment dark:bg-zen-night-surface/50 rounded-xl">
                 <div className="flex items-center gap-3">
-                  <Bell size={20} className="text-gray-700 dark:text-gray-300" />
+                  <Bell size={20} className="text-zen-moss dark:text-zen-stone" />
                   <div>
-                    <p className="font-medium text-gray-900 dark:text-gray-100">Notifications</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Receive app notifications</p>
+                    <p className="font-medium text-zen-forest dark:text-zen-parchment">Notifications</p>
+                    <p className="text-sm text-zen-moss dark:text-zen-stone">Receive app notifications</p>
                   </div>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
@@ -283,16 +283,16 @@ export default function AccountPage() {
                     onChange={(e) => setPreferences({ ...preferences, notifications: e.target.checked })}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 dark:bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  <div className="w-11 h-6 bg-zen-sand dark:bg-zen-night-border peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-zen-sage-soft rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-zen-sand after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-zen-sage"></div>
                 </label>
               </div>
 
-              <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+              <div className="flex items-center justify-between p-4 bg-zen-parchment dark:bg-zen-night-surface/50 rounded-xl">
                 <div className="flex items-center gap-3">
-                  <Mail size={20} className="text-gray-700 dark:text-gray-300" />
+                  <Mail size={20} className="text-zen-moss dark:text-zen-stone" />
                   <div>
-                    <p className="font-medium text-gray-900 dark:text-gray-100">Email Digest</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Weekly summary emails</p>
+                    <p className="font-medium text-zen-forest dark:text-zen-parchment">Email Digest</p>
+                    <p className="text-sm text-zen-moss dark:text-zen-stone">Weekly summary emails</p>
                   </div>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
@@ -302,16 +302,16 @@ export default function AccountPage() {
                     onChange={(e) => setPreferences({ ...preferences, emailDigest: e.target.checked })}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 dark:bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  <div className="w-11 h-6 bg-zen-sand dark:bg-zen-night-border peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-zen-sage-soft rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-zen-sand after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-zen-sage"></div>
                 </label>
               </div>
 
-              <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+              <div className="flex items-center justify-between p-4 bg-zen-parchment dark:bg-zen-night-surface/50 rounded-xl">
                 <div className="flex items-center gap-3">
-                  <Save size={20} className="text-gray-700 dark:text-gray-300" />
+                  <Save size={20} className="text-zen-moss dark:text-zen-stone" />
                   <div>
-                    <p className="font-medium text-gray-900 dark:text-gray-100">Auto-Save</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Automatically save entries</p>
+                    <p className="font-medium text-zen-forest dark:text-zen-parchment">Auto-Save</p>
+                    <p className="text-sm text-zen-moss dark:text-zen-stone">Automatically save entries</p>
                   </div>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
@@ -321,13 +321,13 @@ export default function AccountPage() {
                     onChange={(e) => setPreferences({ ...preferences, autoSave: e.target.checked })}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 dark:bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  <div className="w-11 h-6 bg-zen-sand dark:bg-zen-night-border peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-zen-sage-soft rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-zen-sand after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-zen-sage"></div>
                 </label>
               </div>
 
               <button
                 onClick={handlePreferencesUpdate}
-                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-medium hover:shadow-xl transition-all hover:-translate-y-1"
+                className="flex items-center gap-2 px-6 py-3 bg-zen-sage text-white rounded-xl font-medium hover:bg-zen-sage-light hover:shadow-sm transition-all"
               >
                 <Save size={20} />
                 Save Preferences
@@ -336,15 +336,15 @@ export default function AccountPage() {
           </div>
 
           {/* Sign Out */}
-          <div className="bg-gray-50 rounded-xl border-2 border-gray-200 p-8 dark:bg-gray-800 dark:border-gray-700">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Sign Out</h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
+          <div className="bg-zen-parchment rounded-xl border border-zen-sand p-8 dark:bg-zen-night-card dark:border-zen-night-border">
+            <h2 className="text-2xl font-bold text-zen-forest dark:text-zen-parchment mb-2">Sign Out</h2>
+            <p className="text-zen-moss dark:text-zen-stone mb-6">
               Sign out of your account on this device
             </p>
 
             <button
               onClick={handleSignOut}
-              className="flex items-center gap-3 px-6 py-3 bg-gray-800 text-white rounded-xl font-medium hover:bg-gray-900 transition-all"
+              className="flex items-center gap-3 px-6 py-3 bg-zen-forest text-white rounded-xl font-medium hover:bg-zen-moss transition-all"
             >
               <LogOut size={20} />
               Sign Out

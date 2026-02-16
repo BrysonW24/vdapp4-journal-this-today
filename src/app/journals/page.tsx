@@ -316,21 +316,21 @@ export default function JournalsPage() {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
+      <div className="min-h-screen bg-zen-cream dark:bg-zen-night">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           {/* Header */}
           <div className="mb-12 flex items-center justify-between">
             <div>
-              <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+              <h1 className="text-3xl font-semibold text-zen-forest dark:text-zen-sage-light mb-1">
                 My Journals
               </h1>
-              <p className="text-xl text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-zen-moss dark:text-zen-stone">
                 Organize your thoughts into different journals
               </p>
             </div>
             <button
               onClick={() => setShowCreateModal(true)}
-              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-medium hover:shadow-xl transition-all hover:-translate-y-1"
+              className="flex items-center gap-2 px-6 py-3 bg-zen-sage text-white rounded-xl font-medium hover:bg-zen-sage-light hover:shadow-sm transition-all"
             >
               <Plus size={20} />
               New Journal
@@ -343,13 +343,13 @@ export default function JournalsPage() {
               <div
                 key={journal.id}
                 onClick={() => router.push(`/journal?journalId=${journal.id}`)}
-                className="bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-200 dark:border-gray-700 p-6 hover:shadow-xl transition-all hover:-translate-y-1 cursor-pointer relative"
+                className="bg-white dark:bg-zen-night-surface rounded-xl border border-zen-sand dark:border-zen-night-border p-6 hover:bg-zen-parchment hover:shadow-sm transition-all cursor-pointer relative"
                 style={{ borderColor: journal.color + '40' }}
               >
                 {/* Default Badge */}
                 {journal.isDefault && (
                   <div className="absolute top-4 right-4">
-                    <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 text-xs font-semibold rounded-full flex items-center gap-1">
+                    <span className="px-3 py-1 bg-zen-sage-soft dark:bg-zen-sage/20 text-zen-sage dark:text-zen-sage-light text-xs font-semibold rounded-full flex items-center gap-1">
                       <Star size={12} fill="currentColor" />
                       Default
                     </span>
@@ -364,8 +364,8 @@ export default function JournalsPage() {
                   >
                     {journal.icon}
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">{journal.name}</h3>
-                  <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+                  <h3 className="text-2xl font-bold text-zen-forest dark:text-zen-cream mb-2">{journal.name}</h3>
+                  <div className="flex items-center gap-4 text-sm text-zen-moss dark:text-zen-stone">
                     <span className="flex items-center gap-1">
                       <BookOpen size={14} />
                       {entries.filter(e => e.journalId === journal.id).length} entries
@@ -378,14 +378,14 @@ export default function JournalsPage() {
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center gap-2 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <div className="flex items-center gap-2 pt-4 border-t border-zen-sand dark:border-zen-night-border">
                   {!journal.isDefault && (
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         handleSetDefault(journal);
                       }}
-                      className="flex-1 px-3 py-2 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center justify-center gap-2"
+                      className="flex-1 px-3 py-2 text-sm bg-zen-parchment dark:bg-zen-night-surface text-zen-moss dark:text-zen-stone rounded-lg hover:bg-zen-sand dark:hover:bg-zen-night-border transition-colors flex items-center justify-center gap-2"
                     >
                       <Star size={14} />
                       Set Default
@@ -396,7 +396,7 @@ export default function JournalsPage() {
                       e.stopPropagation();
                       setJournalWithSettingsOpen(journal.id);
                     }}
-                    className="px-3 py-2 text-sm bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 rounded-lg hover:bg-purple-200 dark:hover:bg-purple-900/50 transition-colors"
+                    className="px-3 py-2 text-sm bg-zen-sage-soft dark:bg-zen-sage/20 text-zen-sage dark:text-zen-sage-light rounded-lg hover:bg-zen-sage-soft/70 dark:hover:bg-zen-sage/30 transition-colors"
                     title="Export/Import"
                   >
                     <Settings size={14} />
@@ -406,7 +406,7 @@ export default function JournalsPage() {
                       e.stopPropagation();
                       startEdit(journal);
                     }}
-                    className="px-3 py-2 text-sm bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors"
+                    className="px-3 py-2 text-sm bg-zen-sage-soft dark:bg-zen-sage/20 text-zen-sage dark:text-zen-sage-light rounded-lg hover:bg-zen-sage-soft/70 dark:hover:bg-zen-sage/30 transition-colors"
                   >
                     <Edit2 size={14} />
                   </button>
@@ -450,7 +450,7 @@ export default function JournalsPage() {
               >
                 {/* Header */}
                 <div className="px-8 pt-8 pb-4">
-                  <h2 className="text-2xl font-bold text-gray-900">
+                  <h2 className="text-2xl font-bold text-zen-forest">
                     {editingJournal ? 'Edit Journal' : 'Create New Journal'}
                   </h2>
                 </div>
@@ -460,7 +460,7 @@ export default function JournalsPage() {
                   <div className="space-y-6">
                   {/* Name */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-zen-moss mb-2">
                       Journal Name
                     </label>
                     <input
@@ -468,14 +468,14 @@ export default function JournalsPage() {
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       placeholder="e.g., Personal, Work, Travel"
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                      className="w-full px-4 py-3 border border-zen-sand rounded-xl focus:border-zen-sage focus:ring-2 focus:ring-zen-sage-soft transition-all"
                       autoFocus
                     />
                   </div>
 
                   {/* Icon Selection */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-zen-moss mb-2">
                       Choose an Icon
                     </label>
                     <div className="grid grid-cols-8 gap-2">
@@ -485,8 +485,8 @@ export default function JournalsPage() {
                           onClick={() => setFormData({ ...formData, icon })}
                           className={`w-10 h-10 rounded-lg flex items-center justify-center text-2xl transition-all ${
                             formData.icon === icon
-                              ? 'bg-blue-100 ring-2 ring-blue-500'
-                              : 'bg-gray-100 hover:bg-gray-200'
+                              ? 'bg-zen-sage-soft ring-2 ring-zen-sage'
+                              : 'bg-zen-parchment hover:bg-zen-sand'
                           }`}
                         >
                           {icon}
@@ -497,7 +497,7 @@ export default function JournalsPage() {
 
                   {/* Color Selection */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-zen-moss mb-2">
                       Choose a Color
                     </label>
                     <div className="grid grid-cols-4 gap-3">
@@ -521,7 +521,7 @@ export default function JournalsPage() {
                               </div>
                             )}
                           </div>
-                          <p className="text-xs text-gray-600 mt-1 text-center">{color.name}</p>
+                          <p className="text-xs text-zen-moss mt-1 text-center">{color.name}</p>
                         </button>
                       ))}
                     </div>
@@ -530,17 +530,17 @@ export default function JournalsPage() {
                 </div>
 
                 {/* Fixed Footer with Actions */}
-                <div className="px-8 py-6 border-t border-gray-200">
+                <div className="px-8 py-6 border-t border-zen-sand">
                   <div className="flex gap-3">
                     <button
                       onClick={cancelEdit}
-                      className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-colors"
+                      className="flex-1 px-6 py-3 bg-zen-parchment text-zen-moss rounded-xl font-medium hover:bg-zen-sand transition-colors"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={editingJournal ? handleUpdateJournal : handleCreateJournal}
-                      className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-medium hover:shadow-xl transition-all"
+                      className="flex-1 px-6 py-3 bg-zen-sage text-white rounded-xl font-medium hover:bg-zen-sage-light hover:shadow-sm transition-all"
                     >
                       {editingJournal ? 'Save Changes' : 'Create Journal'}
                     </button>
@@ -565,91 +565,91 @@ export default function JournalsPage() {
                   onClick={(e) => e.stopPropagation()}
                 >
                   {/* Header */}
-                  <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-                    <h2 className="text-xl font-bold text-gray-900">
+                  <div className="sticky top-0 bg-white border-b border-zen-sand px-6 py-4 flex items-center justify-between">
+                    <h2 className="text-xl font-bold text-zen-forest">
                       {journal.icon} {journal.name} - Export/Import
                     </h2>
                     <button
                       onClick={() => setJournalWithSettingsOpen(null)}
-                      className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+                      className="p-2 text-zen-moss hover:text-zen-forest hover:bg-zen-parchment rounded-lg transition-colors"
                     >
                       <X size={20} />
                     </button>
                   </div>
 
                   {/* Export Section */}
-                  <div className="p-6 border-b border-gray-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                  <div className="p-6 border-b border-zen-sand">
+                    <h3 className="text-lg font-semibold text-zen-forest mb-2 flex items-center gap-2">
                       <Download size={18} />
                       Export Journal
                     </h3>
-                    <p className="text-sm text-gray-600 mb-4">
+                    <p className="text-sm text-zen-moss mb-4">
                       Download all entries from this journal
                     </p>
 
                     <div className="grid grid-cols-2 gap-3">
                       <button
                         onClick={() => handleExportJournalJSON(journal)}
-                        className="flex items-center gap-2 p-3 border-2 border-gray-200 rounded-xl hover:border-blue-400 hover:bg-blue-50 transition-all group"
+                        className="flex items-center gap-2 p-3 border border-zen-sand rounded-xl hover:border-zen-sage hover:bg-zen-parchment transition-all group"
                       >
-                        <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors flex-shrink-0">
-                          <FileJson className="text-blue-600" size={18} />
+                        <div className="w-10 h-10 bg-zen-sage-soft rounded-lg flex items-center justify-center group-hover:bg-zen-sage-soft/70 transition-colors flex-shrink-0">
+                          <FileJson className="text-zen-sage" size={18} />
                         </div>
                         <div className="text-left">
-                          <p className="font-semibold text-gray-900 text-xs">JSON</p>
-                          <p className="text-[10px] text-gray-600">Full backup</p>
+                          <p className="font-semibold text-zen-forest text-xs">JSON</p>
+                          <p className="text-[10px] text-zen-moss">Full backup</p>
                         </div>
                       </button>
 
                       <button
                         onClick={() => handleExportJournalText(journal)}
-                        className="flex items-center gap-2 p-3 border-2 border-gray-200 rounded-xl hover:border-green-400 hover:bg-green-50 transition-all group"
+                        className="flex items-center gap-2 p-3 border border-zen-sand rounded-xl hover:border-zen-sage hover:bg-zen-parchment transition-all group"
                       >
                         <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition-colors flex-shrink-0">
                           <FileText className="text-green-600" size={18} />
                         </div>
                         <div className="text-left">
-                          <p className="font-semibold text-gray-900 text-xs">Text</p>
-                          <p className="text-[10px] text-gray-600">Plain format</p>
+                          <p className="font-semibold text-zen-forest text-xs">Text</p>
+                          <p className="text-[10px] text-zen-moss">Plain format</p>
                         </div>
                       </button>
 
                       <button
                         onClick={() => handleExportJournalMarkdown(journal)}
-                        className="flex items-center gap-2 p-3 border-2 border-gray-200 rounded-xl hover:border-purple-400 hover:bg-purple-50 transition-all group"
+                        className="flex items-center gap-2 p-3 border border-zen-sand rounded-xl hover:border-zen-sage hover:bg-zen-parchment transition-all group"
                       >
-                        <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center group-hover:bg-purple-200 transition-colors flex-shrink-0">
-                          <FileCode className="text-purple-600" size={18} />
+                        <div className="w-10 h-10 bg-zen-sage-soft rounded-lg flex items-center justify-center group-hover:bg-zen-sage-soft/70 transition-colors flex-shrink-0">
+                          <FileCode className="text-zen-sage" size={18} />
                         </div>
                         <div className="text-left">
-                          <p className="font-semibold text-gray-900 text-xs">Markdown</p>
-                          <p className="text-[10px] text-gray-600">Formatted</p>
+                          <p className="font-semibold text-zen-forest text-xs">Markdown</p>
+                          <p className="text-[10px] text-zen-moss">Formatted</p>
                         </div>
                       </button>
 
                       <button
                         onClick={() => handleExportJournalCSV(journal)}
-                        className="flex items-center gap-2 p-3 border-2 border-gray-200 rounded-xl hover:border-orange-400 hover:bg-orange-50 transition-all group"
+                        className="flex items-center gap-2 p-3 border border-zen-sand rounded-xl hover:border-zen-sage hover:bg-zen-parchment transition-all group"
                       >
                         <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center group-hover:bg-orange-200 transition-colors flex-shrink-0">
                           <FileSpreadsheet className="text-orange-600" size={18} />
                         </div>
                         <div className="text-left">
-                          <p className="font-semibold text-gray-900 text-xs">CSV</p>
-                          <p className="text-[10px] text-gray-600">Spreadsheet</p>
+                          <p className="font-semibold text-zen-forest text-xs">CSV</p>
+                          <p className="text-[10px] text-zen-moss">Spreadsheet</p>
                         </div>
                       </button>
 
                       <button
                         onClick={() => handleExportJournalPDF(journal)}
-                        className="flex items-center gap-2 p-3 border-2 border-gray-200 rounded-xl hover:border-red-400 hover:bg-red-50 transition-all group col-span-2"
+                        className="flex items-center gap-2 p-3 border border-zen-sand rounded-xl hover:border-zen-sage hover:bg-zen-parchment transition-all group col-span-2"
                       >
                         <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center group-hover:bg-red-200 transition-colors flex-shrink-0">
                           <FileType className="text-red-600" size={18} />
                         </div>
                         <div className="text-left">
-                          <p className="font-semibold text-gray-900 text-xs">PDF</p>
-                          <p className="text-[10px] text-gray-600">Print ready</p>
+                          <p className="font-semibold text-zen-forest text-xs">PDF</p>
+                          <p className="text-[10px] text-zen-moss">Print ready</p>
                         </div>
                       </button>
                     </div>
@@ -657,21 +657,21 @@ export default function JournalsPage() {
 
                   {/* Import Section */}
                   <div className="p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                    <h3 className="text-lg font-semibold text-zen-forest mb-2 flex items-center gap-2">
                       <Upload size={18} />
                       Import into Journal
                     </h3>
-                    <p className="text-sm text-gray-600 mb-4">
+                    <p className="text-sm text-zen-moss mb-4">
                       Import entries from a backup file
                     </p>
 
-                    <label className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl hover:border-purple-400 hover:bg-purple-50 transition-all cursor-pointer group">
-                      <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center group-hover:bg-purple-200 transition-colors">
-                        <FileJson className="text-purple-600" size={20} />
+                    <label className="flex items-center gap-3 p-4 border border-zen-sand rounded-xl hover:border-zen-sage hover:bg-zen-parchment transition-all cursor-pointer group">
+                      <div className="w-10 h-10 bg-zen-sage-soft rounded-lg flex items-center justify-center group-hover:bg-zen-sage-soft/70 transition-colors">
+                        <FileJson className="text-zen-sage" size={20} />
                       </div>
                       <div className="text-left flex-1">
-                        <p className="font-semibold text-gray-900 text-sm">Import JSON</p>
-                        <p className="text-xs text-gray-600">Restore from backup</p>
+                        <p className="font-semibold text-zen-forest text-sm">Import JSON</p>
+                        <p className="text-xs text-zen-moss">Restore from backup</p>
                       </div>
                       <input
                         type="file"
@@ -697,16 +697,16 @@ export default function JournalsPage() {
               }}
             >
               <div
-                className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full overflow-hidden"
+                className="bg-white dark:bg-zen-night-surface rounded-2xl shadow-2xl max-w-md w-full overflow-hidden"
                 onClick={(e) => e.stopPropagation()}
               >
                 {/* Header */}
-                <div className="px-6 pt-6 pb-4 border-b border-gray-200 dark:border-gray-700">
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <div className="px-6 pt-6 pb-4 border-b border-zen-sand dark:border-zen-night-border">
+                  <h2 className="text-xl font-bold text-zen-forest dark:text-zen-cream flex items-center gap-2">
                     <ArrowRightLeft size={20} />
                     Transfer Entries
                   </h2>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                  <p className="text-sm text-zen-moss dark:text-zen-stone mt-2">
                     Move all entries from &quot;{transferFrom.name}&quot; to another journal
                   </p>
                 </div>
@@ -714,10 +714,10 @@ export default function JournalsPage() {
                 {/* Content */}
                 <div className="px-6 py-4">
                   <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-zen-moss dark:text-zen-stone mb-2">
                       Transfer from
                     </label>
-                    <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                    <div className="flex items-center gap-3 p-3 bg-zen-parchment dark:bg-zen-night-surface/50 rounded-lg">
                       <div
                         className="w-10 h-10 rounded-lg flex items-center justify-center text-xl"
                         style={{ backgroundColor: transferFrom.color + '20' }}
@@ -725,8 +725,8 @@ export default function JournalsPage() {
                         {transferFrom.icon}
                       </div>
                       <div>
-                        <p className="font-semibold text-gray-900 dark:text-white">{transferFrom.name}</p>
-                        <p className="text-xs text-gray-600 dark:text-gray-400">
+                        <p className="font-semibold text-zen-forest dark:text-zen-cream">{transferFrom.name}</p>
+                        <p className="text-xs text-zen-moss dark:text-zen-stone">
                           {entries.filter(e => e.journalId === transferFrom.id).length} entries
                         </p>
                       </div>
@@ -734,13 +734,13 @@ export default function JournalsPage() {
                   </div>
 
                   <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-zen-moss dark:text-zen-stone mb-2">
                       Transfer to
                     </label>
                     <select
                       value={transferTo}
                       onChange={(e) => setTransferTo(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      className="w-full px-4 py-3 border border-zen-sand dark:border-zen-night-border rounded-lg focus:outline-none focus:ring-2 focus:ring-zen-sage-soft bg-white dark:bg-zen-night-surface text-zen-forest dark:text-zen-cream"
                     >
                       <option value="">Select destination journal...</option>
                       {journals
@@ -761,14 +761,14 @@ export default function JournalsPage() {
                         setTransferFrom(null);
                         setTransferTo('');
                       }}
-                      className="flex-1 px-4 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                      className="flex-1 px-4 py-2.5 border border-zen-sand dark:border-zen-night-border text-zen-moss dark:text-zen-stone rounded-lg hover:bg-zen-parchment dark:hover:bg-zen-night-surface transition-colors"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={handleTransferEntries}
                       disabled={!transferTo}
-                      className="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex-1 px-4 py-2.5 bg-zen-sage text-white rounded-lg hover:bg-zen-sage-light hover:shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       Transfer
                     </button>

@@ -75,8 +75,8 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
   const ToolbarButton = ({ onClick, isActive, title, children }: { onClick: () => void; isActive?: boolean; title: string; children: React.ReactNode }) => (
     <button
       onClick={onClick}
-      className={`p-3 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex-shrink-0 ${
-        isActive ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-300'
+      className={`p-3 rounded-lg hover:bg-zen-parchment dark:hover:bg-zen-night-surface transition-colors flex-shrink-0 ${
+        isActive ? 'bg-zen-sage-soft dark:bg-zen-sage/20 text-zen-sage dark:text-zen-sage-light' : 'text-zen-forest dark:text-zen-stone'
       }`}
       title={title}
     >
@@ -85,9 +85,9 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
   );
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-200 dark:border-gray-600 overflow-hidden">
+    <div className="bg-white dark:bg-zen-night-card rounded-xl border border-zen-sand dark:border-zen-night-border overflow-hidden">
       {/* Toolbar */}
-      <div className="border-b-2 border-gray-200 dark:border-gray-600 p-2 sm:p-3 flex overflow-x-auto gap-0.5 bg-gray-50 dark:bg-gray-700/50 scrollbar-hide">
+      <div className="border-b border-zen-sand dark:border-zen-night-border p-2 sm:p-3 flex overflow-x-auto gap-0.5 bg-zen-cream dark:bg-zen-night-surface scrollbar-hide">
         {/* Text Formatting */}
         <ToolbarButton onClick={() => editor.chain().focus().toggleBold().run()} isActive={editor.isActive('bold')} title="Bold">
           <Bold size={18} />
@@ -99,7 +99,7 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
           <Strikethrough size={18} />
         </ToolbarButton>
 
-        <div className="w-px h-8 bg-gray-300 dark:bg-gray-500 mx-1 flex-shrink-0 self-center"></div>
+        <div className="w-px h-8 bg-zen-sand dark:bg-zen-night-border mx-1 flex-shrink-0 self-center"></div>
 
         {/* Headings */}
         <ToolbarButton onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} isActive={editor.isActive('heading', { level: 1 })} title="Heading 1">
@@ -112,7 +112,7 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
           <Heading3 size={18} />
         </ToolbarButton>
 
-        <div className="w-px h-8 bg-gray-300 dark:bg-gray-500 mx-1 flex-shrink-0 self-center"></div>
+        <div className="w-px h-8 bg-zen-sand dark:bg-zen-night-border mx-1 flex-shrink-0 self-center"></div>
 
         {/* Lists */}
         <ToolbarButton onClick={() => editor.chain().focus().toggleBulletList().run()} isActive={editor.isActive('bulletList')} title="Bullet List">
@@ -122,7 +122,7 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
           <ListOrdered size={18} />
         </ToolbarButton>
 
-        <div className="w-px h-8 bg-gray-300 dark:bg-gray-500 mx-1 flex-shrink-0 self-center"></div>
+        <div className="w-px h-8 bg-zen-sand dark:bg-zen-night-border mx-1 flex-shrink-0 self-center"></div>
 
         {/* Alignment */}
         <ToolbarButton onClick={() => editor.chain().focus().setTextAlign('left').run()} isActive={editor.isActive({ textAlign: 'left' })} title="Align Left">
@@ -138,7 +138,7 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
           <AlignJustify size={18} />
         </ToolbarButton>
 
-        <div className="w-px h-8 bg-gray-300 dark:bg-gray-500 mx-1 flex-shrink-0 self-center"></div>
+        <div className="w-px h-8 bg-zen-sand dark:bg-zen-night-border mx-1 flex-shrink-0 self-center"></div>
 
         {/* Highlight */}
         <ToolbarButton onClick={() => editor.chain().focus().toggleHighlight().run()} isActive={editor.isActive('highlight')} title="Highlight">

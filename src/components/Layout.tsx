@@ -4,9 +4,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
-import { Menu, X, Search, Moon, Sun, FileText } from 'lucide-react';
+import { Search, Moon, Sun, FileText } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useJournalStore } from '@/stores/journal-store';
+import { useJournalsStore } from '@/stores/journals-store';
 import { format } from 'date-fns';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
 
@@ -18,14 +19,21 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
   const { theme, setTheme } = useTheme();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [userName, setUserName] = useState('U');
   const searchRef = useRef<HTMLDivElement>(null);
 
   const { searchEntries } = useJournalStore();
+  const { journals, selectedJournalId, loadJournals } = useJournalsStore();
   const searchResults = searchQuery.trim() ? searchEntries(searchQuery) : [];
+
+  // Get current journal for header display
+  const selectedJournal = journals.find(j => j.id === selectedJournalId) || journals.find(j => j.isDefault) || journals[0];
+
+  useEffect(() => {
+    loadJournals();
+  }, [loadJournals]);
 
   // Load user name from localStorage or session
   useEffect(() => {
@@ -45,10 +53,8 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       }
     };
 
-    // Initial load
     loadUserName();
 
-    // Listen for custom profile update event
     const handleProfileUpdate = () => {
       loadUserName();
     };
@@ -81,7 +87,6 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     setSearchQuery('');
   };
 
-  // Strip HTML tags and highlight search term
   const stripHtml = (html: string) => {
     const tmp = document.createElement('div');
     tmp.innerHTML = html;
@@ -97,31 +102,21 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
     return parts.map((part, index) =>
       regex.test(part)
-        ? <mark key={index} className="bg-yellow-200 dark:bg-yellow-900/50 text-gray-900 dark:text-gray-100 px-0.5 rounded">{part}</mark>
+        ? <mark key={index} className="bg-zen-sage-soft text-zen-forest px-0.5 rounded">{part}</mark>
         : part
     );
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen flex flex-col bg-zen-cream dark:bg-zen-night">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow sticky top-0 z-50 pt-[env(safe-area-inset-top)]">
-        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
-          >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-
-          {/* Logo */}
-          <Link href="/journal" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center text-white text-sm font-bold">
-              📔
-            </div>
-            <span className="font-bold text-lg bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent hidden sm:inline">
-              This, Today
+      <header className="bg-white/80 dark:bg-zen-night-card/80 backdrop-blur-md border-b border-zen-sand dark:border-zen-night-border sticky top-0 z-50 pt-[env(safe-area-inset-top)]">
+        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center justify-between">
+          {/* Logo + Journal Name */}
+          <Link href="/journal" className="flex items-center gap-1.5">
+            <span className="text-lg">{selectedJournal?.icon || '📔'}</span>
+            <span className="text-sm font-medium text-zen-moss dark:text-zen-stone">
+              {selectedJournal?.name || 'Journal'}
             </span>
           </Link>
 
@@ -129,91 +124,82 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
           <div className="hidden md:flex items-center space-x-8">
             <Link
               href="/journals"
-              className="text-gray-700 hover:text-blue-600 transition font-medium dark:text-gray-300 dark:hover:text-blue-400"
+              className="text-zen-moss hover:text-zen-sage transition font-medium dark:text-zen-stone dark:hover:text-zen-sage-light"
             >
               Journals
             </Link>
             <Link
               href="/journal"
-              className="text-gray-700 hover:text-blue-600 transition font-medium dark:text-gray-300 dark:hover:text-blue-400"
+              className="text-zen-moss hover:text-zen-sage transition font-medium dark:text-zen-stone dark:hover:text-zen-sage-light"
             >
               Entries
             </Link>
             <Link
               href="/calendar"
-              className="text-gray-700 hover:text-blue-600 transition font-medium dark:text-gray-300 dark:hover:text-blue-400"
+              className="text-zen-moss hover:text-zen-sage transition font-medium dark:text-zen-stone dark:hover:text-zen-sage-light"
             >
               Calendar
             </Link>
             <Link
               href="/prompts"
-              className="text-gray-700 hover:text-blue-600 transition font-medium dark:text-gray-300 dark:hover:text-blue-400"
+              className="text-zen-moss hover:text-zen-sage transition font-medium dark:text-zen-stone dark:hover:text-zen-sage-light"
             >
               Prompts
             </Link>
           </div>
 
           {/* Right Side Actions */}
-          <div className="flex items-center space-x-2 sm:space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-3">
             {/* Search Button */}
             <button
               onClick={() => setSearchOpen(!searchOpen)}
-              className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700"
+              className="p-2 text-zen-moss hover:text-zen-sage hover:bg-zen-sage/5 rounded-xl transition dark:text-zen-stone dark:hover:text-zen-sage-light"
               data-tour-step="search-button"
             >
-              <Search size={20} />
+              <Search size={18} />
             </button>
 
             {/* Theme Toggle */}
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700"
+              className="p-2 text-zen-moss hover:text-zen-sage hover:bg-zen-sage/5 rounded-xl transition dark:text-zen-stone dark:hover:text-zen-sage-light"
               title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
               data-tour-step="theme-toggle"
             >
-              {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+              {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
             </button>
-
-            {/* New Entry Button - Hidden on mobile */}
-            <Link
-              href="/journal/new"
-              className="hidden sm:flex px-4 lg:px-6 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-lg transition-all hover:-translate-y-0.5 font-medium text-sm"
-              data-tour-step="new-entry-button"
-            >
-              + New Entry
-            </Link>
 
             {/* Profile Picture */}
             <Link
               href="/account"
               className="flex-shrink-0"
             >
-              <div className="w-9 h-9 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full flex items-center justify-center text-white font-semibold text-sm ring-2 ring-white hover:ring-blue-300 transition-all cursor-pointer">
+              <div className="w-8 h-8 bg-zen-sage/15 rounded-full flex items-center justify-center text-zen-sage font-semibold text-sm ring-1 ring-zen-sage/20 hover:ring-zen-sage/40 transition-all cursor-pointer">
                 {userName}
               </div>
             </Link>
           </div>
         </nav>
 
-        {/* Search Bar (Mobile & Desktop) */}
+        {/* Search Bar */}
         {searchOpen && (
-          <div ref={searchRef} className="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+          <div ref={searchRef} className="border-t border-zen-sand dark:border-zen-night-border bg-white/90 dark:bg-zen-night-card/90 backdrop-blur-md">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
               <div className="relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-zen-moss/50" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search entries..."
-                  className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
+                  className="w-full pl-11 pr-4 py-2.5 border border-zen-sand dark:border-zen-night-border rounded-xl focus:border-zen-sage focus:ring-1 focus:ring-zen-sage/20 transition-all bg-white dark:bg-zen-night-surface text-zen-forest dark:text-zen-parchment placeholder-zen-moss/40"
                   autoFocus
                 />
               </div>
 
               {/* Search Results */}
               {searchQuery.trim() && (
-                <div className="mt-2 max-h-80 overflow-y-auto bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg">
+                <div className="mt-2 max-h-80 overflow-y-auto bg-white dark:bg-zen-night-surface rounded-xl border border-zen-sand dark:border-zen-night-border shadow-sm">
                   {searchResults.length > 0 ? (
                     <div className="p-1">
                       {searchResults.slice(0, 5).map((entry) => {
@@ -224,18 +210,18 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                           <button
                             key={entry.id}
                             onClick={() => handleSearchResultClick(entry.id)}
-                            className="w-full text-left p-2.5 hover:bg-white dark:hover:bg-gray-800 rounded-lg transition-colors group"
+                            className="w-full text-left p-2.5 hover:bg-zen-sage/5 dark:hover:bg-zen-sage/10 rounded-lg transition-colors group"
                           >
                             <div className="flex items-start gap-2.5">
-                              <FileText size={16} className="text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+                              <FileText size={14} className="text-zen-sage mt-0.5 flex-shrink-0" />
                               <div className="flex-1 min-w-0">
-                                <h4 className="font-medium text-sm text-gray-900 dark:text-gray-100 truncate group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                                <h4 className="font-medium text-sm text-zen-forest dark:text-zen-parchment truncate group-hover:text-zen-sage">
                                   {highlightText(entry.title, searchQuery)}
                                 </h4>
-                                <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-1 mt-0.5">
+                                <p className="text-xs text-zen-moss dark:text-zen-stone line-clamp-1 mt-0.5">
                                   {highlightText(contentPreview, searchQuery)}
                                 </p>
-                                <p className="text-[10px] text-gray-500 dark:text-gray-500 mt-0.5">
+                                <p className="text-[10px] text-zen-moss/60 mt-0.5">
                                   {format(new Date(entry.createdAt), 'MMM d, yyyy')}
                                 </p>
                               </div>
@@ -244,13 +230,13 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                         );
                       })}
                       {searchResults.length > 5 && (
-                        <div className="px-3 py-1.5 text-xs text-center text-gray-600 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700">
+                        <div className="px-3 py-1.5 text-xs text-center text-zen-moss dark:text-zen-stone border-t border-zen-sand dark:border-zen-night-border">
                           +{searchResults.length - 5} more results
                         </div>
                       )}
                     </div>
                   ) : (
-                    <div className="p-4 text-center text-gray-600 dark:text-gray-400">
+                    <div className="p-4 text-center text-zen-moss dark:text-zen-stone">
                       <p className="text-sm">No entries found for &ldquo;{searchQuery}&rdquo;</p>
                     </div>
                   )}
@@ -260,62 +246,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
           </div>
         )}
 
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-            <div className="px-4 py-2 space-y-1">
-              <Link
-                href="/journals"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400 rounded-lg transition font-medium"
-              >
-                Journals
-              </Link>
-              <Link
-                href="/journal"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400 rounded-lg transition font-medium"
-              >
-                Entries
-              </Link>
-              <Link
-                href="/calendar"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400 rounded-lg transition font-medium"
-              >
-                Calendar
-              </Link>
-              <Link
-                href="/prompts"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400 rounded-lg transition font-medium"
-              >
-                Prompts
-              </Link>
-              <Link
-                href="/account"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400 rounded-lg transition font-medium"
-              >
-                Account
-              </Link>
-              <Link
-                href="/settings"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400 rounded-lg transition font-medium"
-              >
-                Settings
-              </Link>
-              <Link
-                href="/journal/new"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium text-center mt-2"
-              >
-                + New Entry
-              </Link>
-            </div>
-          </div>
-        )}
+        {/* Mobile menu removed — all navigation via bottom tabs + view tabs */}
       </header>
 
       {/* Main Content */}
@@ -327,18 +258,18 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       <MobileBottomNav />
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-gray-300 mt-12 hidden md:block">
+      <footer className="bg-zen-forest text-zen-stone mt-12 hidden md:block">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <p className="text-sm">&copy; 2026 This, Today. All rights reserved.</p>
             <div className="flex space-x-6 text-sm">
-              <Link href="/privacy" className="hover:text-white transition">
+              <Link href="/privacy" className="hover:text-zen-parchment transition">
                 Privacy
               </Link>
-              <Link href="/terms" className="hover:text-white transition">
+              <Link href="/terms" className="hover:text-zen-parchment transition">
                 Terms
               </Link>
-              <Link href="/settings" className="hover:text-white transition">
+              <Link href="/settings" className="hover:text-zen-parchment transition">
                 Settings
               </Link>
             </div>

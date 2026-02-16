@@ -39,13 +39,13 @@ export function TutorialStep({
       onClick={(e) => e.stopPropagation()}
     >
       <div
-        className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 w-full animate-tour-slide-up"
+        className="bg-white dark:bg-zen-night-card rounded-2xl shadow-sm border border-zen-sand dark:border-zen-night-border w-full animate-tour-slide-up"
         style={{ maxWidth: isCentered ? '380px' : '340px' }}
       >
         {/* Arrow pointing to target */}
         {arrowDirection === 'top' && (
           <div className="flex justify-center -mt-2">
-            <div className="w-4 h-4 bg-white dark:bg-gray-800 border-l border-t border-gray-200 dark:border-gray-700 rotate-45 transform -translate-y-0.5" />
+            <div className="w-4 h-4 bg-white dark:bg-zen-night-card border-l border-t border-zen-sand dark:border-zen-night-border rotate-45 transform -translate-y-0.5" />
           </div>
         )}
 
@@ -53,13 +53,13 @@ export function TutorialStep({
           {/* Icon & Title */}
           <div className="flex items-center gap-3 mb-2">
             <span className="text-2xl">{step.icon}</span>
-            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
+            <h3 className="text-lg font-bold text-zen-forest dark:text-zen-sand">
               {step.title}
             </h3>
           </div>
 
           {/* Description */}
-          <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-5">
+          <p className="text-sm text-zen-moss dark:text-zen-stone leading-relaxed mb-5">
             {step.description}
           </p>
 
@@ -70,10 +70,10 @@ export function TutorialStep({
                 key={i}
                 className={`rounded-full transition-all duration-300 ${
                   i === currentIndex
-                    ? 'w-6 h-2 bg-blue-600'
+                    ? 'w-6 h-2 bg-zen-sage'
                     : i < currentIndex
-                      ? 'w-2 h-2 bg-blue-300 dark:bg-blue-700'
-                      : 'w-2 h-2 bg-gray-200 dark:bg-gray-600'
+                      ? 'w-2 h-2 bg-zen-sage/40 dark:bg-zen-sage/50'
+                      : 'w-2 h-2 bg-zen-sand dark:bg-zen-night-border'
                 }`}
               />
             ))}
@@ -85,14 +85,14 @@ export function TutorialStep({
             {isFirst ? (
               <button
                 onClick={onSkip}
-                className="flex-1 py-2.5 px-4 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700"
+                className="flex-1 py-2.5 px-4 text-sm font-medium text-zen-stone dark:text-zen-stone hover:text-zen-moss dark:hover:text-zen-sand transition-colors rounded-xl hover:bg-zen-parchment dark:hover:bg-zen-night-border"
               >
                 Skip
               </button>
             ) : (
               <button
                 onClick={onBack}
-                className="flex-1 py-2.5 px-4 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors rounded-xl border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
+                className="flex-1 py-2.5 px-4 text-sm font-medium text-zen-moss dark:text-zen-sand hover:text-zen-forest dark:hover:text-white transition-colors rounded-xl border border-zen-sand dark:border-zen-night-border hover:bg-zen-parchment dark:hover:bg-zen-night-border"
               >
                 Back
               </button>
@@ -102,14 +102,14 @@ export function TutorialStep({
             {isLast ? (
               <button
                 onClick={onNext}
-                className="flex-1 py-2.5 px-4 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl hover:shadow-lg transition-all hover:-translate-y-0.5 active:scale-[0.98]"
+                className="flex-1 py-2.5 px-4 text-sm font-semibold text-white bg-zen-sage rounded-xl hover:bg-zen-sage-light hover:shadow-sm transition-all hover:-translate-y-0.5 active:scale-[0.98]"
               >
                 Start Writing
               </button>
             ) : (
               <button
                 onClick={onNext}
-                className="flex-1 py-2.5 px-4 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl hover:shadow-lg transition-all hover:-translate-y-0.5 active:scale-[0.98]"
+                className="flex-1 py-2.5 px-4 text-sm font-semibold text-white bg-zen-sage rounded-xl hover:bg-zen-sage-light hover:shadow-sm transition-all hover:-translate-y-0.5 active:scale-[0.98]"
               >
                 {isFirst ? "Let's Go" : 'Next'}
               </button>
@@ -120,7 +120,7 @@ export function TutorialStep({
           {!isFirst && !isLast && (
             <button
               onClick={onSkip}
-              className="w-full mt-2 py-1 text-xs text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              className="w-full mt-2 py-1 text-xs text-zen-stone dark:text-zen-stone hover:text-zen-moss dark:hover:text-zen-sand transition-colors"
             >
               Skip tour
             </button>
@@ -130,7 +130,7 @@ export function TutorialStep({
         {/* Arrow pointing down to target */}
         {arrowDirection === 'bottom' && (
           <div className="flex justify-center -mb-2">
-            <div className="w-4 h-4 bg-white dark:bg-gray-800 border-r border-b border-gray-200 dark:border-gray-700 rotate-45 transform translate-y-0.5" />
+            <div className="w-4 h-4 bg-white dark:bg-zen-night-card border-r border-b border-zen-sand dark:border-zen-night-border rotate-45 transform translate-y-0.5" />
           </div>
         )}
       </div>
