@@ -5,13 +5,16 @@ import { useJournalStore } from '@/stores/journal-store';
 import { useJournalsStore } from '@/stores/journals-store';
 import { EntryCard } from '@/components/journal/EntryCard';
 import { Layout } from '@/components/Layout';
-import { BookOpen, Star, Image as ImageIcon, Search, Plus, ChevronDown, Settings, TrendingUp, CalendarDays } from 'lucide-react';
+import { BookOpen, Star, Search, Plus, ChevronDown, Settings, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
+import { format } from 'date-fns';
 import type { Journal } from '@/lib/db';
 import { TutorialOverlay } from '@/components/onboarding/TutorialOverlay';
 import { CalendarView } from '@/components/journal/CalendarView';
 import { MediaView } from '@/components/journal/MediaView';
 import { MapView } from '@/components/journal/MapView';
+import { ActivityRing } from '@/components/journal/ActivityRing';
+import { WeeklySparkline } from '@/components/journal/WeeklySparkline';
 
 export default function JournalPage() {
   const {
@@ -110,14 +113,14 @@ export default function JournalPage() {
             backgroundSize: '20px 20px',
           }} />
 
-          <div className="relative max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 pt-16 pb-20">
+          <div className="relative max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 pt-6 pb-16">
             {/* Journal Selector */}
             <div className="relative" ref={journalMenuRef} data-tour-step="journal-selector">
               <button
                 onClick={() => setShowJournalMenu(!showJournalMenu)}
                 className="flex items-center gap-2 group"
               >
-                <h1 className="text-[28px] font-bold text-white tracking-tight">
+                <h1 className="text-[26px] font-bold text-white tracking-tight">
                   {selectedJournal?.name || 'Journal'}
                 </h1>
                 <ChevronDown
@@ -179,7 +182,7 @@ export default function JournalPage() {
 
         {/* Content Card — overlaps hero */}
         <div className="relative -mt-10">
-          <div className="bg-white dark:bg-zen-night-card rounded-t-[24px] min-h-[60vh] shadow-sm">
+          <div className="bg-white dark:bg-zen-night-card rounded-t-[24px] min-h-[60vh]" style={{ boxShadow: '0 -4px 20px rgba(0,0,0,0.04)' }}>
             {/* View Tabs — Day One style, sticky below header */}
             <div
               className="sticky z-30 bg-white dark:bg-zen-night-card flex items-center gap-0.5 px-4 pt-4 pb-2 border-b border-zen-sand/50 dark:border-zen-night-border/50"
@@ -211,36 +214,60 @@ export default function JournalPage() {
               ))}
             </div>
 
-            {/* Stats Grid — 2×2 compact — only on List view like Day One */}
+            {/* Stats + Activity — only on List view */}
             {activeView === 'list' && (
-              <div className="grid grid-cols-2 gap-3 px-4 py-4">
-                <div className="bg-zen-parchment/50 dark:bg-zen-night-surface rounded-xl p-3.5">
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-xs text-zen-moss/60 dark:text-zen-stone/60 font-medium">Entries</span>
-                    <BookOpen size={15} className="text-zen-sage/50" />
+              <div className="px-4 py-4 space-y-3">
+                {/* Stats Row — rings + numbers */}
+                <div className="grid grid-cols-4 gap-2">
+                  <div className="bg-zen-parchment/50 dark:bg-zen-night-surface rounded-xl p-3 flex flex-col items-center">
+                    <ActivityRing
+                      value={journalFilteredEntries.length}
+                      max={Math.max(journalFilteredEntries.length, 30)}
+                      size={44}
+                      strokeWidth={4}
+                      color="#5B7F5E"
+                    />
+                    <span className="text-[10px] text-zen-moss/50 dark:text-zen-stone/50 font-medium mt-1.5">Entries</span>
                   </div>
-                  <p className="text-2xl font-bold text-zen-forest dark:text-zen-parchment">{journalFilteredEntries.length}</p>
+                  <div className="bg-zen-parchment/50 dark:bg-zen-night-surface rounded-xl p-3 flex flex-col items-center">
+                    <ActivityRing
+                      value={getCurrentStreak()}
+                      max={Math.max(getCurrentStreak(), 7)}
+                      size={44}
+                      strokeWidth={4}
+                      color="#C4956A"
+                    />
+                    <span className="text-[10px] text-zen-moss/50 dark:text-zen-stone/50 font-medium mt-1.5">Streak</span>
+                  </div>
+                  <div className="bg-zen-parchment/50 dark:bg-zen-night-surface rounded-xl p-3 flex flex-col items-center">
+                    <ActivityRing
+                      value={getDaysJournaled()}
+                      max={Math.max(getDaysJournaled(), 30)}
+                      size={44}
+                      strokeWidth={4}
+                      color="#6B8F6E"
+                    />
+                    <span className="text-[10px] text-zen-moss/50 dark:text-zen-stone/50 font-medium mt-1.5">Days</span>
+                  </div>
+                  <div className="bg-zen-parchment/50 dark:bg-zen-night-surface rounded-xl p-3 flex flex-col items-center">
+                    <ActivityRing
+                      value={journalFilteredEntries.filter(e => e.attachments?.some(a => a.type === 'photo')).length}
+                      max={Math.max(journalFilteredEntries.length, 1)}
+                      size={44}
+                      strokeWidth={4}
+                      color="#7FB5B0"
+                    />
+                    <span className="text-[10px] text-zen-moss/50 dark:text-zen-stone/50 font-medium mt-1.5">Media</span>
+                  </div>
                 </div>
+
+                {/* Activity Sparkline */}
                 <div className="bg-zen-parchment/50 dark:bg-zen-night-surface rounded-xl p-3.5">
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-xs text-zen-moss/60 dark:text-zen-stone/60 font-medium">Streak</span>
-                    <TrendingUp size={15} className="text-zen-clay/50" />
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs text-zen-moss/60 dark:text-zen-stone/60 font-medium">30-Day Activity</span>
+                    <TrendingUp size={13} className="text-zen-sage/40" />
                   </div>
-                  <p className="text-2xl font-bold text-zen-forest dark:text-zen-parchment">{getCurrentStreak()}<span className="text-sm font-normal text-zen-moss/40 ml-1">days</span></p>
-                </div>
-                <div className="bg-zen-parchment/50 dark:bg-zen-night-surface rounded-xl p-3.5">
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-xs text-zen-moss/60 dark:text-zen-stone/60 font-medium">Days</span>
-                    <CalendarDays size={15} className="text-zen-sage/50" />
-                  </div>
-                  <p className="text-2xl font-bold text-zen-forest dark:text-zen-parchment">{getDaysJournaled()}</p>
-                </div>
-                <div className="bg-zen-parchment/50 dark:bg-zen-night-surface rounded-xl p-3.5">
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-xs text-zen-moss/60 dark:text-zen-stone/60 font-medium">Media</span>
-                    <ImageIcon size={15} className="text-zen-creek/50" />
-                  </div>
-                  <p className="text-2xl font-bold text-zen-forest dark:text-zen-parchment">0</p>
+                  <WeeklySparkline entries={journalFilteredEntries} days={30} height={40} color="#5B7F5E" />
                 </div>
               </div>
             )}
@@ -371,17 +398,38 @@ export default function JournalPage() {
                                       <div className="h-px flex-1 bg-zen-sand/40 dark:bg-zen-night-border/40"></div>
                                     </div>
 
-                                    <div
-                                      className={
-                                        viewMode === 'grid'
-                                          ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3'
-                                          : 'flex flex-col gap-2'
-                                      }
-                                    >
-                                      {groupedEntries[year][month].map((entry) => (
-                                        <EntryCard key={entry.id} entry={entry} />
-                                      ))}
-                                    </div>
+                                    {(() => {
+                                      // Group entries by day within the month
+                                      const dayGroups: { [dayKey: string]: typeof displayedEntries } = {};
+                                      groupedEntries[year][month].forEach((entry) => {
+                                        const dayKey = format(new Date(entry.createdAt), 'EEEE d');
+                                        if (!dayGroups[dayKey]) dayGroups[dayKey] = [];
+                                        dayGroups[dayKey].push(entry);
+                                      });
+
+                                      return (
+                                        <div className="space-y-3">
+                                          {Object.entries(dayGroups).map(([dayKey, dayEntries]) => (
+                                            <div key={dayKey}>
+                                              <p className="text-[11px] font-medium text-zen-moss/35 dark:text-zen-stone/35 mb-1.5 ml-1">
+                                                {dayKey}
+                                              </p>
+                                              <div
+                                                className={
+                                                  viewMode === 'grid'
+                                                    ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5'
+                                                    : 'flex flex-col gap-2'
+                                                }
+                                              >
+                                                {dayEntries.map((entry) => (
+                                                  <EntryCard key={entry.id} entry={entry} />
+                                                ))}
+                                              </div>
+                                            </div>
+                                          ))}
+                                        </div>
+                                      );
+                                    })()}
                                   </div>
                                 ))}
                             </div>

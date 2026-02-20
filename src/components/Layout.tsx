@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
-import { Search, Moon, Sun, FileText } from 'lucide-react';
+import { Search, Moon, Sun, FileText, Menu, Settings, BookMarked, Download } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useJournalStore } from '@/stores/journal-store';
 import { useJournalsStore } from '@/stores/journals-store';
@@ -13,16 +13,33 @@ import { MobileBottomNav } from '@/components/MobileBottomNav';
 
 interface LayoutProps {
   children: React.ReactNode;
+  hideChrome?: boolean;
 }
 
-export const Layout: React.FC<LayoutProps> = ({ children }) => {
+export const Layout: React.FC<LayoutProps> = ({ children, hideChrome = false }) => {
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
   const { theme, setTheme } = useTheme();
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [userName, setUserName] = useState('U');
+  const [showHamburgerMenu, setShowHamburgerMenu] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
+  const hamburgerRef = useRef<HTMLDivElement>(null);
+
+  // Close hamburger on click outside
+  const handleHamburgerClickOutside = useCallback((event: MouseEvent) => {
+    if (hamburgerRef.current && !hamburgerRef.current.contains(event.target as Node)) {
+      setShowHamburgerMenu(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (showHamburgerMenu) {
+      document.addEventListener('mousedown', handleHamburgerClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleHamburgerClickOutside);
+  }, [showHamburgerMenu, handleHamburgerClickOutside]);
 
   const { searchEntries } = useJournalStore();
   const { journals, selectedJournalId, loadJournals } = useJournalsStore();
@@ -107,18 +124,66 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     );
   };
 
+  if (hideChrome) {
+    return (
+      <div className="min-h-screen flex flex-col bg-zen-cream dark:bg-zen-night">
+        <main className="flex-1">{children}</main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-zen-cream dark:bg-zen-night">
       {/* Header */}
       <header className="bg-white/80 dark:bg-zen-night-card/80 backdrop-blur-md border-b border-zen-sand dark:border-zen-night-border sticky top-0 z-50 pt-[env(safe-area-inset-top)]">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center justify-between">
-          {/* Logo + Journal Name */}
-          <Link href="/journal" className="flex items-center gap-1.5">
-            <span className="text-lg">{selectedJournal?.icon || '📔'}</span>
-            <span className="text-sm font-medium text-zen-moss dark:text-zen-stone">
-              {selectedJournal?.name || 'Journal'}
-            </span>
-          </Link>
+          {/* Left: Hamburger (mobile) + Logo + Journal Name */}
+          <div className="flex items-center gap-1.5">
+            {/* Hamburger Menu — mobile only */}
+            <div className="relative md:hidden" ref={hamburgerRef}>
+              <button
+                onClick={() => setShowHamburgerMenu(!showHamburgerMenu)}
+                className="p-2 -ml-2 text-zen-moss hover:text-zen-sage hover:bg-zen-sage/5 rounded-xl transition-all dark:text-zen-stone dark:hover:text-zen-sage-light min-h-[44px] min-w-[44px] flex items-center justify-center active:scale-[0.95]"
+              >
+                <Menu size={20} />
+              </button>
+              {showHamburgerMenu && (
+                <div className="absolute top-full left-0 mt-1 w-56 bg-white dark:bg-zen-night-card rounded-2xl shadow-lg border border-zen-sand dark:border-zen-night-border z-50 overflow-hidden py-1.5">
+                  <Link
+                    href="/settings"
+                    onClick={() => setShowHamburgerMenu(false)}
+                    className="flex items-center gap-3 px-4 py-3.5 hover:bg-zen-parchment dark:hover:bg-zen-night-surface transition-colors active:scale-[0.99]"
+                  >
+                    <Settings size={18} className="text-zen-moss dark:text-zen-stone" />
+                    <span className="text-[15px] font-medium text-zen-forest dark:text-zen-parchment">Journal Settings</span>
+                  </Link>
+                  <Link
+                    href="/journals"
+                    onClick={() => setShowHamburgerMenu(false)}
+                    className="flex items-center gap-3 px-4 py-3.5 hover:bg-zen-parchment dark:hover:bg-zen-night-surface transition-colors active:scale-[0.99]"
+                  >
+                    <BookMarked size={18} className="text-zen-moss dark:text-zen-stone" />
+                    <span className="text-[15px] font-medium text-zen-forest dark:text-zen-parchment">Preview Book</span>
+                  </Link>
+                  <Link
+                    href="/settings"
+                    onClick={() => setShowHamburgerMenu(false)}
+                    className="flex items-center gap-3 px-4 py-3.5 hover:bg-zen-parchment dark:hover:bg-zen-night-surface transition-colors active:scale-[0.99]"
+                  >
+                    <Download size={18} className="text-zen-moss dark:text-zen-stone" />
+                    <span className="text-[15px] font-medium text-zen-forest dark:text-zen-parchment">Export</span>
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            <Link href="/journal" className="flex items-center gap-1.5">
+              <span className="text-lg">{selectedJournal?.icon || '📔'}</span>
+              <span className="text-sm font-medium text-zen-moss dark:text-zen-stone">
+                {selectedJournal?.name || 'Journal'}
+              </span>
+            </Link>
+          </div>
 
           {/* Desktop Navigation Links */}
           <div className="hidden md:flex items-center space-x-8">

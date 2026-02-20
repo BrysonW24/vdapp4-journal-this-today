@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { Navigation, Loader2, Info, Compass, Smile, Locate } from 'lucide-react';
+import { Navigation, Loader2, Info, Compass, Smile, Locate, MapPin } from 'lucide-react';
 import type { JournalEntry } from '@/types/journal';
 
 interface MapViewProps {
@@ -14,11 +14,13 @@ export function MapView({ entries }: MapViewProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [locationError, setLocationError] = useState<string | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [locationPermission, setLocationPermission] = useState<'checking' | 'prompt' | 'granted' | 'denied'>('checking');
 
   // Entries with location data
   const geoEntries = entries.filter((e) => e.location?.latitude && e.location?.longitude);
 
-  useEffect(() => {
+  // Request the actual geolocation
+  const requestLocation = useCallback(() => {
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -26,10 +28,11 @@ export function MapView({ entries }: MapViewProps) {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
           });
+          setLocationPermission('granted');
         },
         () => {
-          // Fallback to Sydney if denied
           setUserLocation({ lat: -33.8688, lng: 151.2093 });
+          setLocationPermission('denied');
           setLocationError('Location access denied. Showing default location.');
         },
         { enableHighAccuracy: true, timeout: 10000 }
@@ -39,6 +42,38 @@ export function MapView({ entries }: MapViewProps) {
       setLocationError('Geolocation not supported.');
     }
   }, []);
+
+  // Check existing permission state on mount
+  useEffect(() => {
+    if ('permissions' in navigator) {
+      navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+        if (result.state === 'granted') {
+          setLocationPermission('granted');
+          requestLocation();
+        } else if (result.state === 'denied') {
+          setLocationPermission('denied');
+          setUserLocation({ lat: -33.8688, lng: 151.2093 });
+        } else {
+          // 'prompt' — show our custom UI
+          setLocationPermission('prompt');
+        }
+      }).catch(() => {
+        setLocationPermission('prompt');
+      });
+    } else {
+      setLocationPermission('prompt');
+    }
+  }, [requestLocation]);
+
+  const handleEnableLocation = () => {
+    setLocationPermission('checking');
+    requestLocation();
+  };
+
+  const handleSkipLocation = () => {
+    setLocationPermission('denied');
+    setUserLocation({ lat: -33.8688, lng: 151.2093 });
+  };
 
   useEffect(() => {
     if (!userLocation || !mapRef.current || mapInstanceRef.current) return;
@@ -167,78 +202,126 @@ export function MapView({ entries }: MapViewProps) {
   }, [userLocation, geoEntries]);
 
   return (
-    <div className="-mx-4 relative">
-      {/* Toolbar — icon buttons row */}
-      <div className="absolute top-3 left-3 right-3 z-[500] flex items-center justify-between pointer-events-none">
-        {/* Left side — location count + info */}
-        <div className="flex items-center gap-1.5 pointer-events-auto">
-          <button
-            className="w-8 h-8 rounded-full bg-white/90 dark:bg-zen-night-card/90 backdrop-blur-md shadow-sm border border-zen-sand/20 dark:border-zen-night-border/30 flex items-center justify-center hover:bg-white dark:hover:bg-zen-night-card transition-colors"
-            title="Map info"
-          >
-            <Info size={14} className="text-zen-forest/60 dark:text-zen-parchment/60" />
-          </button>
-          <button
-            onClick={handleCenterOnUser}
-            className="w-8 h-8 rounded-full bg-white/90 dark:bg-zen-night-card/90 backdrop-blur-md shadow-sm border border-zen-sand/20 dark:border-zen-night-border/30 flex items-center justify-center hover:bg-white dark:hover:bg-zen-night-card transition-colors"
-            title="Center on my location"
-          >
-            <Locate size={14} className="text-zen-forest/60 dark:text-zen-parchment/60" />
-          </button>
-          <button
-            onClick={handleFitAll}
-            className="w-8 h-8 rounded-full bg-white/90 dark:bg-zen-night-card/90 backdrop-blur-md shadow-sm border border-zen-sand/20 dark:border-zen-night-border/30 flex items-center justify-center hover:bg-white dark:hover:bg-zen-night-card transition-colors"
-            title="Show all entries"
-          >
-            <Compass size={14} className="text-zen-forest/60 dark:text-zen-parchment/60" />
-          </button>
-          <button
-            onClick={handleCenterOnUser}
-            className="w-8 h-8 rounded-full bg-white/90 dark:bg-zen-night-card/90 backdrop-blur-md shadow-sm border border-zen-sand/20 dark:border-zen-night-border/30 flex items-center justify-center hover:bg-white dark:hover:bg-zen-night-card transition-colors"
-            title="Navigate"
-          >
-            <Navigation size={14} className="text-zen-forest/60 dark:text-zen-parchment/60" />
-          </button>
-        </div>
-
-        {/* Right side — entry count badge */}
-        <div className="flex items-center gap-1.5 pointer-events-auto">
-          <div className="h-8 rounded-full bg-white/90 dark:bg-zen-night-card/90 backdrop-blur-md shadow-sm border border-zen-sand/20 dark:border-zen-night-border/30 flex items-center gap-1 px-2.5">
-            <Smile size={14} className="text-zen-forest/60 dark:text-zen-parchment/60" />
-            <span className="text-[12px] font-semibold text-zen-forest/70 dark:text-zen-parchment/70">
-              {geoEntries.length}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* Loading overlay */}
-      {isLoading && (
-        <div className="absolute inset-0 z-[500] flex items-center justify-center bg-zen-parchment/80 dark:bg-zen-night/80 backdrop-blur-sm">
-          <div className="flex flex-col items-center gap-3">
-            <Loader2 size={28} className="text-zen-sage animate-spin" />
-            <span className="text-sm text-zen-moss/60 dark:text-zen-stone/60 font-medium">
-              Loading map...
-            </span>
+    <div className="relative">
+      {/* Location Permission Prompt */}
+      {locationPermission === 'prompt' && (
+        <div
+          className="flex items-center justify-center bg-zen-parchment/95 dark:bg-zen-night/95"
+          style={{ height: 'calc(100vh - 220px)', minHeight: '500px' }}
+        >
+          <div className="bg-white dark:bg-zen-night-card rounded-2xl p-8 mx-6 max-w-sm shadow-lg border border-zen-sand dark:border-zen-night-border text-center">
+            <div className="w-16 h-16 bg-zen-sage/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <MapPin size={28} className="text-zen-sage" />
+            </div>
+            <h3 className="text-lg font-semibold text-zen-forest dark:text-zen-parchment mb-2">
+              Enable Location
+            </h3>
+            <p className="text-sm text-zen-moss/70 dark:text-zen-stone/70 mb-6 leading-relaxed">
+              Allow location access to see your journal entries on the map and centre it on your current position.
+            </p>
+            <button
+              onClick={handleEnableLocation}
+              className="w-full py-3 bg-zen-sage text-white rounded-xl font-medium hover:opacity-90 transition-all mb-3"
+            >
+              Enable Location
+            </button>
+            <button
+              onClick={handleSkipLocation}
+              className="w-full py-2.5 text-zen-moss/60 dark:text-zen-stone/60 text-sm font-medium hover:text-zen-forest dark:hover:text-zen-parchment transition-colors"
+            >
+              Not Now
+            </button>
           </div>
         </div>
       )}
 
-      {/* Location error banner */}
-      {locationError && (
-        <div className="absolute bottom-3 left-3 right-3 z-[500]">
-          <div className="bg-zen-clay/10 border border-zen-clay/20 rounded-xl px-3.5 py-2.5 text-xs text-zen-clay font-medium backdrop-blur-sm">
-            {locationError}
-          </div>
-        </div>
-      )}
+      {/* Map UI — only render when we have a location */}
+      {locationPermission !== 'prompt' && (
+        <>
+          {/* Toolbar — icon buttons row */}
+          <div className="absolute top-3 left-3 right-3 z-[500] flex items-center justify-between pointer-events-none">
+            {/* Left side — location count + info */}
+            <div className="flex items-center gap-1.5 pointer-events-auto">
+              <button
+                className="w-8 h-8 rounded-full bg-white/90 dark:bg-zen-night-card/90 backdrop-blur-md shadow-sm border border-zen-sand/20 dark:border-zen-night-border/30 flex items-center justify-center hover:bg-white dark:hover:bg-zen-night-card transition-colors"
+                title="Map info"
+              >
+                <Info size={14} className="text-zen-forest/60 dark:text-zen-parchment/60" />
+              </button>
+              <button
+                onClick={handleCenterOnUser}
+                className="w-8 h-8 rounded-full bg-white/90 dark:bg-zen-night-card/90 backdrop-blur-md shadow-sm border border-zen-sand/20 dark:border-zen-night-border/30 flex items-center justify-center hover:bg-white dark:hover:bg-zen-night-card transition-colors"
+                title="Center on my location"
+              >
+                <Locate size={14} className="text-zen-forest/60 dark:text-zen-parchment/60" />
+              </button>
+              <button
+                onClick={handleFitAll}
+                className="w-8 h-8 rounded-full bg-white/90 dark:bg-zen-night-card/90 backdrop-blur-md shadow-sm border border-zen-sand/20 dark:border-zen-night-border/30 flex items-center justify-center hover:bg-white dark:hover:bg-zen-night-card transition-colors"
+                title="Show all entries"
+              >
+                <Compass size={14} className="text-zen-forest/60 dark:text-zen-parchment/60" />
+              </button>
+              <button
+                onClick={handleCenterOnUser}
+                className="w-8 h-8 rounded-full bg-white/90 dark:bg-zen-night-card/90 backdrop-blur-md shadow-sm border border-zen-sand/20 dark:border-zen-night-border/30 flex items-center justify-center hover:bg-white dark:hover:bg-zen-night-card transition-colors"
+                title="Navigate"
+              >
+                <Navigation size={14} className="text-zen-forest/60 dark:text-zen-parchment/60" />
+              </button>
+            </div>
 
-      {/* Map container — fills viewport below tabs like Day One */}
-      <div
-        ref={mapRef}
-        className="w-full overflow-hidden"
-        style={{ height: 'calc(100vh - 220px)', minHeight: '500px' }}
-      />
+            {/* Right side — entry count badge */}
+            <div className="flex items-center gap-1.5 pointer-events-auto">
+              <div className="h-8 rounded-full bg-white/90 dark:bg-zen-night-card/90 backdrop-blur-md shadow-sm border border-zen-sand/20 dark:border-zen-night-border/30 flex items-center gap-1 px-2.5">
+                <Smile size={14} className="text-zen-forest/60 dark:text-zen-parchment/60" />
+                <span className="text-[12px] font-semibold text-zen-forest/70 dark:text-zen-parchment/70">
+                  {geoEntries.length}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Loading overlay */}
+          {isLoading && (
+            <div className="absolute inset-0 z-[500] flex items-center justify-center bg-zen-parchment/80 dark:bg-zen-night/80 backdrop-blur-sm">
+              <div className="flex flex-col items-center gap-3">
+                <Loader2 size={28} className="text-zen-sage animate-spin" />
+                <span className="text-sm text-zen-moss/60 dark:text-zen-stone/60 font-medium">
+                  Loading map...
+                </span>
+              </div>
+            </div>
+          )}
+
+          {/* Location error banner */}
+          {locationError && (
+            <div className="absolute bottom-3 left-3 right-3 z-[500]">
+              <div className="bg-zen-clay/10 border border-zen-clay/20 rounded-xl px-3.5 py-2.5 text-xs text-zen-clay font-medium backdrop-blur-sm">
+                {locationError}
+              </div>
+            </div>
+          )}
+
+          {/* Empty state hint — no geotagged entries */}
+          {!isLoading && geoEntries.length === 0 && (
+            <div className="absolute bottom-16 left-4 right-4 z-[500]">
+              <div className="bg-white/95 dark:bg-zen-night-card/95 backdrop-blur-sm rounded-xl px-4 py-3 border border-zen-sand dark:border-zen-night-border shadow-sm">
+                <p className="text-sm text-zen-moss/70 dark:text-zen-stone/70 text-center">
+                  Add a location when creating entries to see them pinned here
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Map container — fills viewport below tabs like Day One */}
+          <div
+            ref={mapRef}
+            className="w-full overflow-hidden"
+            style={{ height: 'calc(100vh - 220px)', minHeight: '500px' }}
+          />
+        </>
+      )}
 
       {/* Leaflet CSS + custom marker styles */}
       <style jsx global>{`

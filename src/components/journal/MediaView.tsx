@@ -91,9 +91,9 @@ export function MediaView({ entries }: MediaViewProps) {
   };
 
   return (
-    <div className="-mx-4">
+    <div>
       {/* Filter tabs — horizontal scrollable pills */}
-      <div className="flex items-center gap-2 px-4 pb-4 overflow-x-auto scrollbar-hide">
+      <div className="flex items-center justify-center flex-wrap gap-2 px-4 pb-4">
         {FILTER_TABS.map((tab) => {
           const count =
             tab.key === 'all'

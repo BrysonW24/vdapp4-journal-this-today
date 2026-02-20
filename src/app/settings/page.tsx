@@ -288,9 +288,9 @@ export default function SettingsPage() {
     return (
       <Wrapper
         onClick={onClick}
-        className={`flex items-center w-full px-4 py-3 bg-white dark:bg-zen-night-card transition-colors ${onClick ? 'hover:bg-zen-parchment dark:hover:bg-zen-night-surface cursor-pointer' : ''} ${className}`}
+        className={`flex items-center w-full px-4 py-3.5 bg-white dark:bg-zen-night-card transition-all ${onClick ? 'hover:bg-zen-parchment dark:hover:bg-zen-night-surface cursor-pointer active:scale-[0.99]' : ''} ${className}`}
       >
-        <div className={`w-8 h-8 rounded-lg flex items-center justify-center mr-3 flex-shrink-0 ${iconBg}`}>
+        <div className={`w-9 h-9 rounded-xl flex items-center justify-center mr-3 flex-shrink-0 ${iconBg}`}>
           {icon}
         </div>
         <span className={`flex-1 text-left text-zen-forest dark:text-zen-parchment text-[15px] ${labelClassName}`}>{label}</span>
@@ -306,7 +306,7 @@ export default function SettingsPage() {
 
   // Group container
   const SettingsGroup = ({ children }: { children: React.ReactNode }) => (
-    <div className="rounded-xl overflow-hidden border border-zen-sand dark:border-zen-night-border divide-y divide-zen-sand/60 dark:divide-zen-night-border/60">
+    <div className="rounded-2xl overflow-hidden border border-zen-sand dark:border-zen-night-border divide-y divide-zen-sand/60 dark:divide-zen-night-border/60">
       {children}
     </div>
   );
@@ -324,7 +324,7 @@ export default function SettingsPage() {
         <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-semibold text-zen-forest dark:text-zen-sage-light">
+            <h1 className="text-2xl sm:text-3xl font-semibold text-zen-forest dark:text-zen-sage-light">
               Settings
             </h1>
           </div>
@@ -473,7 +473,7 @@ export default function SettingsPage() {
 
               <button
                 onClick={handleExportPDF}
-                className="w-full px-5 py-2.5 bg-zen-clay-light text-white rounded-xl font-medium text-sm hover:bg-zen-clay hover:shadow-sm transition-all"
+                className="w-full px-5 py-3 bg-zen-clay-light text-white rounded-xl font-medium text-sm hover:bg-zen-clay hover:shadow-sm transition-all min-h-[44px] active:scale-[0.98]"
               >
                 Generate PDF
               </button>

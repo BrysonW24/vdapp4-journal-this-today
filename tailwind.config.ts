@@ -96,12 +96,22 @@ const config: Config = {
           from: { opacity: "0", transform: "translateY(8px)" },
           to: { opacity: "1", transform: "translateY(0)" },
         },
+        "slide-up-sheet": {
+          from: { opacity: "0", transform: "translateY(100%)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
+        "fade-in": {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "tour-fade-in": "tour-fade-in 0.3s ease-out forwards",
         "tour-slide-up": "tour-slide-up 0.3s ease-out forwards",
+        "slide-up-sheet": "slide-up-sheet 0.3s ease-out",
+        "fade-in": "fade-in 0.2s ease-out",
       },
     },
   },

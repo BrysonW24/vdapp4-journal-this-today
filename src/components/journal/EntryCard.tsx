@@ -1,6 +1,6 @@
 'use client';
 
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow, format } from 'date-fns';
 import { Star, MapPin } from 'lucide-react';
 import type { JournalEntry } from '@/types/journal';
 import { MOOD_METADATA } from '@/types/journal';
@@ -15,6 +15,9 @@ export function EntryCard({ entry }: EntryCardProps) {
   const toggleFavorite = useJournalStore((state) => state.toggleFavorite);
   const moodData = entry.mood ? MOOD_METADATA[entry.mood] : null;
 
+  // Find first photo attachment for thumbnail
+  const firstPhoto = entry.attachments?.find(a => a.type === 'photo');
+
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -22,90 +25,95 @@ export function EntryCard({ entry }: EntryCardProps) {
   };
 
   // Strip HTML tags for preview
-  const getTextPreview = (html: string, maxLength: number = 200) => {
+  const getTextPreview = (html: string, maxLength: number = 120) => {
     const text = html.replace(/<[^>]*>/g, '');
     return text.length > maxLength
       ? text.substring(0, maxLength) + '...'
       : text;
   };
 
+  const entryDate = new Date(entry.createdAt);
+
   return (
     <Link href={`/journal/${entry.id}`}>
-      <div className="group bg-white dark:bg-zen-night-card rounded-xl border border-zen-sand dark:border-zen-night-border p-6 hover:shadow-sm transition-all duration-300 hover:-translate-y-0.5 cursor-pointer">
-        {/* Header */}
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center gap-3">
-            {moodData && (
-              <div
-                className="flex items-center justify-center w-12 h-12 rounded-xl text-2xl"
-                style={{
-                  backgroundColor: moodData.bgColor,
-                  borderColor: moodData.borderColor,
-                  borderWidth: '2px',
-                }}
-              >
-                {moodData.emoji}
-              </div>
-            )}
-            <div>
-              <h3 className="text-xl font-bold text-zen-forest dark:text-zen-parchment line-clamp-1">
-                {entry.title || 'Untitled Entry'}
-              </h3>
-              <p className="text-sm text-zen-moss dark:text-zen-stone">
-                {formatDistanceToNow(new Date(entry.createdAt), {
-                  addSuffix: true,
-                })}
-              </p>
+      <div className="group bg-white dark:bg-zen-night-card rounded-2xl border border-zen-sand/80 dark:border-zen-night-border p-3.5 hover:shadow-sm transition-all duration-200 cursor-pointer active:scale-[0.99]">
+        <div className="flex gap-3">
+          {/* Main content — left side */}
+          <div className="flex-1 min-w-0">
+            {/* Date + time + mood row */}
+            <div className="flex items-center gap-2 mb-0.5">
+              {moodData && (
+                <span className="text-base">{moodData.emoji}</span>
+              )}
+              <span className="text-xs text-zen-moss/50 dark:text-zen-stone/50 font-medium">
+                {format(entryDate, 'h:mm a')}
+              </span>
+              <span className="text-xs text-zen-moss/30 dark:text-zen-stone/30">
+                {formatDistanceToNow(entryDate, { addSuffix: true })}
+              </span>
+              {entry.isFavorite && (
+                <Star size={12} className="fill-yellow-400 text-yellow-400" />
+              )}
+            </div>
+
+            {/* Title */}
+            <h3 className="text-[15px] font-semibold text-zen-forest dark:text-zen-parchment line-clamp-1 mb-0.5">
+              {entry.title || 'Untitled Entry'}
+            </h3>
+
+            {/* Content preview — 2 lines max */}
+            <p className="text-[13px] text-zen-moss/70 dark:text-zen-stone/70 line-clamp-2 leading-relaxed mb-1.5">
+              {getTextPreview(entry.content)}
+            </p>
+
+            {/* Tags + location — compact row */}
+            <div className="flex items-center gap-1.5 flex-wrap">
+              {entry.tags.slice(0, 2).map((tag) => (
+                <span
+                  key={tag}
+                  className="px-2 py-0.5 bg-zen-sage/8 text-zen-sage dark:bg-zen-sage/15 dark:text-zen-sage-light rounded-md text-[11px] font-medium"
+                >
+                  #{tag}
+                </span>
+              ))}
+              {entry.tags.length > 2 && (
+                <span className="text-[11px] text-zen-moss/40 dark:text-zen-stone/40">
+                  +{entry.tags.length - 2}
+                </span>
+              )}
+              {entry.location && (
+                <span className="flex items-center gap-0.5 text-[11px] text-zen-moss/40 dark:text-zen-stone/40">
+                  <MapPin size={10} />
+                  {entry.location.placeName || 'Location'}
+                </span>
+              )}
             </div>
           </div>
 
-          <button
-            onClick={handleFavoriteClick}
-            className="p-2 rounded-lg hover:bg-zen-parchment dark:hover:bg-zen-night-surface transition-colors"
-          >
-            <Star
-              size={20}
-              className={
-                entry.isFavorite
-                  ? 'fill-yellow-400 text-yellow-400'
-                  : 'text-zen-stone'
-              }
-            />
-          </button>
-        </div>
-
-        {/* Content Preview */}
-        <p className="text-zen-moss dark:text-zen-stone mb-4 line-clamp-3">
-          {getTextPreview(entry.content)}
-        </p>
-
-        {/* Footer */}
-        <div className="flex items-center gap-2 flex-wrap">
-          {entry.tags.slice(0, 3).map((tag) => (
-            <span
-              key={tag}
-              className="px-3 py-1 bg-zen-sage-soft text-zen-sage dark:bg-zen-sage/10 dark:text-zen-sage-light rounded-lg text-sm font-medium"
+          {/* Photo thumbnail — right side like Day One */}
+          {firstPhoto ? (
+            <div className="flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-zen-parchment dark:bg-zen-night-surface">
+              <img
+                src={firstPhoto.url}
+                alt=""
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ) : (
+            /* Favorite button when no photo */
+            <button
+              onClick={handleFavoriteClick}
+              className="flex-shrink-0 p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl hover:bg-zen-parchment dark:hover:bg-zen-night-surface transition-all self-start active:scale-[0.95]"
             >
-              #{tag}
-            </span>
-          ))}
-          {entry.tags.length > 3 && (
-            <span className="px-3 py-1 bg-zen-parchment dark:bg-zen-night-surface text-zen-moss dark:text-zen-stone rounded-lg text-sm">
-              +{entry.tags.length - 3} more
-            </span>
-          )}
-
-          {entry.location && (
-            <span className="flex items-center gap-1 px-3 py-1 bg-zen-parchment text-zen-moss dark:bg-zen-moss/10 dark:text-zen-stone rounded-lg text-sm">
-              <MapPin size={14} />
-              {entry.location.placeName || 'Location'}
-            </span>
-          )}
-
-          {entry.category && (
-            <span className="px-3 py-1 bg-zen-cream text-zen-clay-light dark:bg-zen-clay/10 dark:text-zen-clay rounded-lg text-sm font-medium">
-              {entry.category}
-            </span>
+              <Star
+                size={16}
+                className={
+                  entry.isFavorite
+                    ? 'fill-yellow-400 text-yellow-400'
+                    : 'text-zen-stone/30'
+                }
+              />
+            </button>
           )}
         </div>
       </div>

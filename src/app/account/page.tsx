@@ -101,26 +101,26 @@ export default function AccountPage() {
   return (
     <Layout>
       <div className="min-h-screen bg-zen-cream dark:bg-zen-night">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12">
           {/* Header */}
-          <div className="mb-12">
-            <h1 className="text-5xl font-bold text-zen-forest dark:text-zen-sage-light mb-4">
+          <div className="mb-8 sm:mb-12">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-zen-forest dark:text-zen-sage-light mb-2 sm:mb-4">
               Account Settings
             </h1>
-            <p className="text-xl text-zen-moss dark:text-zen-stone">
+            <p className="text-base sm:text-lg text-zen-moss dark:text-zen-stone">
               Manage your account and preferences
             </p>
           </div>
 
           {/* Profile Section */}
-          <div className="mb-8 bg-white rounded-xl border border-zen-sand p-8 dark:bg-zen-night-card dark:border-zen-night-border">
-            <h2 className="text-2xl font-bold text-zen-forest mb-6 flex items-center gap-2 dark:text-zen-parchment">
+          <div className="mb-8 bg-white rounded-2xl border border-zen-sand p-5 sm:p-8 dark:bg-zen-night-card dark:border-zen-night-border">
+            <h2 className="text-xl sm:text-2xl font-bold text-zen-forest mb-6 flex items-center gap-2 dark:text-zen-parchment">
               <User size={24} />
               Profile Information
             </h2>
 
             {/* Profile Picture */}
-            <div className="mb-6 flex items-center gap-6">
+            <div className="mb-6 flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
               {profile.photoUrl ? (
                 <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-zen-sand dark:border-zen-night-border">
                   <img
@@ -144,7 +144,7 @@ export default function AccountPage() {
                 />
                 <label
                   htmlFor="photo-upload"
-                  className="flex items-center gap-2 px-4 py-2 bg-zen-sage text-white rounded-lg hover:bg-zen-sage-light transition-colors cursor-pointer"
+                  className="flex items-center justify-center gap-2 px-4 py-2.5 w-full sm:w-auto bg-zen-sage text-white rounded-xl hover:bg-zen-sage-light transition-all cursor-pointer min-h-[44px]"
                 >
                   <Camera size={18} />
                   Change Photo
@@ -233,7 +233,7 @@ export default function AccountPage() {
 
               <button
                 onClick={handleProfileUpdate}
-                className="flex items-center gap-2 px-6 py-3 bg-zen-sage text-white rounded-xl font-medium hover:bg-zen-sage-light hover:shadow-sm transition-all"
+                className="flex items-center justify-center gap-2 px-6 py-3 w-full sm:w-auto bg-zen-sage text-white rounded-xl font-medium hover:bg-zen-sage-light hover:shadow-sm transition-all min-h-[44px] active:scale-[0.98]"
               >
                 <Save size={20} />
                 Save Profile
@@ -242,8 +242,8 @@ export default function AccountPage() {
           </div>
 
           {/* Preferences Section */}
-          <div className="mb-8 bg-white rounded-xl border border-zen-sand p-8 dark:bg-zen-night-card dark:border-zen-night-border">
-            <h2 className="text-2xl font-bold text-zen-forest mb-6 flex items-center gap-2 dark:text-zen-parchment">
+          <div className="mb-8 bg-white rounded-2xl border border-zen-sand p-5 sm:p-8 dark:bg-zen-night-card dark:border-zen-night-border">
+            <h2 className="text-xl sm:text-2xl font-bold text-zen-forest mb-6 flex items-center gap-2 dark:text-zen-parchment">
               <Bell size={24} />
               Preferences
             </h2>
@@ -327,7 +327,7 @@ export default function AccountPage() {
 
               <button
                 onClick={handlePreferencesUpdate}
-                className="flex items-center gap-2 px-6 py-3 bg-zen-sage text-white rounded-xl font-medium hover:bg-zen-sage-light hover:shadow-sm transition-all"
+                className="flex items-center justify-center gap-2 px-6 py-3 w-full sm:w-auto bg-zen-sage text-white rounded-xl font-medium hover:bg-zen-sage-light hover:shadow-sm transition-all min-h-[44px] active:scale-[0.98]"
               >
                 <Save size={20} />
                 Save Preferences
@@ -336,15 +336,15 @@ export default function AccountPage() {
           </div>
 
           {/* Sign Out */}
-          <div className="bg-zen-parchment rounded-xl border border-zen-sand p-8 dark:bg-zen-night-card dark:border-zen-night-border">
-            <h2 className="text-2xl font-bold text-zen-forest dark:text-zen-parchment mb-2">Sign Out</h2>
+          <div className="bg-zen-parchment rounded-2xl border border-zen-sand p-5 sm:p-8 dark:bg-zen-night-card dark:border-zen-night-border">
+            <h2 className="text-xl sm:text-2xl font-bold text-zen-forest dark:text-zen-parchment mb-2">Sign Out</h2>
             <p className="text-zen-moss dark:text-zen-stone mb-6">
               Sign out of your account on this device
             </p>
 
             <button
               onClick={handleSignOut}
-              className="flex items-center gap-3 px-6 py-3 bg-zen-forest text-white rounded-xl font-medium hover:bg-zen-moss transition-all"
+              className="flex items-center justify-center gap-3 px-6 py-3 w-full sm:w-auto bg-zen-forest text-white rounded-xl font-medium hover:bg-zen-moss transition-all min-h-[44px] active:scale-[0.98]"
             >
               <LogOut size={20} />
               Sign Out
