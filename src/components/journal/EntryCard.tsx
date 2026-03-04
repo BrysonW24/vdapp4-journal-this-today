@@ -1,6 +1,6 @@
 'use client';
 
-import { formatDistanceToNow, format } from 'date-fns';
+import { formatDistanceToNow } from 'date-fns';
 import { Star, MapPin } from 'lucide-react';
 import type { JournalEntry } from '@/types/journal';
 import { MOOD_METADATA } from '@/types/journal';
@@ -36,19 +36,24 @@ export function EntryCard({ entry }: EntryCardProps) {
 
   return (
     <Link href={`/journal/${entry.id}`}>
-      <div className="group bg-white dark:bg-zen-night-card rounded-2xl border border-zen-sand/80 dark:border-zen-night-border p-3.5 hover:shadow-sm transition-all duration-200 cursor-pointer active:scale-[0.99]">
+      <div
+        className="group bg-white dark:bg-zen-night-card rounded-2xl border border-zen-sand/80 dark:border-zen-night-border p-3.5 hover:shadow-md hover:border-zen-sage/20 hover:-translate-y-[1px] transition-all duration-200 cursor-pointer active:scale-[0.99]"
+        style={{ borderLeft: moodData ? `3px solid ${moodData.color}` : undefined }}
+      >
         <div className="flex gap-3">
           {/* Main content — left side */}
           <div className="flex-1 min-w-0">
             {/* Date + time + mood row */}
-            <div className="flex items-center gap-2 mb-0.5">
+            <div className="flex items-center gap-2 mb-1">
               {moodData && (
-                <span className="text-base">{moodData.emoji}</span>
+                <span
+                  className="w-7 h-7 rounded-lg flex items-center justify-center text-sm"
+                  style={{ backgroundColor: moodData.bgColor }}
+                >
+                  {moodData.emoji}
+                </span>
               )}
               <span className="text-xs text-zen-moss/50 dark:text-zen-stone/50 font-medium">
-                {format(entryDate, 'h:mm a')}
-              </span>
-              <span className="text-xs text-zen-moss/30 dark:text-zen-stone/30">
                 {formatDistanceToNow(entryDate, { addSuffix: true })}
               </span>
               {entry.isFavorite && (
@@ -57,12 +62,12 @@ export function EntryCard({ entry }: EntryCardProps) {
             </div>
 
             {/* Title */}
-            <h3 className="text-[15px] font-semibold text-zen-forest dark:text-zen-parchment line-clamp-1 mb-0.5">
+            <h3 className="text-[15px] font-semibold text-zen-forest dark:text-zen-parchment line-clamp-1 mb-1">
               {entry.title || 'Untitled Entry'}
             </h3>
 
             {/* Content preview — 2 lines max */}
-            <p className="text-[13px] text-zen-moss/70 dark:text-zen-stone/70 line-clamp-2 leading-relaxed mb-1.5">
+            <p className="text-[13px] text-zen-moss/70 dark:text-zen-stone/70 line-clamp-2 leading-relaxed mb-1">
               {getTextPreview(entry.content)}
             </p>
 
@@ -95,7 +100,7 @@ export function EntryCard({ entry }: EntryCardProps) {
             <div className="flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-zen-parchment dark:bg-zen-night-surface">
               <img
                 src={firstPhoto.url}
-                alt=""
+                alt={`Photo from ${entry.title || 'journal entry'}`}
                 className="w-full h-full object-cover"
               />
             </div>

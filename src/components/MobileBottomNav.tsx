@@ -15,9 +15,9 @@ export function MobileBottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden pb-[env(safe-area-inset-bottom)]">
-      <div className="mx-4 mb-2 bg-white/90 dark:bg-zen-night-card/90 backdrop-blur-xl rounded-2xl shadow-sm shadow-black/5 dark:shadow-black/20 border border-zen-sand/40 dark:border-zen-night-border/40">
-        <div className="flex items-center justify-around h-[60px] px-1">
+    <nav aria-label="Main navigation" className="fixed bottom-0 left-0 right-0 z-50 md:hidden pb-[env(safe-area-inset-bottom)]">
+      <div className="mx-4 mb-2 bg-white/90 dark:bg-zen-night-card/90 backdrop-blur-xl rounded-2xl shadow-md shadow-black/8 dark:shadow-black/25 border border-zen-sand/40 dark:border-zen-night-border/40">
+        <div className="flex items-center justify-around h-[64px] px-1">
           {tabs.map((tab) => {
             const isActive =
               pathname === tab.href ||
@@ -30,6 +30,7 @@ export function MobileBottomNav() {
               <Link
                 key={tab.href}
                 href={tab.href}
+                aria-current={isActive ? 'page' : undefined}
                 className={`flex items-center justify-center gap-1.5 min-h-[44px] px-3 py-2.5 rounded-full transition-all active:scale-[0.97] ${
                   isActive
                     ? 'bg-zen-parchment dark:bg-zen-night-surface text-zen-forest dark:text-zen-parchment'
@@ -37,12 +38,12 @@ export function MobileBottomNav() {
                 }`}
               >
                 <Icon
-                  size={20}
+                  size={isActive ? 22 : 20}
                   strokeWidth={isActive ? 2 : 1.5}
                   fill={isActive ? 'currentColor' : 'none'}
-                  className="transition-all flex-shrink-0"
+                  className="transition-all duration-200 ease-out flex-shrink-0"
                 />
-                <span className={`text-[11px] leading-none whitespace-nowrap ${isActive ? 'font-semibold' : 'font-medium'}`}>
+                <span className={`text-[12px] leading-none whitespace-nowrap ${isActive ? 'font-semibold' : 'font-medium'}`}>
                   {tab.label}
                 </span>
               </Link>

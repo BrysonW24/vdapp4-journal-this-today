@@ -131,19 +131,19 @@ export function MediaView({ entries }: MediaViewProps) {
           {Array.from(groupedMedia.entries()).map(([monthLabel, items]) => (
             <div key={monthLabel}>
               {/* Month section header */}
-              <div className="px-4 py-2">
+              <div className="px-4 py-3">
                 <span className="text-[11px] font-semibold text-zen-moss/40 dark:text-zen-stone/40 uppercase tracking-widest">
                   {monthLabel}
                 </span>
               </div>
 
-              {/* 3-column grid */}
-              <div className="grid grid-cols-3 gap-[1px] bg-zen-sand/20 dark:bg-zen-night-border/20">
+              {/* Responsive grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-1 px-4">
                 {items.map((media) => (
                   <Link
                     key={media.id}
                     href={`/journal/${media.entryId}`}
-                    className="relative aspect-square bg-white dark:bg-zen-night-card overflow-hidden group"
+                    className="relative aspect-square bg-white dark:bg-zen-night-card rounded-lg overflow-hidden group"
                   >
                     {media.type === 'photo' || media.type === 'drawing' ? (
                       <img
@@ -155,6 +155,12 @@ export function MediaView({ entries }: MediaViewProps) {
                       <div className="w-full h-full bg-zen-parchment/50 dark:bg-zen-night-surface" />
                     )}
                     {getMediaOverlay(media.type)}
+                    {/* Hover overlay with entry info */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-end p-2">
+                      <span className="text-white text-[11px] font-medium line-clamp-1">
+                        {media.entryTitle || format(media.entryDate, 'MMM d')}
+                      </span>
+                    </div>
                   </Link>
                 ))}
               </div>

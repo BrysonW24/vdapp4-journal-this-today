@@ -113,14 +113,14 @@ export default function JournalPage() {
             backgroundSize: '20px 20px',
           }} />
 
-          <div className="relative max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 pt-6 pb-16">
+          <div className="relative max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 pt-8 pb-20">
             {/* Journal Selector */}
             <div className="relative" ref={journalMenuRef} data-tour-step="journal-selector">
               <button
                 onClick={() => setShowJournalMenu(!showJournalMenu)}
                 className="flex items-center gap-2 group"
               >
-                <h1 className="text-[26px] font-bold text-white tracking-tight">
+                <h1 className="text-[30px] sm:text-[34px] font-bold text-white tracking-tight">
                   {selectedJournal?.name || 'Journal'}
                 </h1>
                 <ChevronDown
@@ -128,7 +128,7 @@ export default function JournalPage() {
                   className="text-white/40 group-hover:text-white/70 transition-colors mt-1"
                 />
               </button>
-              <p className="text-white/50 text-sm mt-0.5 font-medium">{currentYear}</p>
+              <p className="text-white/50 text-sm mt-1 tracking-wide font-medium">{currentYear}</p>
 
               {/* Dropdown Menu */}
               {showJournalMenu && (
@@ -208,7 +208,7 @@ export default function JournalPage() {
                 >
                   {tab.charAt(0).toUpperCase() + tab.slice(1)}
                   {activeView === tab && (
-                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-zen-forest dark:bg-zen-parchment" />
+                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-[2px] rounded-full bg-zen-forest dark:bg-zen-parchment" />
                   )}
                 </button>
               ))}
@@ -218,7 +218,7 @@ export default function JournalPage() {
             {activeView === 'list' && (
               <div className="px-4 py-4 space-y-3">
                 {/* Stats Row — rings + numbers */}
-                <div className="grid grid-cols-4 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                   <div className="bg-zen-parchment/50 dark:bg-zen-night-surface rounded-xl p-3 flex flex-col items-center">
                     <ActivityRing
                       value={journalFilteredEntries.length}
@@ -227,7 +227,7 @@ export default function JournalPage() {
                       strokeWidth={4}
                       color="#5B7F5E"
                     />
-                    <span className="text-[10px] text-zen-moss/50 dark:text-zen-stone/50 font-medium mt-1.5">Entries</span>
+                    <span className="text-[11px] text-zen-moss/50 dark:text-zen-stone/50 font-medium mt-1.5">Entries</span>
                   </div>
                   <div className="bg-zen-parchment/50 dark:bg-zen-night-surface rounded-xl p-3 flex flex-col items-center">
                     <ActivityRing
@@ -237,7 +237,7 @@ export default function JournalPage() {
                       strokeWidth={4}
                       color="#C4956A"
                     />
-                    <span className="text-[10px] text-zen-moss/50 dark:text-zen-stone/50 font-medium mt-1.5">Streak</span>
+                    <span className="text-[11px] text-zen-moss/50 dark:text-zen-stone/50 font-medium mt-1.5">Streak</span>
                   </div>
                   <div className="bg-zen-parchment/50 dark:bg-zen-night-surface rounded-xl p-3 flex flex-col items-center">
                     <ActivityRing
@@ -247,7 +247,7 @@ export default function JournalPage() {
                       strokeWidth={4}
                       color="#6B8F6E"
                     />
-                    <span className="text-[10px] text-zen-moss/50 dark:text-zen-stone/50 font-medium mt-1.5">Days</span>
+                    <span className="text-[11px] text-zen-moss/50 dark:text-zen-stone/50 font-medium mt-1.5">Days</span>
                   </div>
                   <div className="bg-zen-parchment/50 dark:bg-zen-night-surface rounded-xl p-3 flex flex-col items-center">
                     <ActivityRing
@@ -257,7 +257,7 @@ export default function JournalPage() {
                       strokeWidth={4}
                       color="#7FB5B0"
                     />
-                    <span className="text-[10px] text-zen-moss/50 dark:text-zen-stone/50 font-medium mt-1.5">Media</span>
+                    <span className="text-[11px] text-zen-moss/50 dark:text-zen-stone/50 font-medium mt-1.5">Media</span>
                   </div>
                 </div>
 
@@ -360,12 +360,23 @@ export default function JournalPage() {
                       ))}
                     </div>
                   ) : displayedEntries.length === 0 ? (
-                    /* Empty Timeline — matches Day One */
-                    <div className="flex flex-col items-center justify-center py-36">
-                      <h3 className="text-[17px] font-medium text-zen-moss/50 dark:text-zen-stone/50 mb-1.5">Empty Timeline</h3>
-                      <p className="text-sm text-zen-moss/35 dark:text-zen-stone/35">
-                        Entries will appear here when added to your journal
+                    /* Empty Timeline */
+                    <div className="flex flex-col items-center justify-center py-24">
+                      <div className="w-20 h-20 bg-zen-sage/10 dark:bg-zen-sage/5 rounded-full flex items-center justify-center mb-5">
+                        <BookOpen size={32} className="text-zen-sage/50" />
+                      </div>
+                      <h3 className="text-[17px] font-medium text-zen-moss/60 dark:text-zen-stone/60 mb-1.5">
+                        Empty Timeline
+                      </h3>
+                      <p className="text-sm text-zen-moss/35 dark:text-zen-stone/35 mb-5 text-center max-w-[260px]">
+                        Your story starts here. Write your first entry to begin your journal.
                       </p>
+                      <Link
+                        href="/journal/new"
+                        className="px-5 py-2.5 bg-zen-sage text-white text-sm font-medium rounded-xl hover:bg-zen-sage-light transition-all active:scale-[0.97]"
+                      >
+                        Start Writing
+                      </Link>
                     </div>
                   ) : (
                     <div className="space-y-6">
@@ -373,7 +384,7 @@ export default function JournalPage() {
                         .sort((a, b) => parseInt(b) - parseInt(a))
                         .map((year) => (
                           <div key={year}>
-                            <div className="sticky top-12 z-40 bg-white/90 dark:bg-zen-night-card/90 backdrop-blur-sm pb-2 mb-2">
+                            <div className="sticky top-12 z-20 bg-white/90 dark:bg-zen-night-card/90 backdrop-blur-sm pb-2 mb-2">
                               <h2 className="text-lg font-light text-zen-forest/80 dark:text-zen-parchment/80">
                                 {year}
                               </h2>
@@ -391,11 +402,11 @@ export default function JournalPage() {
                                 .map((month) => (
                                   <div key={month}>
                                     <div className="flex items-center gap-3 mb-2.5">
-                                      <div className="h-px flex-1 bg-zen-sand/40 dark:bg-zen-night-border/40"></div>
+                                      <div className="h-px flex-1 bg-zen-sand/60 dark:bg-zen-night-border/60"></div>
                                       <h3 className="text-[11px] font-medium text-zen-moss/40 dark:text-zen-stone/40 uppercase tracking-widest">
                                         {month}
                                       </h3>
-                                      <div className="h-px flex-1 bg-zen-sand/40 dark:bg-zen-night-border/40"></div>
+                                      <div className="h-px flex-1 bg-zen-sand/60 dark:bg-zen-night-border/60"></div>
                                     </div>
 
                                     {(() => {
