@@ -128,7 +128,7 @@ export default function JournalPage() {
                 onClick={() => setShowJournalMenu(!showJournalMenu)}
                 className="flex items-center gap-2.5 group"
               >
-                <h1 className="text-[32px] sm:text-[38px] font-bold text-white tracking-tight drop-shadow-sm">
+                <h1 className="text-[32px] sm:text-[38px] font-serif font-bold text-white tracking-tight drop-shadow-sm">
                   {selectedJournal?.name || 'Journal'}
                 </h1>
                 <ChevronDown
@@ -380,7 +380,7 @@ export default function JournalPage() {
                         </div>
                         <div className="absolute -inset-3 rounded-[28px] bg-gradient-to-br from-zen-sage/10 via-transparent to-zen-clay/10 -z-10 blur-md" />
                       </div>
-                      <h3 className="text-xl font-semibold text-zen-forest/80 dark:text-zen-parchment/80 mb-2">
+                      <h3 className="text-xl font-serif font-semibold text-zen-forest/80 dark:text-zen-parchment/80 mb-2">
                         Start your journal
                       </h3>
                       <p className="text-sm text-zen-moss/50 dark:text-zen-stone/50 mb-8 text-center max-w-[300px] leading-relaxed">
@@ -401,7 +401,7 @@ export default function JournalPage() {
                         .map((year) => (
                           <div key={year}>
                             <div className="sticky top-12 z-20 bg-white/90 dark:bg-zen-night-card/90 backdrop-blur-sm pb-2 mb-2">
-                              <h2 className="text-lg font-light text-zen-forest/80 dark:text-zen-parchment/80">
+                              <h2 className="text-lg font-serif font-light text-zen-forest/80 dark:text-zen-parchment/80">
                                 {year}
                               </h2>
                             </div>

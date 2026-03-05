@@ -93,7 +93,7 @@ export function CalendarView({ entries }: CalendarViewProps) {
           <div key={format(month, 'yyyy-MM')} ref={isCurrentMonth ? todayRef : undefined}>
             {/* Month header — Day One uses bold, clear headers */}
             <div className="px-4 pt-6 pb-3">
-              <h3 className="text-[22px] font-bold text-zen-forest dark:text-zen-parchment">
+              <h3 className="text-[22px] font-serif font-bold text-zen-forest dark:text-zen-parchment">
                 {format(month, 'MMMM yyyy')}
               </h3>
             </div>

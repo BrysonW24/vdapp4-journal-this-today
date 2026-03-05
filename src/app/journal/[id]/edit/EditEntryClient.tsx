@@ -107,7 +107,7 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
         <div className="min-h-screen bg-zen-cream dark:bg-zen-night">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="text-center py-12 bg-white dark:bg-zen-night-surface rounded-xl border border-zen-sand dark:border-zen-night-border">
-              <h3 className="text-xl font-semibold text-zen-forest dark:text-zen-cream mb-2">Entry not found</h3>
+              <h3 className="text-xl font-serif font-semibold text-zen-forest dark:text-zen-cream mb-2">Entry not found</h3>
               <p className="text-zen-moss dark:text-zen-stone mb-6">This journal entry does not exist.</p>
               <button
                 onClick={() => router.push('/journal')}
@@ -167,7 +167,7 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
             placeholder="Title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full text-xl font-semibold bg-transparent text-zen-forest dark:text-zen-parchment placeholder-zen-stone/40 focus:outline-none"
+            className="w-full text-xl font-serif font-semibold bg-transparent text-zen-forest dark:text-zen-parchment placeholder-zen-stone/40 focus:outline-none"
           />
         </div>
 

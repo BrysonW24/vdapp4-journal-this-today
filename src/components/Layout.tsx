@@ -143,6 +143,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, hideChrome = false }) 
             <div className="relative md:hidden" ref={hamburgerRef}>
               <button
                 onClick={() => setShowHamburgerMenu(!showHamburgerMenu)}
+                aria-label="Menu"
                 className="p-2 -ml-2 text-zen-moss hover:text-zen-sage hover:bg-zen-sage/5 rounded-xl transition-all dark:text-zen-stone dark:hover:text-zen-sage-light min-h-[44px] min-w-[44px] flex items-center justify-center active:scale-[0.95]"
               >
                 <Menu size={20} />
@@ -218,6 +219,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, hideChrome = false }) 
             {/* Search Button */}
             <button
               onClick={() => setSearchOpen(!searchOpen)}
+              aria-label="Search entries"
               className="p-2 text-zen-moss hover:text-zen-sage hover:bg-zen-sage/5 rounded-xl transition dark:text-zen-stone dark:hover:text-zen-sage-light"
               data-tour-step="search-button"
             >
@@ -228,6 +230,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, hideChrome = false }) 
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
               className="p-2 text-zen-moss hover:text-zen-sage hover:bg-zen-sage/5 rounded-xl transition dark:text-zen-stone dark:hover:text-zen-sage-light"
+              aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
               title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
               data-tour-step="theme-toggle"
             >
@@ -237,6 +240,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, hideChrome = false }) 
             {/* Profile Picture */}
             <Link
               href="/account"
+              aria-label="Account settings"
               className="flex-shrink-0"
             >
               <div className="w-8 h-8 bg-zen-sage/15 rounded-full flex items-center justify-center text-zen-sage font-semibold text-sm ring-1 ring-zen-sage/20 hover:ring-zen-sage/40 transition-all cursor-pointer">
@@ -326,7 +330,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, hideChrome = false }) 
       <footer className="bg-zen-forest text-zen-stone mt-12 hidden md:block">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <p className="text-sm">&copy; 2026 This, Today. All rights reserved.</p>
+            <p className="text-sm">&copy; {new Date().getFullYear()} This, Today. All rights reserved.</p>
             <div className="flex space-x-6 text-sm">
               <Link href="/privacy" className="hover:text-zen-parchment transition">
                 Privacy

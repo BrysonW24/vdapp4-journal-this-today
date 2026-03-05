@@ -72,7 +72,7 @@ export function EntryCard({ entry }: EntryCardProps) {
             </div>
 
             {/* Title */}
-            <h3 className="text-[15px] font-semibold text-zen-forest dark:text-zen-parchment line-clamp-1 mb-1 group-hover:text-zen-sage dark:group-hover:text-zen-sage-light transition-colors duration-200">
+            <h3 className="text-[15px] font-serif font-semibold text-zen-forest dark:text-zen-parchment line-clamp-1 mb-1 group-hover:text-zen-sage dark:group-hover:text-zen-sage-light transition-colors duration-200">
               {entry.title || 'Untitled Entry'}
             </h3>
 

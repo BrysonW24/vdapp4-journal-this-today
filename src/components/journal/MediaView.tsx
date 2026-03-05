@@ -170,7 +170,7 @@ export function MediaView({ entries }: MediaViewProps) {
       ) : (
         /* Empty State — matches Day One exactly */
         <div className="flex flex-col items-center justify-center py-40">
-          <h3 className="text-[17px] font-medium text-zen-moss/50 dark:text-zen-stone/50 mb-2">
+          <h3 className="text-[17px] font-serif font-medium text-zen-moss/50 dark:text-zen-stone/50 mb-2">
             Media Timeline
           </h3>
           <p className="text-[13px] text-zen-moss/35 dark:text-zen-stone/35 text-center px-12 leading-relaxed">

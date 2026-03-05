@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { Suspense, useState, useEffect, useRef } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Layout } from '@/components/Layout';
 import { EntryHeader } from '@/components/journal/EntryHeader';
 import { MetadataBottomSheet } from '@/components/journal/MetadataBottomSheet';
@@ -9,11 +9,21 @@ import { RichTextEditor } from '@/components/editor/RichTextEditor';
 import { useJournalStore } from '@/stores/journal-store';
 import { useJournalsStore } from '@/stores/journals-store';
 import { MoodLevel, ContentType } from '@/types/journal';
-import { FileText, Lightbulb, Mic, MapPin, MoreHorizontal, Camera } from 'lucide-react';
+import type { Attachment } from '@/types/journal';
+import { FileText, Lightbulb, Mic, MapPin, MoreHorizontal, Camera, X } from 'lucide-react';
 import { toast } from 'sonner';
+import { v4 as uuidv4 } from 'uuid';
 import type { Journal } from '@/lib/db';
 
 export default function NewEntryPage() {
+  return (
+    <Suspense>
+      <NewEntryContent />
+    </Suspense>
+  );
+}
+
+function NewEntryContent() {
   const router = useRouter();
   const addEntry = useJournalStore((state) => state.addEntry);
   const { journals, loadJournals, selectedJournalId } = useJournalsStore();
@@ -31,10 +41,74 @@ export default function NewEntryPage() {
   const [recognition, setRecognition] = useState<any>(null);
   const [transcript, setTranscript] = useState('');
   const [location, setLocation] = useState('');
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const photoInputRef = useRef<HTMLInputElement>(null);
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     loadJournals();
   }, [loadJournals]);
+
+  // Handle photo passed from More page via sessionStorage
+  useEffect(() => {
+    if (searchParams.get('fromPhoto') === 'true') {
+      try {
+        const stored = sessionStorage.getItem('pendingPhoto');
+        if (stored) {
+          const photoData = JSON.parse(stored);
+          setAttachments(prev => [...prev, {
+            id: uuidv4(),
+            type: 'photo',
+            url: photoData.url,
+            filename: photoData.filename,
+            size: photoData.size,
+            createdAt: new Date(),
+          }]);
+          sessionStorage.removeItem('pendingPhoto');
+          toast.success('Photo added');
+        }
+      } catch {
+        // Ignore invalid data
+      }
+    }
+  }, [searchParams]);
+
+  const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error('Photo must be less than 10MB');
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please select an image file');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const newAttachment: Attachment = {
+        id: uuidv4(),
+        type: 'photo',
+        url: reader.result as string,
+        filename: file.name,
+        size: file.size,
+        createdAt: new Date(),
+      };
+      setAttachments(prev => [...prev, newAttachment]);
+      toast.success('Photo added');
+    };
+    reader.readAsDataURL(file);
+
+    // Reset input so same file can be selected again
+    e.target.value = '';
+  };
+
+  const removeAttachment = (id: string) => {
+    setAttachments(prev => prev.filter(a => a.id !== id));
+  };
 
   const selectedJournal: Journal | undefined = journals.find(j => j.id === selectedJournalId) || journals.find(j => j.isDefault) || journals[0];
 
@@ -184,6 +258,7 @@ export default function NewEntryPage() {
         isFavorite: false,
         isEncrypted: false,
         location: locationData,
+        attachments: attachments.length > 0 ? attachments : undefined,
       });
 
       toast.success('Entry saved!');
@@ -238,7 +313,7 @@ export default function NewEntryPage() {
             placeholder="Title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full text-xl font-semibold bg-transparent text-zen-forest dark:text-zen-parchment placeholder-zen-stone/40 focus:outline-none"
+            className="w-full text-xl font-serif font-semibold bg-transparent text-zen-forest dark:text-zen-parchment placeholder-zen-stone/40 focus:outline-none"
           />
         </div>
 
@@ -281,7 +356,7 @@ export default function NewEntryPage() {
         {showTemplates && (
           <div className="fixed inset-x-0 bottom-0 z-40 bg-white dark:bg-zen-night-card border-t border-zen-sand dark:border-zen-night-border p-5 pb-[calc(20px+env(safe-area-inset-bottom))] animate-slide-up-sheet rounded-t-2xl max-h-[50vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-[15px] font-semibold text-zen-forest dark:text-zen-parchment">Templates</h3>
+              <h3 className="text-[15px] font-serif font-semibold text-zen-forest dark:text-zen-parchment">Templates</h3>
               <button onClick={() => setShowTemplates(false)} className="text-zen-stone text-sm">Close</button>
             </div>
             <div className="grid grid-cols-2 gap-3">
@@ -303,7 +378,7 @@ export default function NewEntryPage() {
         {showSuggestions && (
           <div className="fixed inset-x-0 bottom-0 z-40 bg-white dark:bg-zen-night-card border-t border-zen-sand dark:border-zen-night-border p-5 pb-[calc(20px+env(safe-area-inset-bottom))] animate-slide-up-sheet rounded-t-2xl max-h-[50vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-[15px] font-semibold text-zen-forest dark:text-zen-parchment">Suggestions</h3>
+              <h3 className="text-[15px] font-serif font-semibold text-zen-forest dark:text-zen-parchment">Suggestions</h3>
               <button onClick={() => setShowSuggestions(false)} className="text-zen-stone text-sm">Close</button>
             </div>
             <div className="space-y-2">
@@ -320,16 +395,63 @@ export default function NewEntryPage() {
           </div>
         )}
 
+        {/* Hidden file input for photos */}
+        <input
+          ref={photoInputRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
+          onChange={handlePhotoSelect}
+          className="hidden"
+        />
+
+        {/* Photo Thumbnails Row */}
+        {attachments.length > 0 && (
+          <div className="border-t border-zen-sand/30 dark:border-zen-night-border/30 bg-white dark:bg-zen-night-card px-4 py-2.5">
+            <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
+              {attachments.map((att) => (
+                <div key={att.id} className="relative flex-shrink-0 group">
+                  <img
+                    src={att.url}
+                    alt={att.filename}
+                    className="w-14 h-14 rounded-xl object-cover border border-zen-sand/60 dark:border-zen-night-border"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeAttachment(att.id)}
+                    className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-zen-forest/80 dark:bg-zen-parchment/80 text-white dark:text-zen-night rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity active:scale-90"
+                  >
+                    <X size={10} strokeWidth={3} />
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() => photoInputRef.current?.click()}
+                className="flex-shrink-0 w-14 h-14 rounded-xl border-2 border-dashed border-zen-sand/60 dark:border-zen-night-border flex items-center justify-center text-zen-moss/30 dark:text-zen-stone/30 hover:border-zen-sage/40 hover:text-zen-sage/50 transition-all"
+              >
+                <Camera size={18} />
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Quick Actions Bar — Day One style */}
         <div className="sticky bottom-0 z-30 bg-white/95 dark:bg-zen-night-card/95 backdrop-blur-md border-t border-zen-sand/50 dark:border-zen-night-border/50 pb-[env(safe-area-inset-bottom)]">
           <div className="flex items-center justify-between px-4 py-2">
             <div className="flex items-center gap-1">
               <button
                 type="button"
-                className="p-2.5 rounded-lg text-zen-moss/60 dark:text-zen-stone/60 hover:text-zen-sage hover:bg-zen-sage/5 transition-all active:scale-[0.95]"
+                onClick={() => photoInputRef.current?.click()}
+                className={`relative p-2.5 rounded-lg transition-all active:scale-[0.95] ${attachments.length > 0 ? 'text-zen-sage bg-zen-sage/10' : 'text-zen-moss/60 dark:text-zen-stone/60 hover:text-zen-sage hover:bg-zen-sage/5'}`}
                 title="Photos"
               >
                 <Camera size={20} />
+                {attachments.length > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-zen-sage text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+                    {attachments.length}
+                  </span>
+                )}
               </button>
               <button
                 type="button"

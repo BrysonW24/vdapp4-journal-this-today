@@ -166,7 +166,7 @@ export function MetadataBottomSheet({
 
             {/* Header */}
             <div className="flex items-center justify-between px-5 pb-3 border-b border-zen-sand/50 dark:border-zen-night-border/50">
-              <Dialog.Title className="text-[17px] font-semibold text-zen-forest dark:text-zen-parchment">
+              <Dialog.Title className="text-[17px] font-serif font-semibold text-zen-forest dark:text-zen-parchment">
                 Entry Details
                 {characterCount > 0 && (
                   <span className="text-[13px] font-normal text-zen-moss/40 dark:text-zen-stone/40 ml-2">

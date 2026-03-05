@@ -213,7 +213,7 @@ export function MapView({ entries }: MapViewProps) {
             <div className="w-16 h-16 bg-zen-sage/10 rounded-full flex items-center justify-center mx-auto mb-4">
               <MapPin size={28} className="text-zen-sage" />
             </div>
-            <h3 className="text-lg font-semibold text-zen-forest dark:text-zen-parchment mb-2">
+            <h3 className="text-lg font-serif font-semibold text-zen-forest dark:text-zen-parchment mb-2">
               Enable Location
             </h3>
             <p className="text-sm text-zen-moss/70 dark:text-zen-stone/70 mb-6 leading-relaxed">

@@ -26,12 +26,14 @@ import {
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import { useJournalsStore } from '@/stores/journals-store';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
 export default function EntryDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const pathname = usePathname();
   const { getEntryById, toggleFavorite, deleteEntry, loadEntries } = useJournalStore();
+  const { journals, loadJournals } = useJournalsStore();
   const [entryId, setEntryId] = useState<string | null>(null);
   const [entry, setEntry] = useState<JournalEntry | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -58,6 +60,10 @@ export default function EntryDetailPage({ params }: { params: Promise<{ id: stri
       });
     }
   }, [pathname, params, loadEntries]);
+
+  useEffect(() => {
+    loadJournals();
+  }, [loadJournals]);
 
   useEffect(() => {
     if (entryId) {
@@ -97,7 +103,7 @@ export default function EntryDetailPage({ params }: { params: Promise<{ id: stri
         <div className="min-h-screen bg-zen-cream dark:bg-zen-night">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="text-center py-12 bg-white dark:bg-zen-night-surface rounded-xl border border-zen-sand dark:border-zen-night-border">
-              <h3 className="text-xl font-semibold text-zen-forest dark:text-zen-cream mb-2">Entry not found</h3>
+              <h3 className="text-xl font-serif font-semibold text-zen-forest dark:text-zen-cream mb-2">Entry not found</h3>
               <p className="text-zen-moss dark:text-zen-stone mb-6">This journal entry doesn&apos;t exist.</p>
               <Link
                 href="/journal"
@@ -115,6 +121,7 @@ export default function EntryDetailPage({ params }: { params: Promise<{ id: stri
 
   const moodData = entry.mood ? MOOD_METADATA[entry.mood] : null;
   const wordCount = entry.content.replace(/<[^>]*>/g, '').trim().split(/\s+/).filter(Boolean).length;
+  const journalName = journals.find(j => j.id === entry.journalId)?.name || 'Journal';
 
   const handleToggleFavorite = async () => {
     await toggleFavorite(entry.id);
@@ -221,7 +228,7 @@ export default function EntryDetailPage({ params }: { params: Promise<{ id: stri
             {moodData && (
               <span className="text-3xl mt-0.5 flex-shrink-0">{moodData.emoji}</span>
             )}
-            <h1 className="text-2xl sm:text-3xl font-bold text-zen-forest dark:text-zen-cream leading-tight">
+            <h1 className="text-2xl sm:text-3xl font-serif font-bold text-zen-forest dark:text-zen-cream leading-tight">
               {entry.title || 'Untitled Entry'}
             </h1>
           </div>
@@ -308,7 +315,7 @@ export default function EntryDetailPage({ params }: { params: Promise<{ id: stri
               <div className="bg-white dark:bg-zen-night-surface rounded-xl border border-zen-sand/80 dark:border-zen-night-border overflow-hidden divide-y divide-zen-sand/40 dark:divide-zen-night-border/40 px-4 animate-fade-in">
                 <InfoRow icon={<Calendar size={16} />} label="Date" value={format(new Date(entry.createdAt), 'EEE, d MMM yyyy')} />
                 <InfoRow icon={<Clock size={16} />} label="Time" value={format(new Date(entry.createdAt), 'h:mm a')} />
-                <InfoRow icon={<BookOpen size={16} />} label="Journal" value="Journal" />
+                <InfoRow icon={<BookOpen size={16} />} label="Journal" value={journalName} />
                 {entry.category && <InfoRow icon={<FolderOpen size={16} />} label="Category" value={entry.category} />}
                 {entry.tags.length > 0 && <InfoRow icon={<Tag size={16} />} label="Tags" value={entry.tags.map(t => `#${t}`).join(', ')} />}
                 {entry.location && <InfoRow icon={<MapPin size={16} />} label="Location" value={entry.location.placeName || entry.location.address || 'Unknown'} />}

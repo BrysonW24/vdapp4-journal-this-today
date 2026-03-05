@@ -21,6 +21,7 @@ import {
   HelpCircle,
   ChevronRight,
   Upload,
+  Info,
 } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
@@ -324,7 +325,7 @@ export default function SettingsPage() {
         <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-2xl sm:text-3xl font-semibold text-zen-forest dark:text-zen-sage-light">
+            <h1 className="text-2xl sm:text-3xl font-serif font-semibold text-zen-forest dark:text-zen-sage-light">
               Settings
             </h1>
           </div>
@@ -394,7 +395,7 @@ export default function SettingsPage() {
           {showPDFSettings && (
             <div className="mt-3 bg-white dark:bg-zen-night-card border border-zen-sand dark:border-zen-night-border rounded-xl p-5">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-base font-semibold text-zen-forest dark:text-zen-parchment flex items-center gap-2">
+                <h3 className="text-base font-serif font-semibold text-zen-forest dark:text-zen-parchment flex items-center gap-2">
                   <SettingsIcon size={18} />
                   PDF Export Settings
                 </h3>
@@ -517,6 +518,18 @@ export default function SettingsPage() {
                 label="Help & FAQ"
               />
             </Link>
+          </SettingsGroup>
+
+          {/* ABOUT */}
+          <SectionHeader title="About" />
+          <SettingsGroup>
+            <SettingsRow
+              icon={<Info className="text-zen-moss dark:text-zen-stone" size={18} />}
+              iconBg="bg-zen-parchment dark:bg-zen-night-surface"
+              label="App Version"
+              value="1.0.0"
+              chevron={false}
+            />
           </SettingsGroup>
 
           {/* DANGER */}

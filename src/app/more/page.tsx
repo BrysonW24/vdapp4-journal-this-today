@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import { Layout } from '@/components/Layout';
 import { useJournalStore } from '@/stores/journal-store';
 import { DEFAULT_PROMPT_PACKS } from '@/types/journal';
+import { toast } from 'sonner';
 import {
   Lightbulb,
   CalendarDays,
@@ -11,7 +12,6 @@ import {
   Mic,
   ChevronRight,
   Settings,
-  Flame,
   Image as ImageIcon,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -100,24 +100,77 @@ export default function MorePage() {
     router.push(`/journal/new?prompt=${encodeURIComponent(question)}`);
   };
 
+  // User initial for avatar
+  const [userInitial, setUserInitial] = useState('U');
+  const photoLibraryRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const loadInitial = () => {
+      if (typeof window !== 'undefined') {
+        const storedProfile = localStorage.getItem('userProfile');
+        if (storedProfile) {
+          try {
+            const profile = JSON.parse(storedProfile);
+            setUserInitial(profile.name?.charAt(0).toUpperCase() || 'U');
+          } catch {
+            setUserInitial('U');
+          }
+        }
+      }
+    };
+
+    loadInitial();
+
+    window.addEventListener('profileUpdated', loadInitial);
+    return () => window.removeEventListener('profileUpdated', loadInitial);
+  }, []);
+
+  const handlePhotoLibrary = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error('Photo must be less than 10MB');
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please select an image file');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      sessionStorage.setItem('pendingPhoto', JSON.stringify({
+        url: reader.result as string,
+        filename: file.name,
+        size: file.size,
+      }));
+      router.push('/journal/new?fromPhoto=true');
+    };
+    reader.readAsDataURL(file);
+
+    e.target.value = '';
+  };
+
   return (
     <Layout>
       <div className="min-h-screen bg-zen-cream dark:bg-zen-night">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
-            <h1 className="text-[28px] font-bold text-zen-forest dark:text-zen-parchment">
+            <h1 className="text-[28px] font-serif font-bold text-zen-forest dark:text-zen-parchment">
               More
             </h1>
             <Link href="/account" className="w-9 h-9 bg-zen-sage/15 rounded-full flex items-center justify-center">
-              <span className="text-zen-sage font-semibold text-sm">Y</span>
+              <span className="text-zen-sage font-semibold text-sm">{userInitial}</span>
             </Link>
           </div>
 
           {/* Quick Start */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-lg font-bold text-zen-forest dark:text-zen-parchment">Quick Start</h2>
+              <h2 className="text-lg font-serif font-bold text-zen-forest dark:text-zen-parchment">Quick Start</h2>
               <Link href="/journal/new" className="text-zen-sage text-sm font-medium">See more</Link>
             </div>
             <p className="text-sm text-zen-moss/60 dark:text-zen-stone/60 mb-4">
@@ -146,7 +199,7 @@ export default function MorePage() {
           <div className="mb-8">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <h2 className="text-lg font-bold text-zen-forest dark:text-zen-parchment">On This Day</h2>
+                <h2 className="text-lg font-serif font-bold text-zen-forest dark:text-zen-parchment">On This Day</h2>
                 <span className="px-2 py-0.5 bg-zen-parchment dark:bg-zen-night-surface rounded-full text-xs font-medium text-zen-moss dark:text-zen-stone">
                   {format(new Date(), 'MMM d')}
                 </span>
@@ -175,7 +228,7 @@ export default function MorePage() {
                 </p>
                 {/* Year pills */}
                 <div className="flex gap-2 mt-3">
-                  {[2025, 2024, 2023].map((year) => (
+                  {Array.from({ length: 3 }, (_, i) => new Date().getFullYear() - i).map((year) => (
                     <span
                       key={year}
                       className="px-4 py-1.5 rounded-full bg-zen-sage/8 dark:bg-zen-sage/15 text-zen-sage text-sm font-medium"
@@ -191,7 +244,7 @@ export default function MorePage() {
           {/* Daily Prompt */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-lg font-bold text-zen-forest dark:text-zen-parchment">Daily Prompt</h2>
+              <h2 className="text-lg font-serif font-bold text-zen-forest dark:text-zen-parchment">Daily Prompt</h2>
               <Link href="/prompts" className="text-zen-sage text-sm font-medium">See more</Link>
             </div>
             <button
@@ -207,7 +260,7 @@ export default function MorePage() {
           {/* Streak — Duolingo style */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-lg font-bold text-zen-forest dark:text-zen-parchment">Streak</h2>
+              <h2 className="text-lg font-serif font-bold text-zen-forest dark:text-zen-parchment">Streak</h2>
             </div>
             <div className="bg-white dark:bg-zen-night-card rounded-xl border border-zen-sand/60 dark:border-zen-night-border/60 overflow-hidden">
 
@@ -223,7 +276,7 @@ export default function MorePage() {
                     label="streak"
                   />
                   <div className="text-left">
-                    <h3 className="text-xl font-bold text-zen-forest dark:text-zen-parchment">
+                    <h3 className="text-xl font-serif font-bold text-zen-forest dark:text-zen-parchment">
                       {currentStreak > 0
                         ? `${currentStreak} day streak!`
                         : 'Start your streak!'}
@@ -320,13 +373,23 @@ export default function MorePage() {
 
           {/* Photo Library CTA */}
           <div className="mb-8">
-            <h2 className="text-lg font-bold text-zen-forest dark:text-zen-parchment mb-3">Add from Photo Library</h2>
+            <h2 className="text-lg font-serif font-bold text-zen-forest dark:text-zen-parchment mb-3">Add from Photo Library</h2>
             <div className="bg-white dark:bg-zen-night-card rounded-xl border border-zen-sand/60 dark:border-zen-night-border/60 p-4">
               <p className="text-sm text-zen-moss/60 dark:text-zen-stone/60 mb-3">
-                Photo library access is required to show photos from your photo library.
+                Pick a photo from your library to start a new journal entry.
               </p>
-              <button className="w-full py-2.5 rounded-xl bg-zen-sage/10 text-zen-sage font-medium text-sm hover:bg-zen-sage/15 transition-colors">
-                Enable Photo Library Access
+              <input
+                ref={photoLibraryRef}
+                type="file"
+                accept="image/*"
+                onChange={handlePhotoLibrary}
+                className="hidden"
+              />
+              <button
+                onClick={() => photoLibraryRef.current?.click()}
+                className="w-full py-2.5 rounded-xl bg-zen-sage/10 text-zen-sage font-medium text-sm hover:bg-zen-sage/15 transition-colors active:scale-[0.98]"
+              >
+                Choose Photo
               </button>
             </div>
           </div>
@@ -335,7 +398,6 @@ export default function MorePage() {
           <div className="rounded-xl overflow-hidden border border-zen-sand/60 dark:border-zen-night-border/60 divide-y divide-zen-sand/40 dark:divide-zen-night-border/40 mb-8">
             {[
               { icon: Settings, label: 'Settings', href: '/settings' },
-              { icon: Flame, label: 'Premium', href: '/premium' },
               { icon: ImageIcon, label: 'Account', href: '/account' },
             ].map((item) => (
               <Link

@@ -76,7 +76,8 @@ const config: Config = {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        sans: ['var(--font-sans)'],
+        sans: ['var(--font-sans)', 'Raleway', 'sans-serif'],
+        serif: ['var(--font-serif)', 'Lora', 'serif'],
         mono: ['var(--font-mono)'],
       },
       keyframes: {

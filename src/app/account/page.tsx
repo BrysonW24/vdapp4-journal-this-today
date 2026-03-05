@@ -6,21 +6,22 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
 import {
   User,
-  Mail,
-  Bell,
   Moon,
   Globe,
   Calendar,
   Save,
   LogOut,
   Camera,
+  Mail,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useTheme } from 'next-themes';
 
 export default function AccountPage() {
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);
+  const { theme, setTheme } = useTheme();
 
   const [profile, setProfile] = useState(() => {
     // Load from localStorage if available
@@ -38,18 +39,23 @@ export default function AccountPage() {
       name: user?.name || 'Journal User',
       email: user?.email || '',
       bio: '',
-      timezone: 'America/New_York',
+      timezone: typeof Intl !== 'undefined' ? Intl.DateTimeFormat().resolvedOptions().timeZone : 'America/New_York',
       dateFormat: 'MM/DD/YYYY',
       photoUrl: '',
     };
   });
 
-  const [preferences, setPreferences] = useState({
-    darkMode: false,
-    notifications: true,
-    emailDigest: false,
-    autoSave: true,
-    defaultMood: 'neutral',
+  const [preferences, setPreferences] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('userPreferences');
+      if (stored) {
+        try { return JSON.parse(stored); } catch { /* fall through */ }
+      }
+    }
+    return {
+      autoSave: true,
+      defaultMood: 'neutral',
+    };
   });
 
   const handleProfileUpdate = () => {
@@ -60,10 +66,6 @@ export default function AccountPage() {
       window.dispatchEvent(new Event('profileUpdated'));
     }
     toast.success('Profile updated successfully!');
-  };
-
-  const handlePreferencesUpdate = () => {
-    toast.success('Preferences saved!');
   };
 
   const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -104,7 +106,7 @@ export default function AccountPage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12">
           {/* Header */}
           <div className="mb-8 sm:mb-12">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-zen-forest dark:text-zen-sage-light mb-2 sm:mb-4">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold text-zen-forest dark:text-zen-sage-light mb-2 sm:mb-4">
               Account Settings
             </h1>
             <p className="text-base sm:text-lg text-zen-moss dark:text-zen-stone">
@@ -114,7 +116,7 @@ export default function AccountPage() {
 
           {/* Profile Section */}
           <div className="mb-8 bg-white rounded-2xl border border-zen-sand p-5 sm:p-8 dark:bg-zen-night-card dark:border-zen-night-border">
-            <h2 className="text-xl sm:text-2xl font-bold text-zen-forest mb-6 flex items-center gap-2 dark:text-zen-parchment">
+            <h2 className="text-xl sm:text-2xl font-serif font-bold text-zen-forest mb-6 flex items-center gap-2 dark:text-zen-parchment">
               <User size={24} />
               Profile Information
             </h2>
@@ -243,8 +245,8 @@ export default function AccountPage() {
 
           {/* Preferences Section */}
           <div className="mb-8 bg-white rounded-2xl border border-zen-sand p-5 sm:p-8 dark:bg-zen-night-card dark:border-zen-night-border">
-            <h2 className="text-xl sm:text-2xl font-bold text-zen-forest mb-6 flex items-center gap-2 dark:text-zen-parchment">
-              <Bell size={24} />
+            <h2 className="text-xl sm:text-2xl font-serif font-bold text-zen-forest mb-6 flex items-center gap-2 dark:text-zen-parchment">
+              <Save size={24} />
               Preferences
             </h2>
 
@@ -260,46 +262,8 @@ export default function AccountPage() {
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
                     type="checkbox"
-                    checked={preferences.darkMode}
-                    onChange={(e) => setPreferences({ ...preferences, darkMode: e.target.checked })}
-                    className="sr-only peer"
-                  />
-                  <div className="w-11 h-6 bg-zen-sand dark:bg-zen-night-border peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-zen-sage-soft rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-zen-sand after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-zen-sage"></div>
-                </label>
-              </div>
-
-              <div className="flex items-center justify-between p-4 bg-zen-parchment dark:bg-zen-night-surface/50 rounded-xl">
-                <div className="flex items-center gap-3">
-                  <Bell size={20} className="text-zen-moss dark:text-zen-stone" />
-                  <div>
-                    <p className="font-medium text-zen-forest dark:text-zen-parchment">Notifications</p>
-                    <p className="text-sm text-zen-moss dark:text-zen-stone">Receive app notifications</p>
-                  </div>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={preferences.notifications}
-                    onChange={(e) => setPreferences({ ...preferences, notifications: e.target.checked })}
-                    className="sr-only peer"
-                  />
-                  <div className="w-11 h-6 bg-zen-sand dark:bg-zen-night-border peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-zen-sage-soft rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-zen-sand after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-zen-sage"></div>
-                </label>
-              </div>
-
-              <div className="flex items-center justify-between p-4 bg-zen-parchment dark:bg-zen-night-surface/50 rounded-xl">
-                <div className="flex items-center gap-3">
-                  <Mail size={20} className="text-zen-moss dark:text-zen-stone" />
-                  <div>
-                    <p className="font-medium text-zen-forest dark:text-zen-parchment">Email Digest</p>
-                    <p className="text-sm text-zen-moss dark:text-zen-stone">Weekly summary emails</p>
-                  </div>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={preferences.emailDigest}
-                    onChange={(e) => setPreferences({ ...preferences, emailDigest: e.target.checked })}
+                    checked={theme === 'dark'}
+                    onChange={(e) => setTheme(e.target.checked ? 'dark' : 'light')}
                     className="sr-only peer"
                   />
                   <div className="w-11 h-6 bg-zen-sand dark:bg-zen-night-border peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-zen-sage-soft rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-zen-sand after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-zen-sage"></div>
@@ -318,26 +282,22 @@ export default function AccountPage() {
                   <input
                     type="checkbox"
                     checked={preferences.autoSave}
-                    onChange={(e) => setPreferences({ ...preferences, autoSave: e.target.checked })}
+                    onChange={(e) => {
+                      const updated = { ...preferences, autoSave: e.target.checked };
+                      setPreferences(updated);
+                      localStorage.setItem('userPreferences', JSON.stringify(updated));
+                    }}
                     className="sr-only peer"
                   />
                   <div className="w-11 h-6 bg-zen-sand dark:bg-zen-night-border peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-zen-sage-soft rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-zen-sand after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-zen-sage"></div>
                 </label>
               </div>
-
-              <button
-                onClick={handlePreferencesUpdate}
-                className="flex items-center justify-center gap-2 px-6 py-3 w-full sm:w-auto bg-zen-sage text-white rounded-xl font-medium hover:bg-zen-sage-light hover:shadow-sm transition-all min-h-[44px] active:scale-[0.98]"
-              >
-                <Save size={20} />
-                Save Preferences
-              </button>
             </div>
           </div>
 
           {/* Sign Out */}
           <div className="bg-zen-parchment rounded-2xl border border-zen-sand p-5 sm:p-8 dark:bg-zen-night-card dark:border-zen-night-border">
-            <h2 className="text-xl sm:text-2xl font-bold text-zen-forest dark:text-zen-parchment mb-2">Sign Out</h2>
+            <h2 className="text-xl sm:text-2xl font-serif font-bold text-zen-forest dark:text-zen-parchment mb-2">Sign Out</h2>
             <p className="text-zen-moss dark:text-zen-stone mb-6">
               Sign out of your account on this device
             </p>
