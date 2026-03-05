@@ -95,7 +95,6 @@ export default function JournalPage() {
     return groups;
   }, [displayedEntries]);
 
-  const currentYear = new Date().getFullYear();
 
   return (
     <Layout>
