@@ -99,35 +99,44 @@ export default function JournalPage() {
   return (
     <Layout>
       <div className="min-h-screen bg-zen-parchment/30 dark:bg-zen-night -mt-12">
-        {/* Hero Header — sage green */}
+        {/* Hero Header — gradient mesh with depth */}
         <div
-          className="relative pt-[env(safe-area-inset-top)]"
+          className="relative pt-[env(safe-area-inset-top)] overflow-hidden"
           style={{
-            background: 'linear-gradient(160deg, #6B8F6E 0%, #5B7F5E 40%, #4A6E4D 100%)',
+            background: 'linear-gradient(160deg, #6B8F6E 0%, #5B7F5E 30%, #4A7A6A 60%, #3D6B5A 100%)',
           }}
         >
-          {/* Subtle dot pattern */}
-          <div className="absolute inset-0 opacity-[0.03]" style={{
-            backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)',
-            backgroundSize: '20px 20px',
+          {/* Mesh gradient overlay — inspired by 21st.dev Hero components */}
+          <div className="absolute inset-0" style={{
+            background: 'radial-gradient(ellipse at 30% 20%, rgba(139,174,140,0.4) 0%, transparent 50%), radial-gradient(ellipse at 70% 80%, rgba(123,164,184,0.2) 0%, transparent 40%), radial-gradient(ellipse at 90% 10%, rgba(196,149,106,0.15) 0%, transparent 40%)',
           }} />
+          {/* Grid pattern — from 21st.dev Hero section design */}
+          <div className="absolute inset-0 opacity-[0.04]" style={{
+            backgroundImage: 'linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)',
+            backgroundSize: '40px 40px',
+            maskImage: 'radial-gradient(ellipse 80% 60% at 50% 40%, black 40%, transparent 100%)',
+            WebkitMaskImage: 'radial-gradient(ellipse 80% 60% at 50% 40%, black 40%, transparent 100%)',
+          }} />
+          {/* Floating ambient orbs for depth */}
+          <div className="absolute top-8 left-[15%] w-48 h-48 rounded-full bg-white/5 blur-3xl" />
+          <div className="absolute bottom-4 right-[10%] w-64 h-64 rounded-full bg-zen-creek/10 blur-3xl" />
 
-          <div className="relative max-w-3xl mx-auto px-5 sm:px-6 lg:px-8 pt-10 sm:pt-14 pb-20">
+          <div className="relative max-w-3xl mx-auto px-5 sm:px-6 lg:px-8 pt-10 sm:pt-14 pb-24">
             {/* Journal Selector */}
             <div className="relative" ref={journalMenuRef} data-tour-step="journal-selector">
               <button
                 onClick={() => setShowJournalMenu(!showJournalMenu)}
                 className="flex items-center gap-2.5 group"
               >
-                <h1 className="text-[30px] sm:text-[36px] font-bold text-white tracking-tight">
+                <h1 className="text-[32px] sm:text-[38px] font-bold text-white tracking-tight drop-shadow-sm">
                   {selectedJournal?.name || 'Journal'}
                 </h1>
                 <ChevronDown
                   size={18}
-                  className="text-white/40 group-hover:text-white/70 transition-colors mt-1"
+                  className="text-white/40 group-hover:text-white/70 transition-colors mt-1.5"
                 />
               </button>
-              <p className="text-white/40 text-sm mt-1.5 tracking-wide font-medium">
+              <p className="text-white/50 text-sm mt-2 tracking-wide font-medium">
                 {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
               </p>
 
@@ -181,12 +190,12 @@ export default function JournalPage() {
           </div>
         </div>
 
-        {/* Content Card — overlaps hero */}
-        <div className="relative -mt-10 max-w-4xl mx-auto">
-          <div className="bg-white dark:bg-zen-night-card rounded-t-[24px] min-h-[60vh]" style={{ boxShadow: '0 -4px 20px rgba(0,0,0,0.06)' }}>
-            {/* View Tabs — Day One style, sticky below header */}
+        {/* Content Card — overlaps hero with glassmorphism depth */}
+        <div className="relative -mt-14 max-w-4xl mx-auto px-2 sm:px-0">
+          <div className="bg-white/95 dark:bg-zen-night-card/95 backdrop-blur-sm rounded-t-[28px] min-h-[60vh] elevation-3">
+            {/* View Tabs — sticky with glassmorphism */}
             <div
-              className="sticky z-30 bg-white dark:bg-zen-night-card flex items-center gap-0.5 px-4 pt-4 pb-2 border-b border-zen-sand/50 dark:border-zen-night-border/50"
+              className="sticky z-30 bg-white/90 dark:bg-zen-night-card/90 backdrop-blur-md flex items-center gap-0.5 px-4 pt-4 pb-2 border-b border-zen-sand/30 dark:border-zen-night-border/30 rounded-t-[28px]"
               style={{ top: 'calc(48px + env(safe-area-inset-top))' }}
             >
               <button
@@ -215,60 +224,61 @@ export default function JournalPage() {
               ))}
             </div>
 
-            {/* Stats + Activity — only on List view, hidden when no entries */}
+            {/* Stats + Activity — glassmorphism cards inspired by 21st.dev Activity Card */}
             {activeView === 'list' && journalFilteredEntries.length > 0 && (
-              <div className="max-w-2xl mx-auto px-4 py-4 space-y-3">
-                {/* Stats Row — rings + numbers */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                  <div className="bg-zen-parchment/50 dark:bg-zen-night-surface rounded-xl p-3 flex flex-col items-center">
+              <div className="max-w-2xl mx-auto px-4 py-5 space-y-3">
+                {/* Stats Row — glassmorphism cards with gradient accent */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <div className="glass-stats rounded-2xl p-3.5 flex flex-col items-center hover:scale-[1.02] transition-transform duration-200 cursor-default">
                     <ActivityRing
                       value={journalFilteredEntries.length}
                       max={Math.max(journalFilteredEntries.length, 30)}
-                      size={44}
+                      size={48}
                       strokeWidth={4}
                       color="#5B7F5E"
                     />
-                    <span className="text-[11px] text-zen-moss/50 dark:text-zen-stone/50 font-medium mt-1.5">Entries</span>
+                    <span className="text-[11px] text-zen-moss/60 dark:text-zen-stone/60 font-semibold mt-2 tracking-wide uppercase">Entries</span>
                   </div>
-                  <div className="bg-zen-parchment/50 dark:bg-zen-night-surface rounded-xl p-3 flex flex-col items-center">
+                  <div className="glass-stats rounded-2xl p-3.5 flex flex-col items-center hover:scale-[1.02] transition-transform duration-200 cursor-default">
                     <ActivityRing
                       value={getCurrentStreak()}
                       max={Math.max(getCurrentStreak(), 7)}
-                      size={44}
+                      size={48}
                       strokeWidth={4}
                       color="#C4956A"
                     />
-                    <span className="text-[11px] text-zen-moss/50 dark:text-zen-stone/50 font-medium mt-1.5">Streak</span>
+                    <span className="text-[11px] text-zen-moss/60 dark:text-zen-stone/60 font-semibold mt-2 tracking-wide uppercase">Streak</span>
                   </div>
-                  <div className="bg-zen-parchment/50 dark:bg-zen-night-surface rounded-xl p-3 flex flex-col items-center">
+                  <div className="glass-stats rounded-2xl p-3.5 flex flex-col items-center hover:scale-[1.02] transition-transform duration-200 cursor-default">
                     <ActivityRing
                       value={getDaysJournaled()}
                       max={Math.max(getDaysJournaled(), 30)}
-                      size={44}
+                      size={48}
                       strokeWidth={4}
                       color="#6B8F6E"
                     />
-                    <span className="text-[11px] text-zen-moss/50 dark:text-zen-stone/50 font-medium mt-1.5">Days</span>
+                    <span className="text-[11px] text-zen-moss/60 dark:text-zen-stone/60 font-semibold mt-2 tracking-wide uppercase">Days</span>
                   </div>
-                  <div className="bg-zen-parchment/50 dark:bg-zen-night-surface rounded-xl p-3 flex flex-col items-center">
+                  <div className="glass-stats rounded-2xl p-3.5 flex flex-col items-center hover:scale-[1.02] transition-transform duration-200 cursor-default">
                     <ActivityRing
                       value={journalFilteredEntries.filter(e => e.attachments?.some(a => a.type === 'photo')).length}
                       max={Math.max(journalFilteredEntries.length, 1)}
-                      size={44}
+                      size={48}
                       strokeWidth={4}
                       color="#7FB5B0"
                     />
-                    <span className="text-[11px] text-zen-moss/50 dark:text-zen-stone/50 font-medium mt-1.5">Media</span>
+                    <span className="text-[11px] text-zen-moss/60 dark:text-zen-stone/60 font-semibold mt-2 tracking-wide uppercase">Media</span>
                   </div>
                 </div>
 
-                {/* Activity Sparkline */}
-                <div className="bg-zen-parchment/50 dark:bg-zen-night-surface rounded-xl p-3.5">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs text-zen-moss/60 dark:text-zen-stone/60 font-medium">30-Day Activity</span>
-                    <TrendingUp size={13} className="text-zen-sage/40" />
+                {/* Activity Sparkline — glassmorphism with gradient border */}
+                <div className="glass-stats rounded-2xl p-4 relative overflow-hidden">
+                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-zen-sage/0 via-zen-sage/40 to-zen-sage/0" />
+                  <div className="flex items-center justify-between mb-2.5">
+                    <span className="text-xs text-zen-moss/70 dark:text-zen-stone/60 font-semibold tracking-wide">30-Day Activity</span>
+                    <TrendingUp size={14} className="text-zen-sage/50" />
                   </div>
-                  <WeeklySparkline entries={journalFilteredEntries} days={30} height={40} color="#5B7F5E" />
+                  <WeeklySparkline entries={journalFilteredEntries} days={30} height={44} color="#5B7F5E" />
                 </div>
               </div>
             )}
@@ -291,7 +301,7 @@ export default function JournalPage() {
                           placeholder="Search entries..."
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
-                          className="w-full pl-9 pr-3 py-2 border border-zen-sand/60 dark:border-zen-night-border rounded-lg text-sm focus:border-zen-sage focus:ring-1 focus:ring-zen-sage/20 transition-all bg-zen-parchment/30 dark:bg-zen-night-surface text-zen-forest dark:text-zen-parchment placeholder-zen-moss/30"
+                          className="w-full pl-9 pr-3 py-2.5 border border-zen-sand/40 dark:border-zen-night-border/60 rounded-xl text-sm focus:border-zen-sage focus:ring-2 focus:ring-zen-sage/15 transition-all bg-white/60 dark:bg-zen-night-surface/60 backdrop-blur-sm text-zen-forest dark:text-zen-parchment placeholder-zen-moss/30"
                         />
                       </div>
                       <div className="flex gap-1">
@@ -320,19 +330,20 @@ export default function JournalPage() {
                     </div>
                   )}
 
-                  {/* On This Day */}
+                  {/* On This Day — glassmorphism card */}
                   {onThisDay.length > 0 && (
-                    <div className="mb-5 bg-zen-sage/6 rounded-xl p-4 border border-zen-sage/8">
-                      <h2 className="text-xs font-semibold text-zen-sage uppercase tracking-wider mb-3">On This Day</h2>
-                      <div className="flex gap-2.5 overflow-x-auto">
+                    <div className="mb-5 glass-stats rounded-2xl p-4 relative overflow-hidden">
+                      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-zen-sage/0 via-zen-sage/30 to-zen-sage/0" />
+                      <h2 className="text-xs font-semibold text-zen-sage uppercase tracking-widest mb-3">On This Day</h2>
+                      <div className="flex gap-2.5 overflow-x-auto scrollbar-hide">
                         {onThisDay.map((entry) => (
                           <Link
                             key={entry.id}
                             href={`/journal/${entry.id}`}
-                            className="min-w-[180px] bg-white dark:bg-zen-night-card rounded-lg p-3 border border-zen-sand/60 dark:border-zen-night-border hover:border-zen-sage/30 transition-all"
+                            className="min-w-[180px] glass-card rounded-xl p-3 hover:elevation-1 hover:-translate-y-[1px] transition-all duration-200"
                           >
                             <p className="font-medium text-sm text-zen-forest dark:text-zen-parchment mb-0.5">{entry.title}</p>
-                            <p className="text-xs text-zen-moss/60 dark:text-zen-stone/60">
+                            <p className="text-xs text-zen-moss/50 dark:text-zen-stone/50">
                               {new Date(entry.createdAt).getFullYear()}
                             </p>
                           </Link>
@@ -361,21 +372,24 @@ export default function JournalPage() {
                       ))}
                     </div>
                   ) : displayedEntries.length === 0 ? (
-                    /* Empty Timeline */
-                    <div className="flex flex-col items-center justify-center py-16 sm:py-20">
-                      <div className="w-16 h-16 bg-zen-sage/8 dark:bg-zen-sage/5 rounded-2xl flex items-center justify-center mb-4">
-                        <BookOpen size={28} className="text-zen-sage/40" />
+                    /* Empty Timeline — glassmorphism with gradient accents */
+                    <div className="flex flex-col items-center justify-center py-20 sm:py-28">
+                      <div className="relative mb-6">
+                        <div className="w-20 h-20 glass-stats rounded-3xl flex items-center justify-center">
+                          <BookOpen size={32} className="text-zen-sage/50" />
+                        </div>
+                        <div className="absolute -inset-3 rounded-[28px] bg-gradient-to-br from-zen-sage/10 via-transparent to-zen-clay/10 -z-10 blur-md" />
                       </div>
-                      <h3 className="text-lg font-semibold text-zen-forest/70 dark:text-zen-parchment/70 mb-1">
+                      <h3 className="text-xl font-semibold text-zen-forest/80 dark:text-zen-parchment/80 mb-2">
                         Start your journal
                       </h3>
-                      <p className="text-sm text-zen-moss/40 dark:text-zen-stone/40 mb-6 text-center max-w-[280px]">
+                      <p className="text-sm text-zen-moss/50 dark:text-zen-stone/50 mb-8 text-center max-w-[300px] leading-relaxed">
                         Capture your thoughts, track your mood, and reflect on your journey.
                       </p>
                       <Link
                         href="/journal/new"
-                        className="px-6 py-3 bg-zen-sage text-white text-sm font-semibold rounded-xl hover:bg-zen-sage-light transition-all active:scale-[0.97] shadow-sm"
-                        style={{ boxShadow: '0 2px 12px rgba(91, 127, 94, 0.25)' }}
+                        className="group px-7 py-3.5 bg-gradient-to-r from-zen-sage to-zen-sage-light text-white text-sm font-semibold rounded-2xl hover:shadow-lg transition-all duration-300 active:scale-[0.97]"
+                        style={{ boxShadow: '0 4px 20px rgba(91, 127, 94, 0.3)' }}
                       >
                         Write your first entry
                       </Link>
@@ -471,12 +485,13 @@ export default function JournalPage() {
           </div>
         </div>
 
-        {/* Floating Action Button */}
+        {/* Floating Action Button — gradient with depth shadow */}
         <Link
           href="/journal/new"
-          className="fixed bottom-24 md:bottom-8 right-5 md:right-8 w-14 h-14 bg-zen-clay text-white rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-all hover:scale-105 z-40"
+          className="fixed bottom-24 md:bottom-8 right-5 md:right-8 w-14 h-14 text-white rounded-2xl flex items-center justify-center hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 z-40"
           style={{
-            boxShadow: '0 4px 20px rgba(196, 149, 106, 0.35)',
+            background: 'linear-gradient(135deg, #D4A574 0%, #C4956A 50%, #B08560 100%)',
+            boxShadow: '0 4px 24px rgba(196, 149, 106, 0.4), 0 2px 8px rgba(196, 149, 106, 0.2)',
           }}
         >
           <Plus size={26} strokeWidth={2.5} />
