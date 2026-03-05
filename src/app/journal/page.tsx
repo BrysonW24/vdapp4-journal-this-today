@@ -99,7 +99,7 @@ export default function JournalPage() {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-white dark:bg-zen-night-card -mt-12">
+      <div className="min-h-screen bg-zen-parchment/30 dark:bg-zen-night -mt-12">
         {/* Hero Header — sage green */}
         <div
           className="relative pt-[env(safe-area-inset-top)]"
@@ -113,14 +113,14 @@ export default function JournalPage() {
             backgroundSize: '20px 20px',
           }} />
 
-          <div className="relative max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 pt-8 pb-20">
+          <div className="relative max-w-3xl mx-auto px-5 sm:px-6 lg:px-8 pt-10 sm:pt-14 pb-20">
             {/* Journal Selector */}
             <div className="relative" ref={journalMenuRef} data-tour-step="journal-selector">
               <button
                 onClick={() => setShowJournalMenu(!showJournalMenu)}
-                className="flex items-center gap-2 group"
+                className="flex items-center gap-2.5 group"
               >
-                <h1 className="text-[30px] sm:text-[34px] font-bold text-white tracking-tight">
+                <h1 className="text-[30px] sm:text-[36px] font-bold text-white tracking-tight">
                   {selectedJournal?.name || 'Journal'}
                 </h1>
                 <ChevronDown
@@ -128,7 +128,9 @@ export default function JournalPage() {
                   className="text-white/40 group-hover:text-white/70 transition-colors mt-1"
                 />
               </button>
-              <p className="text-white/50 text-sm mt-1 tracking-wide font-medium">{currentYear}</p>
+              <p className="text-white/40 text-sm mt-1.5 tracking-wide font-medium">
+                {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+              </p>
 
               {/* Dropdown Menu */}
               {showJournalMenu && (
@@ -181,8 +183,8 @@ export default function JournalPage() {
         </div>
 
         {/* Content Card — overlaps hero */}
-        <div className="relative -mt-10">
-          <div className="bg-white dark:bg-zen-night-card rounded-t-[24px] min-h-[60vh]" style={{ boxShadow: '0 -4px 20px rgba(0,0,0,0.04)' }}>
+        <div className="relative -mt-10 max-w-4xl mx-auto">
+          <div className="bg-white dark:bg-zen-night-card rounded-t-[24px] min-h-[60vh]" style={{ boxShadow: '0 -4px 20px rgba(0,0,0,0.06)' }}>
             {/* View Tabs — Day One style, sticky below header */}
             <div
               className="sticky z-30 bg-white dark:bg-zen-night-card flex items-center gap-0.5 px-4 pt-4 pb-2 border-b border-zen-sand/50 dark:border-zen-night-border/50"
@@ -214,9 +216,9 @@ export default function JournalPage() {
               ))}
             </div>
 
-            {/* Stats + Activity — only on List view */}
-            {activeView === 'list' && (
-              <div className="px-4 py-4 space-y-3">
+            {/* Stats + Activity — only on List view, hidden when no entries */}
+            {activeView === 'list' && journalFilteredEntries.length > 0 && (
+              <div className="max-w-2xl mx-auto px-4 py-4 space-y-3">
                 {/* Stats Row — rings + numbers */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                   <div className="bg-zen-parchment/50 dark:bg-zen-night-surface rounded-xl p-3 flex flex-col items-center">
@@ -272,8 +274,8 @@ export default function JournalPage() {
               </div>
             )}
 
-            {/* Content Area — full-bleed for calendar/media/map, padded for list */}
-            <div className={activeView === 'list' ? 'px-4 py-3' : ''}>
+            {/* Content Area — constrained for list, full-bleed for calendar/media/map */}
+            <div className={activeView === 'list' ? 'max-w-2xl mx-auto px-4 py-3' : ''}>
               {/* List View */}
               {activeView === 'list' && (
                 <>
@@ -361,21 +363,22 @@ export default function JournalPage() {
                     </div>
                   ) : displayedEntries.length === 0 ? (
                     /* Empty Timeline */
-                    <div className="flex flex-col items-center justify-center py-24">
-                      <div className="w-20 h-20 bg-zen-sage/10 dark:bg-zen-sage/5 rounded-full flex items-center justify-center mb-5">
-                        <BookOpen size={32} className="text-zen-sage/50" />
+                    <div className="flex flex-col items-center justify-center py-16 sm:py-20">
+                      <div className="w-16 h-16 bg-zen-sage/8 dark:bg-zen-sage/5 rounded-2xl flex items-center justify-center mb-4">
+                        <BookOpen size={28} className="text-zen-sage/40" />
                       </div>
-                      <h3 className="text-[17px] font-medium text-zen-moss/60 dark:text-zen-stone/60 mb-1.5">
-                        Empty Timeline
+                      <h3 className="text-lg font-semibold text-zen-forest/70 dark:text-zen-parchment/70 mb-1">
+                        Start your journal
                       </h3>
-                      <p className="text-sm text-zen-moss/35 dark:text-zen-stone/35 mb-5 text-center max-w-[260px]">
-                        Your story starts here. Write your first entry to begin your journal.
+                      <p className="text-sm text-zen-moss/40 dark:text-zen-stone/40 mb-6 text-center max-w-[280px]">
+                        Capture your thoughts, track your mood, and reflect on your journey.
                       </p>
                       <Link
                         href="/journal/new"
-                        className="px-5 py-2.5 bg-zen-sage text-white text-sm font-medium rounded-xl hover:bg-zen-sage-light transition-all active:scale-[0.97]"
+                        className="px-6 py-3 bg-zen-sage text-white text-sm font-semibold rounded-xl hover:bg-zen-sage-light transition-all active:scale-[0.97] shadow-sm"
+                        style={{ boxShadow: '0 2px 12px rgba(91, 127, 94, 0.25)' }}
                       >
-                        Start Writing
+                        Write your first entry
                       </Link>
                     </div>
                   ) : (
